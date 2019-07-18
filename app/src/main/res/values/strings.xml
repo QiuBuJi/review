@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">复习软件</string>
+
+    <string name="about_content">
+            版本号：v1.2\n
+            作者：吴攀\n
+            耗时：未统计...\n
+        开发软件：Android studio\n
+        开放平台：\n百度语音合成、讯飞语音合成\n
+        Copyright 2019 **有限公司\nAll Rights Reserved
+    </string>
+
+    <string-array name="strings_sort">
+        <item>按年分组</item>
+        <item>按月分组</item>
+        <item>按日分组</item>
+        <item>按时分组</item>
+        <item>按分分组</item>
+    </string-array>
+
+    <string-array name="strings_settings">
+        <item>通知提醒</item>
+        <item>夜间不通知</item>
+        <item>开启朗读</item>
+    </string-array>
+</resources>

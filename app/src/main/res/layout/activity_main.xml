@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/entire_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        style="@style/style_actionbar_ground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/main_about_textView_title"
+            style="@style/style_actionbar_title"
+            android:layout_marginStart="24dp"
+            android:text="复习"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/main_textView_about"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/background_ripple_effect_click_gray_white"
+            android:text="关于"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/main_imageView_Detail"
+            android:layout_width="20dp"
+            android:layout_height="26dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/background_ripple_effect_click_gray_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/main_textView_about"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.538"
+            app:srcCompat="@mipmap/list_icon" />
+
+        <ImageView
+            android:id="@+id/main_imageView_sort"
+            android:layout_width="19dp"
+            android:layout_height="23dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/background_ripple_effect_click_gray_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/main_imageView_Detail"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@mipmap/recent_icon" />
+
+        <ImageButton
+            android:id="@+id/main_imageButton_setting"
+            android:layout_width="25dp"
+            android:layout_height="23dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/background_ripple_effect_click_gray_white"
+            android:src="?attr/actionModeSelectAllDrawable"
+            app:layout_constraintBottom_toBottomOf="@+id/main_imageView_sort"
+            app:layout_constraintEnd_toStartOf="@+id/main_imageView_sort"
+            app:layout_constraintTop_toTopOf="@+id/main_imageView_sort"
+            tools:src="?attr/actionModeSelectAllDrawable" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout3"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/background_text_show"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+        <TextView
+            android:id="@+id/fragment_textView_textShow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fadeScrollbars="true"
+            android:fontFamily="serif-monospace"
+            android:hint="要显示的内容"
+            android:maxEms="18"
+            android:maxLines="8"
+            android:padding="8dp"
+            android:scrollbars="vertical"
+            android:textAlignment="viewStart"
+            android:textColor="@android:color/background_dark"
+            android:textSize="16sp"
+            android:typeface="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/main_textView_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/background_ripple_rectangle_round"
+            android:padding="2dp"
+            android:text="下一个"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/fragment_textView_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/background_ripple_effect_click1"
+        android:hint="tips..."
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_textView_colorIndicate" />
+
+    <EditText
+        android:id="@+id/fragment_editText_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:gravity="center"
+        android:hint="请输入..."
+        android:inputType="text"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@android:color/background_dark"
+        android:theme="@style/Base.Animation.AppCompat.Dialog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/main_imageView_play_sound"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_progressBar_progress" />
+
+    <TextView
+        android:id="@+id/fragment_textView_colorIndicate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@+id/fragment_editText_input"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_editText_input" />
+
+    <TextView
+        android:id="@+id/fragment_textView_lastText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:lines="1"
+        android:text="..."
+        android:textAlignment="viewEnd"
+        app:layout_constraintEnd_toStartOf="@+id/main_textView_time_arrival"
+        app:layout_constraintStart_toEndOf="@+id/fragment_progressBar_progress"
+        app:layout_constraintTop_toTopOf="@+id/fragment_textView_persent" />
+
+    <ImageView
+        android:id="@+id/main_imageView_play_sound"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@mipmap/sound"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_editText_input"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fragment_editText_input"
+        app:srcCompat="@android:drawable/ic_lock_silent_mode_off" />
+
+    <TextView
+        android:id="@+id/main_textView_time_arrival"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_ripple_arrival"
+        android:gravity="center"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingBottom="1dp"
+        android:text="00:00:00"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayout3"
+        app:layout_constraintTop_toTopOf="@+id/fragment_textView_persent" />
+
+    <ProgressBar
+        android:id="@+id/fragment_progressBar_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="139dp"
+        android:layout_height="19dp"
+        android:layout_marginTop="8dp"
+        android:foreground="@drawable/background_ripple_effect_click2"
+        android:max="10"
+        android:progress="5"
+        android:progressDrawable="@drawable/layer_list_progress_green"
+        app:layout_constraintStart_toStartOf="@+id/constraintLayout3"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
+
+    <TextView
+        android:id="@+id/fragment_textView_persent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="0/0"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_progressBar_progress"
+        app:layout_constraintEnd_toEndOf="@+id/fragment_progressBar_progress"
+        app:layout_constraintStart_toStartOf="@+id/fragment_progressBar_progress"
+        app:layout_constraintTop_toTopOf="@+id/fragment_progressBar_progress" />
+
+    <ImageButton
+        android:id="@+id/main_imageButton_clear"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="4dp"
+        android:background="@android:drawable/ic_menu_close_clear_cancel"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_editText_input"
+        app:layout_constraintEnd_toEndOf="@+id/fragment_editText_input"
+        app:layout_constraintTop_toTopOf="@+id/fragment_editText_input" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/main_recycllerView_keyboard"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_textView_tips" />
+
+    <TextView
+        android:id="@+id/main_textView_level"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/background_shape_circle"
+        android:gravity="center"
+        android:text="0"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/constraintLayout3"
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout3" />
+
+</android.support.constraint.ConstraintLayout>

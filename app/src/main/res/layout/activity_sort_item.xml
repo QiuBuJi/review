@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="visible">
+
+    <TextView
+        android:id="@+id/item_sort_textView_region"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="最近"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@+id/item_sort_imageView_line"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_sort_textView_title2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="we are the one who couldn't callente your power."
+        android:textAlignment="textStart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/item_sort_textView_title1"
+        app:layout_constraintStart_toStartOf="@+id/item_sort_textView_title1"
+        app:layout_constraintTop_toBottomOf="@+id/item_sort_textView_title1" />
+
+    <ImageView
+        android:id="@+id/item_sort_imageView_line"
+        android:layout_width="0dp"
+        android:layout_height="3px"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_sort_textView_region"
+        app:srcCompat="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/item_sort_textView_title1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:singleLine="true"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textColor="#000000"
+        app:layout_constraintBottom_toBottomOf="@+id/item_sort_textView_level2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/item_sort_textView_level2"
+        app:layout_constraintTop_toBottomOf="@+id/item_sort_imageView_line" />
+
+    <TextView
+        android:id="@+id/item_sort_textView_index"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:text="9999."
+        android:textSize="8sp"
+        app:layout_constraintBottom_toBottomOf="@+id/item_sort_textView_level1"
+        app:layout_constraintEnd_toStartOf="@+id/item_sort_textView_level1" />
+
+    <TextView
+        android:id="@+id/item_sort_textView_level1"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/background_shape_circle"
+        android:gravity="center"
+        android:maxLength="2"
+        android:maxLines="1"
+        android:paddingLeft="2dp"
+        android:paddingEnd="2dp"
+        android:text="12"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/item_sort_imageView_line"
+        app:layout_constraintTop_toBottomOf="@+id/item_sort_imageView_line" />
+
+    <TextView
+        android:id="@+id/item_sort_textView_level2"
+        android:layout_width="22dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:background="@drawable/background_text_show"
+        android:maxLength="2"
+        android:maxLines="1"
+        android:paddingLeft="2dp"
+        android:paddingEnd="2dp"
+        android:textAlignment="center"
+        android:textColor="#FFB300"
+        android:textSize="8sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/item_sort_textView_level1"
+        app:layout_constraintStart_toEndOf="@+id/item_sort_textView_level1" />
+
+    <TextView
+        android:id="@+id/item_sort_textView_timeTips"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/background_text_show"
+        android:padding="2dp"
+        android:text="8天"
+        android:textAlignment="center"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/item_sort_textView_title2"
+        app:layout_constraintEnd_toEndOf="@+id/item_sort_textView_level2"
+        app:layout_constraintStart_toStartOf="@+id/item_sort_textView_level1"
+        app:layout_constraintTop_toBottomOf="@+id/item_sort_textView_level2" />
+</android.support.constraint.ConstraintLayout>

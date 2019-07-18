@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/item_textView_index"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="9999."
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/item_textView_explain"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/item_textView_explain" />
+
+    <TextView
+        android:id="@+id/item_textView_word"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:singleLine="true"
+        android:text="word..."
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@+id/item_switch_JoinReview"
+        app:layout_constraintStart_toStartOf="@+id/item_textView_explain"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_textView_explain"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:singleLine="true"
+        android:text="explain..."
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/item_progressBar_Level_forward"
+        app:layout_constraintStart_toEndOf="@+id/item_textView_index"
+        app:layout_constraintTop_toBottomOf="@+id/item_textView_word"
+        app:layout_constraintVertical_bias="1.0" />
+
+
+    <ProgressBar
+        android:id="@+id/item_progressBar_Level_forward"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="56dp"
+        android:layout_height="12dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:max="12"
+        android:progress="6"
+        android:progressDrawable="@drawable/layer_list_progress_pink"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline4" />
+
+    <TextView
+        android:id="@+id/item_textView_level_number_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="6"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/item_progressBar_Level_forward"
+        app:layout_constraintEnd_toEndOf="@+id/item_progressBar_Level_forward"
+        app:layout_constraintStart_toStartOf="@+id/item_progressBar_Level_forward"
+        app:layout_constraintTop_toTopOf="@+id/item_progressBar_Level_forward" />
+
+    <ProgressBar
+        android:id="@+id/item_progressBar_error"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="56dp"
+        android:layout_height="12dp"
+        android:layout_marginBottom="4dp"
+        android:max="12"
+        android:progress="6"
+        android:progressDrawable="@drawable/layer_list_progress_blue"
+        app:layout_constraintBottom_toTopOf="@+id/guideline4"
+        app:layout_constraintEnd_toEndOf="@+id/item_progressBar_Level_forward" />
+
+    <TextView
+        android:id="@+id/item_textView_error_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="6"
+        android:textColor="#000000"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/item_progressBar_error"
+        app:layout_constraintEnd_toEndOf="@+id/item_progressBar_error"
+        app:layout_constraintStart_toStartOf="@+id/item_progressBar_error"
+        app:layout_constraintTop_toTopOf="@+id/item_progressBar_error" />
+
+    <ImageView
+        android:id="@+id/item_imageView_play_sound"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:background="@mipmap/sound"
+        app:layout_constraintBottom_toTopOf="@+id/guideline4"
+        app:layout_constraintEnd_toEndOf="@+id/item_textView_index"
+        app:layout_constraintStart_toStartOf="@+id/item_textView_index"
+        app:layout_constraintTop_toTopOf="@+id/item_textView_word"
+        app:srcCompat="@android:drawable/ic_lock_silent_mode_off" />
+
+    <Switch
+        android:id="@+id/item_switch_JoinReview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/item_progressBar_error"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:visibility="visible" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5081967" />
+
+
+</android.support.constraint.ConstraintLayout>
