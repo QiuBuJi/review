@@ -16,7 +16,7 @@ public class AboutActivity extends Activity {
     TextView  textViewTitle;
     ImageView imageViewBackButton;
     ImageView imageView;
-    private int cout;
+    private int count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,23 +40,23 @@ public class AboutActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //单击动画
-                ObjectAnimator scalex = ObjectAnimator.ofFloat(imageView, "scaleX", 1, 0.5f, 1, 0.5f, 1);
-                ObjectAnimator scaley = ObjectAnimator.ofFloat(imageView, "scaleY", 1, 0.5f, 1, 0.5f, 1);
+                ObjectAnimator scaleX = ObjectAnimator.ofFloat(imageView, "scaleX", 1, 0.5f, 1, 0.5f, 1);
+                ObjectAnimator scaleY = ObjectAnimator.ofFloat(imageView, "scaleY", 1, 0.5f, 1, 0.5f, 1);
                 Interpolator   value  = new LinearInterpolator();
-                scalex.setInterpolator(value);
-                scaley.setInterpolator(value);
-                scalex.setDuration(600);
-                scaley.setDuration(600);
-                scalex.start();
-                scaley.start();
+                scaleX.setInterpolator(value);
+                scaleY.setInterpolator(value);
+                scaleX.setDuration(600);
+                scaleY.setDuration(600);
+                scaleX.start();
+                scaleY.start();
 
-                cout++;
-                if (cout == 12) {
+                count++;
+                if (count == 12) {
                     ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
                     layoutParams.width = (int) (imageView.getWidth() * 1.6f);
                     layoutParams.height = (int) (imageView.getHeight() * 1.6f);
                     imageView.requestLayout();
-                } else if (cout > 6) {
+                } else if (count > 6) {
                     imageView.setImageResource(R.mipmap.master);
                 }
             }

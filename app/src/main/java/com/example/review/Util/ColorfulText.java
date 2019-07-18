@@ -17,7 +17,7 @@ public class ColorfulText {
         ArrayList<CharDataSimple>  matchedSeris = getMatchedSeris(src, inputText);
 
         int    endIndex = 0;
-        String str      = null;
+        String str;
 
         for (int i = 0; i < inputText.length(); i++) {
             char c = inputText.charAt(i);
@@ -70,14 +70,14 @@ public class ColorfulText {
         //matchedSeris中，有数据未被匹配。
         if (matchedSeris.size() > 0) {
 
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append(" ");
             int count = 0;
             for (CharDataSimple cds : matchedSeris) {
                 if (count == 0)
-                    sb.append(cds.c + " ");
+                    sb.append(cds.c).append(" ");
                 else
-                    sb.append(", " + cds.c + " ");
+                    sb.append(", ").append(cds.c).append(" ");
                 count++;
             }
 
@@ -93,7 +93,7 @@ public class ColorfulText {
                 ElementCategory ec2 = ecs.get(k);
 
                 if (ec1.category == ec2.category) {
-                    ec1.txt = ec1.txt + ec2.txt;
+                    ec1.txt = ec1.txt.concat(ec2.txt);
                     ecs.remove(k);
                     k--;
                 } else {
@@ -107,22 +107,6 @@ public class ColorfulText {
 
 
     //----------------------------------------------------------------------------------------------
-    class CharData {
-        char c     = 0;
-        int  index = 0;
-
-        ArrayList<Integer> indexList = new ArrayList<>();
-
-        public CharData() {
-        }
-
-        public CharData(char c, int index) {
-            this.c = c;
-            this.index = index;
-        }
-    }
-
-    //----------------------------------------------------------------------------------------------
     class CharDataSimple {
         public CharDataSimple(char c, int indexCorrect, int indexMatch) {
             this.c = c;
@@ -130,11 +114,11 @@ public class ColorfulText {
             this.indexMatch = indexMatch;
         }
 
-        char c = 0;
+        char c;
 
-        int indexCorrect = 0;
-        int indexMatch   = 0;
-        int seris        = 0;
+        int indexCorrect;
+        int indexMatch;
+        int seris = 0;
     }
 
     /**
@@ -145,8 +129,7 @@ public class ColorfulText {
      * @return 返回匹配好的字符组
      *///-------------------------------------------------------------------------------------------
     public ArrayList<CharDataSimple> getMatchedSeris(String src, String match) {
-        ArrayList<CharDataSimple> temp = new ArrayList<>();
-        temp = uniteSameChars(src, match);
+        ArrayList<CharDataSimple> temp = uniteSameChars(src, match);
 
 
         /*序列"seris"长度记录*/

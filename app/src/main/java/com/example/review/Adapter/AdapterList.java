@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,18 +23,17 @@ import com.example.review.EditActivity;
 import com.example.review.ListActivity;
 import com.example.review.New.ReviewStruct;
 import com.example.review.R;
-import com.example.review.Util.SpanUtil;
 import com.example.review.Util.Speech;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Locale;
 
 public class AdapterList extends RecyclerView.Adapter {
-    Context    context = null;
-    ReviewData data    = null;
+    private Context      context;
+    private ReviewData   data;
     private Drawable     background;
     private ListActivity parent;
-    public int posi;
+    public  int          posi;
 
     public AdapterList(Context context, ReviewData data) {
         this.data = data;
@@ -42,21 +41,22 @@ public class AdapterList extends RecyclerView.Adapter {
         parent = (ListActivity) context;
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.activity_list_item, parent, false);
         background = view.getBackground();
         return new Holder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder_, final int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder_, int position) {
         this.posi = position;
         final Holder       holder = (Holder) holder_;
         final ReviewStruct rs     = data.get(position);
 
         //填充条目内的数据
-        holder.index.setText(position + 1 + ".");
+        holder.index.setText(String.format(Locale.CHINA, "%d.", position + 1));
         if (rs.joined) {
             holder.index.setTextColor(0xFFD81B60);
 //            holder.index.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
@@ -67,7 +67,7 @@ public class AdapterList extends RecyclerView.Adapter {
         holder.word.setText(rs.getMatch());
         holder.explain.setText(rs.getShow());
         holder.progress.setProgress(rs.getLevel());
-        holder.levelNumber.setText(rs.getLevel() + "");
+        holder.levelNumber.setText(String.format(Locale.CHINA, "%d", rs.getLevel()));
 
         int size  = rs.logs.size();
         int count = 0;
@@ -89,7 +89,7 @@ public class AdapterList extends RecyclerView.Adapter {
 //                .showIn(holder.errorNum);
 
         holder.errorProgress.setProgress(count);
-        holder.errorNum.setText(count + " : " + size);
+        holder.errorNum.setText(String.format(Locale.CHINA, "%d : %d", count, size));
 
         //加入复习总开关
         if (ListActivity.switch_state) {
@@ -169,7 +169,7 @@ public class AdapterList extends RecyclerView.Adapter {
         ReviewStruct reviewStruct;
         private int position;
 
-        public LongClick(ReviewStruct rs, int position) {
+        LongClick(ReviewStruct rs, int position) {
             this.reviewStruct = rs;
             this.position = position;
         }
@@ -209,7 +209,7 @@ public class AdapterList extends RecyclerView.Adapter {
         ReviewStruct reviewStruct;
         private int position;
 
-        public Click(ReviewStruct rs, int position) {
+        Click(ReviewStruct rs, int position) {
             this.reviewStruct = rs;
             this.position = position;
         }
@@ -226,7 +226,7 @@ public class AdapterList extends RecyclerView.Adapter {
                 }
 
                 //删除模式，背景的切换
-                reviewStruct.selected = reviewStruct.selected ? false : true;
+                reviewStruct.selected = !reviewStruct.selected;
                 notifyItemChanged(position);
 
             } else {//删除按钮没有打开
@@ -243,7 +243,7 @@ public class AdapterList extends RecyclerView.Adapter {
 
         TextView    errorNum;
         ProgressBar errorProgress;
-        View        view = null;
+        View        view;
         TextView    index;
         TextView    word;
         TextView    explain;
@@ -252,7 +252,7 @@ public class AdapterList extends RecyclerView.Adapter {
         Switch      switch_;
         ImageView   playSound;
 
-        public Holder(View itemView) {
+        Holder(View itemView) {
             super(itemView);
             view = itemView;
 

@@ -22,7 +22,7 @@ public class TextColorGroupAnimator {
             public void onAnimationUpdate(ValueAnimator animation) {
                 int value = (int) animation.getAnimatedValue();
 
-                int      begin = 0, end = 0;
+                int      begin = 0, end;
                 Editable et    = view.getEditableText();
 
 

@@ -14,18 +14,12 @@ import com.iflytek.cloud.SpeechUtility;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 public abstract class Speech {
 
-    private static ObjectAnimator objX;
-    private static ObjectAnimator objY;
-
-    static private SpeechUtility     speechUtility;
     static private SpeechSynthesizer mVoice;
 
     static public  String                                 voice_小燕   = "xiaoyan";
@@ -52,8 +46,8 @@ public abstract class Speech {
         if (animatorView == null) return;
 
         //播放声音图标，放大缩小动画
-        objX = ObjectAnimator.ofFloat(animatorView, "scaleX", 1, 1.3f, 1, 1.3f, 1, 1.3f, 1);
-        objY = ObjectAnimator.ofFloat(animatorView, "scaleY", 1, 1.3f, 1, 1.3f, 1, 1.3f, 1);
+        ObjectAnimator objX = ObjectAnimator.ofFloat(animatorView, "scaleX", 1, 1.3f, 1, 1.3f, 1, 1.3f, 1);
+        ObjectAnimator objY = ObjectAnimator.ofFloat(animatorView, "scaleY", 1, 1.3f, 1, 1.3f, 1, 1.3f, 1);
         objX.setDuration(800);
         objY.setDuration(800);
         objX.start();
@@ -67,7 +61,7 @@ public abstract class Speech {
 
     public static void initVoice(Context context) {
 
-        speechUtility = SpeechUtility.createUtility(context, SpeechConstant.APPID + "=5cb48789");
+        SpeechUtility speechUtility = SpeechUtility.createUtility(context, SpeechConstant.APPID + "=5cb48789");
 
         mVoice = SpeechSynthesizer.createSynthesizer(context, null);
         if (mVoice == null) return;
@@ -137,7 +131,7 @@ public abstract class Speech {
         String[] words   = Pattern.compile("\\s+").split(word);
         boolean  isExist = true;
         if (file1.exists()) isExist = false;
-        LinkedList<String> strLink = new LinkedList<String>();
+        LinkedList<String> strLink = new LinkedList<>();
 
         for (String strWord : words) {
             if (strWord.equals("")) continue;
@@ -154,14 +148,11 @@ public abstract class Speech {
             c = strWord.charAt(0);
             path = new File(MainActivity.pathApp, "语音库/" + c + "/" + strWord + ".mp3").getPath();
 
-            if (playSound(path, strLink)) return false;
+            return !playSound(path, strLink);
         } else {
-            if (playSound(path, null)) {
-                return false;
-            }
+            return !playSound(path, null);
         }
 
-        return true;
     }
 
     private static boolean playSound(String path, final LinkedList<String> list) {

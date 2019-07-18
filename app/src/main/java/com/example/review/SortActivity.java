@@ -23,7 +23,6 @@ public class SortActivity extends AppCompatActivity implements View.OnClickListe
     private Spinner                 spinnerSort;
     private ViewPager               pager;
     private ArrayList<SortFragment> fragments = new ArrayList<>();
-    ;
     private       TextView     indicate;
     public static SortFragment fragment;
     public static int          xPosi;
@@ -110,10 +109,8 @@ public class SortActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.sort_edit_imageView_back_button:
-                finish();
-                break;
+        if (view.getId() == R.id.sort_edit_imageView_back_button) {
+            finish();
         }
     }
 

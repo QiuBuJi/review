@@ -3,17 +3,11 @@ package com.example.review;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +22,7 @@ import java.util.LinkedList;
 
 public class FilePicker extends AppCompatActivity {
 
-    ArrayList<String>  suffixs = new ArrayList<>(Arrays.asList(new String[]{"jpg", "png"}));
+    ArrayList<String>  suffixs = new ArrayList<>(Arrays.asList("jpg", "png"));
     LinkedList<String> data    = new LinkedList<>();
     LinkedList<File>   files   = new LinkedList<>();
     RecyclerView       filePicker;
@@ -71,15 +65,10 @@ public class FilePicker extends AppCompatActivity {
 
     class MyAdapter extends RecyclerView.Adapter {
 
-        private int width;
-
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
             View view     = LayoutInflater.from(FilePicker.this).inflate(R.layout.activity_file_picker_item, viewGroup, false);
-            View viewById = view.findViewById(R.id.filePicker_imageView_image);
-
-            width = viewById.getWidth();
 
             return new MyHolder(view);
         }
@@ -152,9 +141,8 @@ public class FilePicker extends AppCompatActivity {
 
             if (index != -1) {
                 String  suffix   = str.substring(++index);
-                boolean contains = suffixs.contains(suffix);
 
-                if (contains) return true;
+                return suffixs.contains(suffix);
             }
 
             return false;

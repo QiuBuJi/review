@@ -1,38 +1,23 @@
 package com.example.review.Keyboard;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ScaleDrawable;
 import android.media.MediaPlayer;
-import android.support.v7.widget.DrawableUtils;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ImageSpan;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewParent;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.review.Adapter.MyAdapter;
 import com.example.review.DataStructureFile.WordExplain;
-import com.example.review.MainActivity;
 import com.example.review.New.KeyText;
 import com.example.review.New.ReviewStruct;
 import com.example.review.R;
 import com.example.review.Util.SpanUtil;
 import com.example.review.Util.Speech;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -107,13 +92,13 @@ public class KeyboardType1 extends Keyboard {
                         if (!we.ediable) continue;
                         we.ediable = false;
 
-                        StringBuffer buf    = new StringBuffer();
-                        int          length = we.category.length();
+                        StringBuilder buf    = new StringBuilder();
+                        int           length = we.category.length();
                         length = max - length;
 
                         //添加空格，达到对齐目的
                         for (int i = 0; i < length; i++) buf.append(" ");
-                        we.category = buf.toString() + we.category;
+                        we.category = buf.toString().concat(we.category);
                     }
 
 
@@ -121,7 +106,7 @@ public class KeyboardType1 extends Keyboard {
 
                     for (WordExplain wordExplain : mwe) {
 
-                        int    color    = getColor(wordExplain.category);
+                        int color = getColor(wordExplain.category);
                         span.addForeColorSection(wordExplain.category, color);
 
                         for (String explain : wordExplain.explains) {
@@ -149,7 +134,7 @@ public class KeyboardType1 extends Keyboard {
 
     @Override
     void adapterComplete() {
-        adapter.isShowNum = false;
+        MyAdapter.isShowNum = false;
     }
 
     @Override
@@ -203,7 +188,7 @@ public class KeyboardType1 extends Keyboard {
         return data;
     }
 
-    ArrayList<KeyText> getRegularLayout() {
+    private ArrayList<KeyText> getRegularLayout() {
         ArrayList<KeyText> data = new ArrayList<>();
 
         String[] com = new String[]{
@@ -386,7 +371,6 @@ public class KeyboardType1 extends Keyboard {
                     input.setSelection(selection);
                     break;
                 case COM_EMPTY:
-                    selection = -1;
                     if (!inputText.equals("")) input.setText("");
                     if (rs.getLevel() < UNDER_LEVEL) adapter.notifyDataSetChanged();
                     break;
@@ -395,16 +379,11 @@ public class KeyboardType1 extends Keyboard {
             Editable editableText = input.getEditableText();
             int      selection    = input.getSelectionStart();
             editableText.insert(selection, keyText.text);
-//
-            int type = rs.match.getType();
-            if (type == TYPE_WORD && rs.getLevel() < 1) {
-//                Speech.play_Baidu(keyText.text);
-            }
 
             if (rs.getLevel() < UNDER_LEVEL) {
                 String num   = (String) textViewnum.getText();
                 int    value = Integer.valueOf(num);
-                textViewnum.setText(++value + "");
+                textViewnum.setText(String.valueOf(++value));
                 textViewnum.setVisibility(View.VISIBLE);
             }
         }

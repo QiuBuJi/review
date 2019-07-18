@@ -6,7 +6,6 @@ import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -20,8 +19,7 @@ import com.example.review.Util.Speech;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collections;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -102,7 +100,7 @@ public class KeyboardType3 extends Keyboard {
             String   strArray = show.substring(start + 1, end - 1);
             String[] words    = Pattern.compile("[,，]").split(strArray);
 
-            for (String str : words) candidate.add(str);
+            Collections.addAll(candidate, words);
         }
 
         candidate.addAll(mCandidate);
@@ -110,8 +108,9 @@ public class KeyboardType3 extends Keyboard {
         makeRandom(candidate);
 
         int length = mCandidate.size();
-        for (int i = 0; i < split.length; i++) {
-            mCandidateType.add(new TextCom(split[i]));
+
+        for (String s : split) {
+            mCandidateType.add(new TextCom(s));
             if (length-- == 0) break;
             mCandidateType.add(new TextCom("  ", true));
         }
@@ -167,10 +166,9 @@ public class KeyboardType3 extends Keyboard {
 
     @Override
     ArrayList<KeyText> getLayout() {
-        ArrayList<KeyText> data = new ArrayList<>();
         span = 6;
 
-        KeyText kts[] = new KeyText[]{
+        KeyText[] kts = new KeyText[]{
                 new KeyText(COM_DONE, true, KeyEvent.KEYCODE_ENTER),
                 new KeyText(COM_LEFT, true, KeyEvent.KEYCODE_DPAD_UP, 'l'),
                 new KeyText(COM_RIGHT, true, KeyEvent.KEYCODE_DPAD_DOWN, 'r'),
@@ -178,7 +176,7 @@ public class KeyboardType3 extends Keyboard {
                 new KeyText(COM_DELETE, true, KeyEvent.KEYCODE_DEL),
                 new KeyText(COM_DONE, true, KeyEvent.KEYCODE_ENTER)};
 
-        data.addAll(Arrays.asList(kts));
+        ArrayList<KeyText> data = new ArrayList<>(Arrays.asList(kts));
 
         sortByCharLen(candidate);
 

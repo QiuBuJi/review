@@ -1,9 +1,7 @@
 package com.example.review.Keyboard;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,8 +14,6 @@ import com.example.review.Adapter.MyAdapter;
 import com.example.review.New.ItemClickListener;
 import com.example.review.New.KeyText;
 import com.example.review.New.ReviewStruct;
-import com.example.review.R;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -79,7 +75,7 @@ public abstract class Keyboard implements ItemClickListener {
 
     public int getColor(String src) {
         src = src.replaceAll("\\s", "");//去除空格
-        int prefixColor = Color.BLACK;
+        int prefixColor;
         int i           = strPriorities.indexOf(src);
 
         switch (i) {
@@ -154,7 +150,7 @@ public abstract class Keyboard implements ItemClickListener {
             }
             makeRandom(linkTemp);
             linkc.addAll(linkTemp);
-            linkTemp.removeAll(linkTemp);
+            linkTemp.clear();
         }
         link.addAll(linkc);
     }
@@ -212,7 +208,7 @@ public abstract class Keyboard implements ItemClickListener {
 
     public void clearKeyboard() {
         if (adapter != null) {
-            strData.removeAll(strData);
+            strData.clear();
             adapter.notifyDataSetChanged();
         }
     }

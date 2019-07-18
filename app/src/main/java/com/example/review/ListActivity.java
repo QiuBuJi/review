@@ -1,6 +1,5 @@
 package com.example.review;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -17,8 +16,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,11 +24,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.review.Adapter.AdapterList;
-import com.example.review.DataStructureFile.DateTime;
 import com.example.review.DataStructureFile.ReviewData;
 import com.example.review.New.ReviewStruct;
 
-import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
@@ -109,7 +104,8 @@ public class ListActivity extends Activity implements View.OnClickListener, Text
             @Override
             public boolean onLongClick(View view) {
                 RecyclerView.LayoutManager lm        = list.getLayoutManager();
-                int                        itemCount = lm.getItemCount() - 1;
+                assert lm != null;
+                int itemCount = lm.getItemCount() - 1;
                 list.scrollToPosition(itemCount / 2);
                 return false;
             }
@@ -183,7 +179,7 @@ public class ListActivity extends Activity implements View.OnClickListener, Text
                         }
                     } else {
                         //查找：指定了类型
-                        Integer num = Integer.valueOf(split[0]);
+                        int num = Integer.parseInt(split[0]);
 
                         for (ReviewStruct rs : data) {
                             if ((rs.match.getText().equals(split[1]) && rs.match.getType() == num) ||
@@ -345,6 +341,7 @@ public class ListActivity extends Activity implements View.OnClickListener, Text
             case R.id.list_floatingActionButton:
                 int scrollState = list.getScrollState();
                 RecyclerView.LayoutManager lm = list.getLayoutManager();
+                assert lm != null;
                 int itemCount = lm.getItemCount() - 1;
 
                 //在滑动的情况下

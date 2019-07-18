@@ -1,5 +1,7 @@
 package com.example.review.New;
 
+import android.support.annotation.NonNull;
+
 import java.io.*;
 
 public class LibraryStruct extends SaveData {
@@ -60,6 +62,7 @@ public class LibraryStruct extends SaveData {
         type = dis.readInt();
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "type = " + type + " text = " + text;

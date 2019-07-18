@@ -25,7 +25,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
-import android.text.InputType;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -44,6 +43,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.review.Adapter.MyAdapter;
 import com.example.review.Animator.TextColorAnimator;
 import com.example.review.Animator.TextPartColorAnimator;
 import com.example.review.DataStructureFile.DateTime;
@@ -56,7 +56,6 @@ import com.example.review.Keyboard.KeyboardType3;
 import com.example.review.New.CountList;
 import com.example.review.New.KeyText;
 import com.example.review.New.ReviewStruct;
-import com.example.review.New.SaveCategoryStruct;
 import com.example.review.Util.ColorfulText;
 import com.example.review.Util.SpanUtil;
 import com.example.review.Util.Speech;
@@ -64,8 +63,10 @@ import com.example.review.Util.Speech;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -121,8 +122,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Keyboard      keyboard;
     private ConstraintLayout entireBackground;
 
-    //***********************************************************************************************
-    private Intent         intentService;
     private List<PathBoth> pathBoths;
     private int            libIndex = 0;
 
@@ -177,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //避开下标越界
         if (!data.mActivate.isEmpty()) {
             ReviewStruct rs = data.mActivate.getFirst();
-            tvLevel.setText(rs.getLevel() + "");
+            tvLevel.setText(String.format(Locale.CHINA, "%d", rs.getLevel()));
 
             //不让重复刷新
             if (isChange || lastRs != rs) {
@@ -240,7 +239,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int InactivateSize = data.mInactivate.size();
         progressBarProgress.setProgress(activateSize);
         progressBarProgress.setMax(activateSize + InactivateSize);
-        textViewPersent.setText(activateSize + " : " + InactivateSize);
+
+        textViewPersent.setText(String.format(Locale.CHINA, "%d : %d", activateSize, InactivateSize));
     }
 
 
@@ -300,8 +300,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         String prefix = "";
         pathBoths = getPathBothes();
-        List<String> names = new LinkedList<>();
-        for (PathBoth pathBoth : pathBoths) names.add(pathBoth.prefix);
+
         if (!pathBoths.isEmpty()) {
             String libName = Setting.sp.getString("libName", "");
 
@@ -317,7 +316,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         //启动&绑定服务
-        intentService = new Intent(this, ReviewService.class);
+        //***********************************************************************************************
+        Intent intentService = new Intent(this, ReviewService.class);
         startService(intentService);
         bindService(intentService, this, BIND_AUTO_CREATE);
 
@@ -507,11 +507,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Speech.initVoice(this);
 
         //设置颜色提示字符
-        StringBuffer sb = new StringBuffer();
-        sb.append("<font color='#ff0000'>■</font> 位置错误&nbsp&nbsp");//0CC3F1
-        sb.append("<font color='#0'>■</font> 正确字符&nbsp&nbsp");
-        sb.append("<font color='#C3C3C3'>■</font> 多余字符&nbsp&nbsp");
-        colorIndicate.setText(Html.fromHtml(sb.toString()));
+        String sb = "";
+        sb = sb.concat("<font color='#ff0000'>■</font> 位置错误&nbsp&nbsp");//0CC3F1
+        sb = sb.concat("<font color='#0'>■</font> 正确字符&nbsp&nbsp");
+        sb = sb.concat("<font color='#C3C3C3'>■</font> 多余字符&nbsp&nbsp");
+        colorIndicate.setText(Html.fromHtml(sb));
         colorIndicate.setVisibility(View.INVISIBLE);
 
         new Thread(new Runnable() {
@@ -553,7 +553,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     class PathBoth {
-        public PathBoth(String nexus, String library, String prefix) {
+        private PathBoth(String nexus, String library, String prefix) {
             this.nexus = nexus;
             this.library = library;
             this.prefix = prefix;
@@ -663,8 +663,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         final List<PathBoth> pathes = new LinkedList<>();
-        List<String>         strs   = new LinkedList<>();
-        for (String s : list) strs.add(s);
+        List<String>         strs   = new LinkedList<>(Arrays.asList(list));
 
         for (int i = 0; i < strs.size(); i++) {
             String   str  = strs.get(i);
@@ -699,6 +698,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         return pathes;
     }
+
+    //todo below is detail ↓↓↓
 
     /* new设想，2019年7月18日
      *
@@ -843,7 +844,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             //输入错误后，显示错误夜色的过渡动画
-            int begin = 0, end = 0;
+            int begin = 0, end;
             for (ElementCategory ec : ecs) {
                 end = begin + ec.txt.length();
                 ValueAnimator av = null;
@@ -881,12 +882,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //显示代替字符
             if (event.isCtrlPressed() && keyCode == KeyEvent.KEYCODE_S) {
 
-                if (keyboard.adapter.isShowNum)
-                    keyboard.adapter.isShowNum = false;
-                else keyboard.adapter.isShowNum = true;
-
+                MyAdapter.isShowNum = !MyAdapter.isShowNum;
                 keyboard.adapter.notifyDataSetChanged();
-            } else if (keyboard.adapter.isShowNum) {
+            } else if (MyAdapter.isShowNum) {
                 boolean b = keyboard.keyDown(keyCode, ch, -1);
                 if (b) return b;
             }

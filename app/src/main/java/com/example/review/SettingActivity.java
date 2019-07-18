@@ -88,7 +88,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     class Holder extends RecyclerView.ViewHolder {
         View view;
 
-        public Holder(@NonNull View itemView) {
+        Holder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
         }

@@ -26,19 +26,14 @@ import com.example.review.Util.Speech;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.regex.Pattern;
 
 public class KeyboardType2 extends Keyboard {
 
     public  ArrayList<WordExplain> frame;
     private ArrayList<WordExplain> frameTemp;
-
-    //    private static final int Privority1 = 313;
 
     public KeyboardType2(Context context, RecyclerView keyboardView, TextView show, EditText input, ReviewStruct reviewStruct) {
         super(context, keyboardView, show, input, reviewStruct);

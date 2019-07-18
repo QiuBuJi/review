@@ -1,5 +1,7 @@
 package com.example.review.DataStructureFile;
 
+import android.support.annotation.NonNull;
+
 import com.example.review.New.SaveData;
 
 import java.io.*;
@@ -66,7 +68,7 @@ public class DateTime extends SaveData {
         second = calendar.get(Calendar.SECOND);
     }
 
-    int getInt(String src, String objStr) {
+    private int getInt(String src, String objStr) {
         int index1, index2 = src.indexOf(objStr);
         if (index2 == -1) return 0;
 
@@ -204,8 +206,7 @@ public class DateTime extends SaveData {
      */
     public boolean biggerThan(DateTime dateTime) {
         int value = compareTo(dateTime);
-        if (value > 0) return true;
-        return false;
+        return value > 0;
     }
 
     /**
@@ -259,8 +260,6 @@ public class DateTime extends SaveData {
      * @param dateTime 用于减去的时间
      */
     public void subtractOf(DateTime dateTime) {
-        DateTime backup = new DateTime(this);
-
         BorrowStru borrow = subtractOf(new BorrowStru(second, minute), dateTime.second, 60);
         second = borrow.lowOrder;
         minute = borrow.highOrder;
@@ -309,7 +308,7 @@ public class DateTime extends SaveData {
     }
 
     class BorrowStru {
-        public BorrowStru(int lowOrder, int highOrder) {
+        BorrowStru(int lowOrder, int highOrder) {
             this.lowOrder = lowOrder;
             this.highOrder = highOrder;
         }
@@ -326,7 +325,7 @@ public class DateTime extends SaveData {
      * @param multiple   进位标志数，如满10进1的10、满60进1的60
      * @return 返回已经被相加&进位了的数据
      */
-    BorrowStru subtractOf(BorrowStru val, int subtractor, int multiple) {
+    private BorrowStru subtractOf(BorrowStru val, int subtractor, int multiple) {
         val.lowOrder -= subtractor;
         if (val.lowOrder < 0) {
             int times = Math.abs(val.lowOrder / multiple);
@@ -342,51 +341,52 @@ public class DateTime extends SaveData {
     }
 
 
+    @NonNull
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
 
-        buffer.append(fillZero(year, 4) + "年");
-        buffer.append(fillZero(month, 2) + "月");
-        buffer.append(fillZero(day, 2) + "日 ");
-        buffer.append(fillZero(hour, 2) + "时");
-        buffer.append(fillZero(minute, 2) + "分");
-        buffer.append(fillZero(Math.abs(second), 2) + '秒');
-        buffer.append(second < 0 ? " ✘" : " ");//✔
+        buffer.append(fillZero(year, 4)).append("年")
+              .append(fillZero(month, 2)).append("月")
+              .append(fillZero(day, 2)).append("日 ")
+              .append(fillZero(hour, 2)).append("时")
+              .append(fillZero(minute, 2)).append("分")
+              .append(fillZero(Math.abs(second), 2)).append('秒')
+              .append(second < 0 ? " ✘" : " ");//✔
         return buffer.toString();
     }
 
     public String toStringTime() {
-        StringBuffer str = new StringBuffer();
+        StringBuilder str = new StringBuilder();
 
-        if (year > 0) str.append(year + "年");
-        if (month > 0) str.append(fillZero(month, 2) + "月");
-        if (day > 0) str.append(fillZero(day, 2) + "日");
-        if (hour > 0) str.append(fillZero(hour, 2) + "时");
-        if (minute > 0) str.append(fillZero(minute, 2) + "分");
-        if (second > 0) str.append(fillZero(second, 2) + "秒");
+        if (year > 0) str.append(year).append("年");
+        if (month > 0) str.append(fillZero(month, 2)).append("月");
+        if (day > 0) str.append(fillZero(day, 2)).append("日");
+        if (hour > 0) str.append(fillZero(hour, 2)).append("时");
+        if (minute > 0) str.append(fillZero(minute, 2)).append("分");
+        if (second > 0) str.append(fillZero(second, 2)).append("秒");
         return str.toString();
     }
 
     public String toAboutValue() {
-        StringBuffer str = new StringBuffer();
-        if (year > 0) str.append(year + "年");
-        else if (month > 0) str.append(month + "月");
-        else if (day > 0) str.append(day + "日");
-        else if (hour > 0) str.append(hour + "时");
-        else if (minute > 0) str.append(minute + "分");
-        else if (second > 0) str.append(second + "秒");
+        StringBuilder str = new StringBuilder();
+        if (year > 0) str.append(year).append("年");
+        else if (month > 0) str.append(month).append("月");
+        else if (day > 0) str.append(day).append("日");
+        else if (hour > 0) str.append(hour).append("时");
+        else if (minute > 0) str.append(minute).append("分");
+        else if (second > 0) str.append(second).append("秒");
         return str.toString();
     }
 
     public StringBuffer toNoneZero0String() {
         StringBuffer sb = new StringBuffer();
 
-        if (year > 0) sb.append(year + "年");
-        if (month > 0) sb.append(month + "月");
-        if (day > 0) sb.append(day + "日 ");
+        if (year > 0) sb.append(year).append("年");
+        if (month > 0) sb.append(month).append("月");
+        if (day > 0) sb.append(day).append("日 ");
 
-        if (hour > 0) sb.append(fillZero(hour, 2) + ":");
+        if (hour > 0) sb.append(fillZero(hour, 2)).append(":");
 
 
         sb.append(fillZero(minute, 2));
@@ -429,7 +429,7 @@ public class DateTime extends SaveData {
      * @param width 填充好的字符，总的位数
      * @return 填充好的字符串
      */
-    public static String fillZero(int value, int width) {
+    private static String fillZero(int value, int width) {
         return fillChar(value, width, '0');
     }
 

@@ -67,7 +67,8 @@ public class LibraryActivity extends AppCompatActivity {
             public void onClick(View view) {
                 int                        scrollState = list.getScrollState();
                 RecyclerView.LayoutManager lm          = list.getLayoutManager();
-                int                        itemCount   = lm.getItemCount() - 1;
+                assert lm != null;
+                int itemCount = lm.getItemCount() - 1;
 
                 if (scrollState > 0) {
                     if (mUpDown < 0) list.scrollToPosition(0);
@@ -80,7 +81,8 @@ public class LibraryActivity extends AppCompatActivity {
             @Override
             public boolean onLongClick(View view) {
                 RecyclerView.LayoutManager lm        = list.getLayoutManager();
-                int                        itemCount = lm.getItemCount() - 1;
+                assert lm != null;
+                int itemCount = lm.getItemCount() - 1;
                 list.scrollToPosition(itemCount / 2);
                 return false;
             }
@@ -89,10 +91,8 @@ public class LibraryActivity extends AppCompatActivity {
         search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                switch (actionId) {
-                    case EditorInfo.IME_ACTION_SEARCH:
-                        acc();
-                        break;
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    acc();
                 }
                 return true;
             }
@@ -142,7 +142,7 @@ public class LibraryActivity extends AppCompatActivity {
             MyHolder      holder        = (MyHolder) viewHolder;
             LibraryStruct libraryStruct = libraries.get(posi);
 
-            holder.index.setText(posi + "");
+            holder.index.setText(String.format("%d", posi));
             holder.textView.setText(libraryStruct.getText());
             holder.view.setOnClickListener(getclickListener(posi));
 

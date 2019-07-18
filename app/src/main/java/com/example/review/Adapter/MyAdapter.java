@@ -15,13 +15,14 @@ import com.example.review.New.KeyText;
 import com.example.review.R;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MyAdapter extends RecyclerView.Adapter {
-    public        int     textSize  = 0;
-    static public boolean isShowNum = false;
-    ArrayList<KeyText> data;
-    private final Context           context;
-    private       ItemClickListener clickListener;
+    public        int                textSize  = 0;
+    static public boolean            isShowNum = false;
+    private       ArrayList<KeyText> data;
+    private final Context            context;
+    private       ItemClickListener  clickListener;
 
     public MyAdapter(Context context, ArrayList<KeyText> data, ItemClickListener click) {
         this.context = context;
@@ -37,9 +38,9 @@ public class MyAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int posi) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         MyHolder holder = (MyHolder) viewHolder;
-        KeyText  item   = data.get(posi);
+        KeyText  item   = data.get(position);
         item.view = holder.view;
 
         if (item.isCom) {
@@ -52,10 +53,9 @@ public class MyAdapter extends RecyclerView.Adapter {
             holder.textView.setMaxLines(6);
             if (textSize > 0) {
                 int length = item.text.length();
+
                 if (length > 2) {
                     holder.textView.setTextSize(textSize - 4);
-                } else if (length > 3) {
-
                 } else {
                     holder.textView.setTextSize(textSize);
                 }
@@ -75,24 +75,25 @@ public class MyAdapter extends RecyclerView.Adapter {
         }
         if (isShowNum) {
             if (item.key != 1) {
-                holder.textViewnum.setText(item.key + "");
-                holder.textViewnum.setVisibility(View.VISIBLE);
+                holder.textViewNum.setText(String.format(Locale.CHINA, "%c", item.key));
+                holder.textViewNum.setVisibility(View.VISIBLE);
             } else {
-                holder.textViewnum.setVisibility(View.INVISIBLE);
+                holder.textViewNum.setVisibility(View.INVISIBLE);
             }
         } else {
-            holder.textViewnum.setVisibility(View.INVISIBLE);
+            holder.textViewNum.setVisibility(View.INVISIBLE);
         }
 
-        holder.textView.setText(0 + "");
+        holder.textView.setText(String.format(Locale.CHINA, "%d", 0));
 
 
         holder.textView.setText(item.text);
+        final int pos = position;
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (clickListener != null)
-                    clickListener.onItemClick(view, data, posi);
+                    clickListener.onItemClick(view, data, pos);
             }
         });
 
@@ -112,14 +113,14 @@ public class MyAdapter extends RecyclerView.Adapter {
     class MyHolder extends RecyclerView.ViewHolder {
         View view;
         private final TextView textView;
-        private final TextView textViewnum;
+        private final TextView textViewNum;
 
-        public MyHolder(@NonNull View itemView) {
+        private MyHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
 
             textView = view.findViewById(R.id.item_textView_word);
-            textViewnum = view.findViewById(R.id.item_textView_number);
+            textViewNum = view.findViewById(R.id.item_textView_number);
         }
     }
 }

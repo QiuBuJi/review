@@ -96,7 +96,7 @@ public class SortFragment extends Fragment {
                 rs.showed = true;
             } else {
                 boolean b = temp.compareTo(dateTime) == 0;
-                rs.showed = b ? false : true;
+                rs.showed = !b;
             }
             temp = dateTime;
         }
@@ -128,13 +128,12 @@ public class SortFragment extends Fragment {
             final AdapterSort.MyHolder holder = (AdapterSort.MyHolder) viewHolder;
             final ReviewStruct         item   = data.get(posi);
 
-            holder.index.setText(posi + 1 + ".");
-            String s = "";
-            if (item.viewCount > 0) holder.level2.setText(item.viewCount + "次");
+            holder.index.setText(String.format("%d.", posi + 1));
+            if (item.viewCount > 0) holder.level2.setText(String.format("%d次", item.viewCount));
             else holder.level2.setText("");
 
             if (mIsActivity) {
-                holder.title1.setText("类型：" + item.match.getType());
+                holder.title1.setText(String.format("类型：%d", item.match.getType()));
                 holder.timeTips.setText("");
 
                 holder.view.setOnLongClickListener(new View.OnLongClickListener() {
@@ -197,7 +196,7 @@ public class SortFragment extends Fragment {
                 holder.timeTips.setText(tempTime.toAboutValue());
             }
             holder.title2.setText(item.getShow());
-            holder.level1.setText(item.getLevel() + "");
+            holder.level1.setText(String.format("%d", item.getLevel()));
 
 
             //分组显示，显示时间的一排设置程序
@@ -218,18 +217,18 @@ public class SortFragment extends Fragment {
             ReviewStruct  item         = data.get(posi);
 
             try {
-                sb.append(item.time.getYear() + "年");
-                if (sortActivity.fragment.displayField == DateTime.YEAR) {
+                sb.append(item.time.getYear()).append("年");
+                if (SortActivity.fragment.displayField == DateTime.YEAR) {
                     addExtraText(new DateTime(item.time), TimeFieldEnum.MONTH, sb, "（本年）");
                     throw new Exception();
                 }
-                sb.append((item.time.getMonth()) + "月");
-                if (sortActivity.fragment.displayField == DateTime.MONTH) {
+                sb.append(item.time.getMonth()).append("月");
+                if (SortActivity.fragment.displayField == DateTime.MONTH) {
                     addExtraText(new DateTime(item.time), TimeFieldEnum.DAY, sb, "（本月）");
                     throw new Exception();
                 }
-                sb.append(item.time.getDay() + "日");
-                if (sortActivity.fragment.displayField == DateTime.DAY) {
+                sb.append(item.time.getDay()).append("日");
+                if (SortActivity.fragment.displayField == DateTime.DAY) {
                     DateTime time = new DateTime(item.time);
                     boolean  b    = addExtraText(time, TimeFieldEnum.HOUR, sb, "（今天）");
 
@@ -239,17 +238,17 @@ public class SortFragment extends Fragment {
                     }
                     throw new Exception();
                 }
-                sb.append("   " + item.time.getHour() + "时");
-                if (sortActivity.fragment.displayField == DateTime.HOUR) {
+                sb.append("   ").append(item.time.getHour()).append("时");
+                if (SortActivity.fragment.displayField == DateTime.HOUR) {
                     addExtraText(new DateTime(item.time), TimeFieldEnum.MINUTE, sb, "（本小时）");
                     throw new Exception();
                 }
-                sb.append(item.time.getMinute() + "分");
-                if (sortActivity.fragment.displayField == DateTime.MINUTE) {
+                sb.append(item.time.getMinute()).append("分");
+                if (SortActivity.fragment.displayField == DateTime.MINUTE) {
                     addExtraText(new DateTime(item.time), TimeFieldEnum.SECOND, sb, "（本分钟）");
                     throw new Exception();
                 }
-                sb.append(item.time.getSecond() + "秒");
+                sb.append(item.time.getSecond()).append("秒");
             } catch (Exception e) {
                 int count = 0;
                 for (int i = posi + 1; i < data.size(); i++) {
@@ -257,7 +256,7 @@ public class SortFragment extends Fragment {
                     else count++;
                 }
                 ++count;
-                sb.append("  " + count + "条");
+                sb.append("  ").append(count).append("条");
                 holder.region.setText(sb);
             }
         }
@@ -292,7 +291,7 @@ public class SortFragment extends Fragment {
             private final TextView  timeTips;
             private final ImageView line;
 
-            public MyHolder(@NonNull View itemView) {
+            MyHolder(@NonNull View itemView) {
                 super(itemView);
                 view = itemView;
 

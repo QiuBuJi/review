@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
@@ -14,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.style.ImageSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -46,6 +44,7 @@ public class PagerActivity extends AppCompatActivity {
 
         titles = new ArrayList<>();
         ArrayList<String> data = new ArrayList<>();
+
         for (int i = 0; i < 4; i++) {
             data.add(i + "个数据");
         }
@@ -81,9 +80,9 @@ public class PagerActivity extends AppCompatActivity {
 
 
     class Adapter extends PagerAdapter {
-        ArrayList<String> data     = new ArrayList<>();
+        ArrayList<String> data;
         Context           context;
-        String            titles[] = {new String("one"), new String("two"), new String("three")};
+        String[]          titles = {"one", "two", "three"};
 
         public Adapter(Context context, ArrayList<String> data) {
             this.data = data;

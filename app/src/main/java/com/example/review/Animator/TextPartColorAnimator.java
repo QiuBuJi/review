@@ -14,7 +14,7 @@ public class TextPartColorAnimator {
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                ForegroundColorSpan what = null;
+                ForegroundColorSpan what;
 
                 int textColor = (int) animation.getAnimatedValue();
 

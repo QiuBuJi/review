@@ -3,13 +3,10 @@ package com.example.review.DataStructureFile;
 import android.os.Handler;
 import android.os.Message;
 
-import com.example.review.MainActivity;
 import com.example.review.New.LibrarySet;
 import com.example.review.New.LibraryStruct;
 import com.example.review.New.ReviewSet;
 import com.example.review.New.ReviewStruct;
-import com.example.review.Util.Speech;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,7 +23,7 @@ public class ReviewData extends ReviewSet {
     public LinkedList<ReviewStruct> mInactivate = new LinkedList<>();
     public LinkedList<ReviewStruct> mActivate   = new LinkedList<>();
 
-    static public DateTime[] reviewRegions = new DateTime[]{
+    private static DateTime[] reviewRegions = new DateTime[]{
             new DateTime("0秒"),  // 0级
             new DateTime("2秒"),  // 1级，插入mActivate第三个位置-----------
             new DateTime("10秒"), // 2级
@@ -109,21 +106,19 @@ public class ReviewData extends ReviewSet {
         void onSaveComplete();
     }
 
-    public boolean read() {
-        if (fileNexus == null || fileLibrary == null) return false;
+    public void read() {
+        if (fileNexus == null || fileLibrary == null) return;
         readDataFrom(fileNexus);
         library.readOf(fileLibrary);
 
         int        sizeNexus     = size() * 2;
         int        sizeLibrary   = library.size();
-        ReviewData reviewStructs = this;
 
         if (sizeNexus != sizeLibrary) {
             throw new IllegalArgumentException("数据不一致 sizeNexus*2 = " + sizeNexus + " sizeLibrary = " + sizeLibrary);
         }
 
         connectOf(library);
-        return true;
     }
 
     /**
@@ -151,7 +146,6 @@ public class ReviewData extends ReviewSet {
         library.clear();
         loadDataOf(path, library, this);
 
-        int a = 0;
         for (int i = 0; i < this.size(); i++) {
 
             int           index = i * 2;
@@ -181,7 +175,7 @@ public class ReviewData extends ReviewSet {
         void onProgress(int total, int posi);
     }
 
-    ProgressListener progressListener;
+    private ProgressListener progressListener;
 
     /**
      * 转换到本土数据
@@ -189,7 +183,7 @@ public class ReviewData extends ReviewSet {
      * @param path 需要转换为本土数据的文件路径
      * @return LinkedList 转换好的本土数据
      */
-    public boolean loadDataOf(File path, LibrarySet librarySet, ReviewSet reviewSet) {
+    public void loadDataOf(File path, LibrarySet librarySet, ReviewSet reviewSet) {
         clear();//清空原有数据
 
         try {
@@ -237,13 +231,10 @@ public class ReviewData extends ReviewSet {
                     progressListener.onProgress(split.length, ++posi);
             }
 
-        } catch (FileNotFoundException e) {
-            return false;
-        } catch (IOException e) {
-            return false;
+        } catch (FileNotFoundException ignored) {
+        } catch (IOException ignored) {
         }
 
-        return true;
     }
 
     public DateTime toDateTime(String strLog) {
@@ -279,7 +270,8 @@ public class ReviewData extends ReviewSet {
         }
 
         boolean state  = !split[2].contains("F");
-        int     second = time.getSecond();
+        assert time != null;
+        int second = time.getSecond();
         if (!state) time.setSecond(-second);
 
         return time;
@@ -358,7 +350,7 @@ public class ReviewData extends ReviewSet {
 
     }
 
-    AvalableComplete avalableComplete;
+    private AvalableComplete avalableComplete;
 
     public void setOnAvalableComplete(AvalableComplete avalablecomplete) {
         this.avalableComplete = avalablecomplete;
@@ -373,7 +365,7 @@ public class ReviewData extends ReviewSet {
         this.avalableUpdate = avalableUpdate;
     }
 
-    AvalableUpdate avalableUpdate;
+    private AvalableUpdate avalableUpdate;
 
     public interface AvalableUpdate {
 
@@ -402,7 +394,7 @@ public class ReviewData extends ReviewSet {
         if (timer != null) timer.cancel();
     }
 
-    int dataChangeCount = 0;
+    private int dataChangeCount = 0;
 
     /**
      * mAvalable更新到mInactivate中

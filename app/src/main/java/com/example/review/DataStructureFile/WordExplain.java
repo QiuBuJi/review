@@ -1,5 +1,7 @@
 package com.example.review.DataStructureFile;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 
 public class WordExplain {
@@ -8,11 +10,12 @@ public class WordExplain {
 
     public boolean ediable = true;
 
+    @NonNull
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (String explain : explains) {
-            sb.append(explain + "；");
+            sb.append(explain).append("；");
         }
         return category + sb.toString();
     }

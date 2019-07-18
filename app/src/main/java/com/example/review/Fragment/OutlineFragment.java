@@ -108,7 +108,7 @@ public class OutlineFragment extends SortFragment {
             MyHolder holder = (MyHolder) viewHolder;
 
             holder.region.setText(data.get(posi));
-            holder.index.setText((posi + 1) + ".");
+            holder.index.setText(String.format("%d.", posi + 1));
         }
 
         @Override
@@ -122,7 +122,7 @@ public class OutlineFragment extends SortFragment {
             private final TextView index;
             private final TextView region;
 
-            public MyHolder(@NonNull View itemView) {
+            MyHolder(@NonNull View itemView) {
                 super(itemView);
                 view = itemView;
 

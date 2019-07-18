@@ -101,10 +101,10 @@ public class EditActivity extends Activity
             //设置要显示的数据
             editTextWord.setText(rs.getMatch());
             editTextExplain.setText(rs.getShow());
-            textViewNumber.setText(rs.getLevel() + "");
+            textViewNumber.setText(String.valueOf(rs.getLevel()));
 
-            textViewTypeWord.setText(rs.match.getType() + "");
-            textViewTypeExplain.setText(rs.show.getType() + "");
+            textViewTypeWord.setText(String.valueOf(rs.match.getType()));
+            textViewTypeExplain.setText(String.valueOf(rs.show.getType()));
 
             swGenerate.setEnabled(false);
 
@@ -117,8 +117,8 @@ public class EditActivity extends Activity
             for (byte[] mlog : rs.logs) {
                 DateTime log = new DateTime(mlog);
 
-                String       strIndex = DateTime.fillChar(++count, 3, ' ');
-                StringBuffer sb       = new StringBuffer(log.toString());
+                String        strIndex = DateTime.fillChar(++count, 3, ' ');
+                StringBuilder sb       = new StringBuilder(log.toString());
 
                 if (oldLog == null) {
                     oldLog = new DateTime(log);
@@ -238,7 +238,7 @@ public class EditActivity extends Activity
                 if (i >= 0) {
                     String item   = items[i];
                     char   chtype = item.charAt(0);
-                    textViewType.setText(chtype + "");
+                    textViewType.setText(String.valueOf(chtype));
                 }
             }
         };
@@ -281,7 +281,7 @@ public class EditActivity extends Activity
         data.add(0, rsTemp);//数据添加到顶部
 
         if (swGenerate.isChecked()) {
-            ReviewStruct rs = getSavingData();
+            ReviewStruct  rs   = getSavingData();
             LibraryStruct show = rs.show;
             rs.show = rs.match;
             rs.match = show;
@@ -372,19 +372,19 @@ public class EditActivity extends Activity
             case REQUEST_CODE_WORD:
                 if (directory != null) {
                     editTextWord.setText(directory);
-                    textViewTypeWord.setText(4 + "");
+                    textViewTypeWord.setText(String.valueOf(4));
                 } else {
                     editTextWord.setText(ls.getText());
-                    textViewTypeWord.setText(ls.getType() + "");
+                    textViewTypeWord.setText(String.valueOf(ls.getType()));
                 }
                 break;
             case REQUEST_CODE_EXPLAIN:
                 if (directory != null) {
                     editTextExplain.setText(directory);
-                    textViewTypeExplain.setText(4 + "");
+                    textViewTypeExplain.setText(String.valueOf(4));
                 } else {
                     editTextExplain.setText(ls.getText());
-                    textViewTypeExplain.setText(ls.getType() + "");
+                    textViewTypeExplain.setText(String.valueOf(ls.getType()));
                 }
                 break;
         }
@@ -398,7 +398,7 @@ public class EditActivity extends Activity
     @Override
     public void onValueChange(NumberPicker numberPicker, int i, int value) {
         level = value;
-        textViewNumber.setText(level + "");
+        textViewNumber.setText(String.valueOf(level));
     }
 
 }

@@ -1,27 +1,19 @@
 package com.example.review.Fragment;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.review.Adapter.MyAdapter;
 import com.example.review.MainActivity;
 import com.example.review.New.LibrarySet;
 import com.example.review.New.ReviewSet;
-import com.example.review.New.ReviewStruct;
 import com.example.review.R;
 
 import java.io.File;
@@ -39,7 +31,6 @@ public class MyFragment extends Fragment {
 //        View mainView = inflater.mainView(R.layout.activity_fragment_backward, container, false);
         mainView = inflater.inflate(R.layout.activity_list_temp, container, false);
 
-        RecyclerView recyclerView = mainView.findViewById(R.id.list_recycler_list);
         TextView     textView     = mainView.findViewById(R.id.text);
         context = getContext();
 

@@ -1,11 +1,14 @@
 package com.example.review.New;
 
+import android.support.annotation.NonNull;
+
 import com.example.review.DataStructureFile.DateTime;
 import com.example.review.DataStructureFile.WordExplain;
 import com.example.review.Keyboard.KeyboardType3;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,8 +88,8 @@ public class ReviewStruct extends SaveData {
 
             total += matchWE.explains.size();
 
-            ArrayList<String> list = new ArrayList<>();
-            list.addAll(we.explains);
+            assert we != null;
+            ArrayList<String> list = new ArrayList<>(we.explains);
 
             for (int k = 0; k < list.size(); k++) {
                 String  str      = list.get(k);
@@ -134,8 +137,7 @@ public class ReviewStruct extends SaveData {
         countList.corrRate = corRate;
         countList.needCorrNum = needCorrectNum;
 
-        if (errCount == 0 && corrCount >= needCorrectNum) return true;
-        return false;
+        return errCount == 0 && corrCount >= needCorrectNum;
     }
 
     public boolean matchingType3(ArrayList<KeyboardType3.TextCom> tc, ArrayList<String> candidate, CountList countList) {
@@ -169,8 +171,7 @@ public class ReviewStruct extends SaveData {
         countList.corrRate = 1;
         countList.needCorrNum = needCorrectNum;
 
-        if (errCount == 0 && corrCount >= needCorrectNum) return true;
-        return false;
+        return errCount == 0 && corrCount >= needCorrectNum;
     }
 
 
@@ -230,9 +231,7 @@ public class ReviewStruct extends SaveData {
             WordExplain wordExplain = new WordExplain();
             String[]    explains    = Pattern.compile("[;；，,]").split(text);
 
-            for (String explain : explains) {
-                wordExplain.explains.add(explain);
-            }
+            Collections.addAll(wordExplain.explains, explains);
             wordExplain.category = "*.";
             item.add(wordExplain);
         }
@@ -363,6 +362,7 @@ public class ReviewStruct extends SaveData {
     }
 
 
+    @NonNull
     @Override
     public String toString() {
         return time.toString();
