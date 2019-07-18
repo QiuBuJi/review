@@ -648,6 +648,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         title.setText(pathBoth.prefix);
 
                         service.initData();
+                        refreshShowing(true);
                     }
                 })
                 .show();
