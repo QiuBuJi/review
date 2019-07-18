@@ -101,7 +101,7 @@ public class ReviewData extends ReviewSet {
         this.stateSave = stateSave;
     }
 
-    StateSave stateSave;
+    private StateSave stateSave;
 
     public interface StateSave {
         void onSaveCalled();
@@ -143,12 +143,12 @@ public class ReviewData extends ReviewSet {
      * @param path 文件路径
      */
     public void readDataFrom(File path) {
-        removeAll(this);//清空原有数据
+        clear();//清空原有数据
         super.readOf(path);
     }
 
     public void loadDataOf(File path) {
-        library.removeAll(library);
+        library.clear();
         loadDataOf(path, library, this);
 
         int a = 0;
@@ -178,7 +178,7 @@ public class ReviewData extends ReviewSet {
     }
 
     public interface ProgressListener {
-        public void onProgress(int total, int posi);
+        void onProgress(int total, int posi);
     }
 
     ProgressListener progressListener;
@@ -278,7 +278,7 @@ public class ReviewData extends ReviewSet {
             e.printStackTrace();
         }
 
-        boolean state  = (split[2].contains("F")) ? false : true;
+        boolean state  = !split[2].contains("F");
         int     second = time.getSecond();
         if (!state) time.setSecond(-second);
 
@@ -289,8 +289,8 @@ public class ReviewData extends ReviewSet {
      * 从总数据中取要复习的数据
      */
     public void retrieveInavalable() {
-        mInactivate.removeAll(mInactivate);
-        mActivate.removeAll(mActivate);
+        mInactivate.clear();
+        mActivate.clear();
         DateTime dateTime = new DateTime();
 
         for (ReviewStruct rs : this) {
@@ -377,11 +377,11 @@ public class ReviewData extends ReviewSet {
 
     public interface AvalableUpdate {
 
-        public void onUpdateToAvalableComplete(int count);
+        void onUpdateToAvalableComplete(int count);
 
-        public void onUpdatingToAvalable(ReviewStruct reviewStruct);
+        void onUpdatingToAvalable(ReviewStruct reviewStruct);
 
-        public void onUpdatedNoChange();
+        void onUpdatedNoChange();
     }
 
     /**
@@ -447,7 +447,7 @@ public class ReviewData extends ReviewSet {
      */
     public void sortAddToInactivate(ReviewStruct rsNew) {
         if (mActivate.contains(rsNew)) return;
-        if (mInactivate.contains(rsNew)) mInactivate.remove(rsNew);
+        mInactivate.remove(rsNew);//删除旧数据
 
         for (int i = 0; i < mInactivate.size(); i++) {
             ReviewStruct rs = mInactivate.get(i);

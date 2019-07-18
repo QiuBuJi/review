@@ -18,7 +18,7 @@ public class LibrarySet extends StoreStruct<LibraryStruct> {
     }
 
     public void readOf(File path) {
-        removeAll(this);
+        clear();
 
         try {
             FileInputStream in     = new FileInputStream(path);
