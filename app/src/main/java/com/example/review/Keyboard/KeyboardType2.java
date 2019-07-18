@@ -2,6 +2,7 @@ package com.example.review.Keyboard;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.Spanned;
@@ -25,6 +26,8 @@ import com.example.review.Util.Speech;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -32,8 +35,8 @@ import java.util.regex.Pattern;
 
 public class KeyboardType2 extends Keyboard {
 
-    public ArrayList<WordExplain> frame;
-    public ArrayList<WordExplain> frameTemp;
+    public  ArrayList<WordExplain> frame;
+    private ArrayList<WordExplain> frameTemp;
 
     //    private static final int Privority1 = 313;
 
@@ -72,12 +75,12 @@ public class KeyboardType2 extends Keyboard {
             if (!we.ediable) continue;
             we.ediable = false;
 
-            StringBuffer buf    = new StringBuffer();
-            int          length = we.category.length();
+            StringBuilder buf    = new StringBuilder();
+            int           length = we.category.length();
             length = max - length;
 
             for (int i = 0; i < length; i++) buf.append(" ");
-            we.category = buf.toString() + we.category;
+            we.category = buf.toString().concat(we.category);
         }
 
 
@@ -93,7 +96,7 @@ public class KeyboardType2 extends Keyboard {
             //点击提示
             ClickableSpan clickableSpan = new ClickableSpan() {
                 @Override
-                public void onClick(View view) {
+                public void onClick(@NonNull View view) {
                     Toast.makeText(context, rs.getShow(), Toast.LENGTH_SHORT).show();
                 }
             };
@@ -131,20 +134,19 @@ public class KeyboardType2 extends Keyboard {
         return getWideLayout();
     }
 
-    ArrayList<KeyText> getWideLayout() {
-        ArrayList<KeyText> data = new ArrayList<>();
+    private ArrayList<KeyText> getWideLayout() {
 
         ArrayList<WordExplain> wes = rs.getMatchWordExplains();
 
-        KeyText kts[] = new KeyText[]{
+        List<KeyText> kts = Arrays.asList(
                 new KeyText(COM_DONE, true, KeyEvent.KEYCODE_ENTER),
                 new KeyText(COM_UP, true, KeyEvent.KEYCODE_DPAD_UP, 'u'),
                 new KeyText(COM_DOWN, true, KeyEvent.KEYCODE_DPAD_DOWN, 'd'),
                 new KeyText(COM_EMPTY, true, KeyEvent.KEYCODE_FORWARD_DEL),
                 new KeyText(COM_DELETE, true, KeyEvent.KEYCODE_DEL),
-                new KeyText(COM_DONE, true, KeyEvent.KEYCODE_ENTER)};
+                new KeyText(COM_DONE, true, KeyEvent.KEYCODE_ENTER));
 
-        data.addAll(Arrays.asList(kts));
+        ArrayList<KeyText> data = new ArrayList<>(kts);
 
         LibrarySet libs    = MainActivity.data.getLibraries();
         LibrarySet tempLib = new LibrarySet();
@@ -249,7 +251,7 @@ public class KeyboardType2 extends Keyboard {
                     break;
                 case COM_EMPTY:
                     for (WordExplain explain : frame) {
-                        explain.explains.removeAll(explain.explains);
+                        explain.explains.clear();
                         index = 0;
                     }
                     break;
@@ -281,7 +283,10 @@ public class KeyboardType2 extends Keyboard {
             //主动跳转下一行
             int size = wordExplain.explains.size();
             if (size < we.explains.size()) {
-                wordExplain.explains.add(keyText.text);
+                if (wordExplain.explains.contains(keyText.text)) {
+                    Toast.makeText(context, "不能重复哦！", Toast.LENGTH_SHORT).show();
+                } else wordExplain.explains.add(keyText.text);
+
             }
 
             while (true) {
