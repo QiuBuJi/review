@@ -710,6 +710,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      *  previous: @118(引用该单词的ID，4字节),@112(previous引用的暂时都记住了，才考虑复习这条单词)
      *        id: 666(该id由系统自动分配，4字节)
      *      type: 单词、解释、填空
+     *      hellow world!
      *
      * */
 
