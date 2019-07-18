@@ -181,7 +181,7 @@ public class ReviewStruct extends SaveData {
     public ArrayList<WordExplain> getFrame() {
         ArrayList<WordExplain> wordExplains = getMatchWordExplains();
         for (WordExplain wordExplain : wordExplains) {
-            wordExplain.explains.removeAll(wordExplain.explains);
+            wordExplain.explains.clear();
         }
         return wordExplains;
     }

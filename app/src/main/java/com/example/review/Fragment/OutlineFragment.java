@@ -51,7 +51,7 @@ public class OutlineFragment extends SortFragment {
 
     @Override
     public void selectPartToShow(int part) {
-        data.removeAll(data);
+        data.clear();
         LinkedList<String> strings = getStrings(part);
         data.addAll(strings);
     }

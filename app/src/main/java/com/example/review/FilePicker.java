@@ -59,7 +59,7 @@ public class FilePicker extends AppCompatActivity {
             files.removeLast();
 
             String[] list = files.getLast().list(filter);
-            data.removeAll(data);
+            data.clear();
             data.addAll(Arrays.asList(list));
             adapter.notifyDataSetChanged();
         } catch (Exception e) {
@@ -126,7 +126,7 @@ public class FilePicker extends AppCompatActivity {
                         files.add(file);
 
                         String[] list = file.list(filter);
-                        data.removeAll(data);
+                        data.clear();
                         data.addAll(Arrays.asList(list));
                         adapter.notifyDataSetChanged();
                     }

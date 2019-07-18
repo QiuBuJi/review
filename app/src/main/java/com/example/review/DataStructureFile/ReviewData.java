@@ -190,7 +190,7 @@ public class ReviewData extends ReviewSet {
      * @return LinkedList 转换好的本土数据
      */
     public boolean loadDataOf(File path, LibrarySet librarySet, ReviewSet reviewSet) {
-        removeAll(this);//清空原有数据
+        clear();//清空原有数据
 
         try {
             FileInputStream fis   = new FileInputStream(path);
