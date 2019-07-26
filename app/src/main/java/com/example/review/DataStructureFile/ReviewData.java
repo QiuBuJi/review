@@ -334,13 +334,13 @@ public class ReviewData extends ReviewSet {
                     mActivate.add(rs);
                 mInactivate.removeFirst();
                 if (avalableUpdate != null)
-                    avalableUpdate.onUpdatingToAvalable(rs);
+                    avalableUpdate.onUpdatingToAvailable(rs);
 
                 count++;
             } else break;
         }
         if (count > 0) {
-            if (avalableUpdate != null) avalableUpdate.onUpdateToAvalableComplete(count);
+            if (avalableUpdate != null) avalableUpdate.onUpdateToAvailableComplete(count);
             if (avalableComplete != null) avalableComplete.onAvalablecomplete();
 
         } else {
@@ -369,9 +369,9 @@ public class ReviewData extends ReviewSet {
 
     public interface AvalableUpdate {
 
-        void onUpdateToAvalableComplete(int count);
+        void onUpdateToAvailableComplete(int count);
 
-        void onUpdatingToAvalable(ReviewStruct reviewStruct);
+        void onUpdatingToAvailable(ReviewStruct reviewStruct);
 
         void onUpdatedNoChange();
     }

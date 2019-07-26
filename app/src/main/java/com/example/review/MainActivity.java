@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                                                ServiceConnection,
                                                                Handler.Callback {
 
-    private static final String TAG = "msg";
+//    private static final String TAG = "msg";
 
     static public ReviewData data = new ReviewData();
 
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //**************************************** Views ************************************************
     TextView textViewTime;
     TextView textViewAbout;
-    TextView textViewPersent;
+    TextView textViewPercent;
     TextView tvShow;
     TextView tips;
     TextView colorIndicate;
@@ -111,9 +111,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean  mCanShowing = true;
     private TextView textViewArrival;
 
-    final  int HANDELR_UPDATESHOWING = 4;
-    final  int HANDELR_START_TIMER   = 3;
-    static int canJoinLog            = 0;
+    final  int HANDLER_UPDATE_SHOWING = 4;
+    final  int HANDLER_START_TIMER    = 3;
+    static int canJoinLog             = 0;
 
     boolean       correct;
     Handler       handler = new Handler(this);
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Keyboard      keyboard;
     private ConstraintLayout entireBackground;
 
-    private List<PathBoth> pathBoths;
+    private List<PathBoth> pathBoth;
     private int            libIndex = 0;
 
     @Override
@@ -130,10 +130,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (msg.what) {
             case 1:
                 break;
-            case HANDELR_START_TIMER: {//读取数据完毕
+            case HANDLER_START_TIMER: {//读取数据完毕
             }
             break;
-            case HANDELR_UPDATESHOWING:
+            case HANDLER_UPDATE_SHOWING:
                 refreshShowing(false);
                 break;
             case 5:
@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         progressBarProgress.setProgress(activateSize);
         progressBarProgress.setMax(activateSize + InactivateSize);
 
-        textViewPersent.setText(String.format(Locale.CHINA, "%d : %d", activateSize, InactivateSize));
+        textViewPercent.setText(String.format(Locale.CHINA, "%d : %d", activateSize, InactivateSize));
     }
 
 
@@ -299,17 +299,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Setting.init(this);
 
         String prefix = "";
-        pathBoths = getPathBothes();
+        pathBoth = getPathBoth();
 
-        if (!pathBoths.isEmpty()) {
+        if (!pathBoth.isEmpty()) {
             String libName = Setting.sp.getString("libName", "");
 
-            for (int i = 0; i < pathBoths.size(); i++) {
-                PathBoth pathBoth = pathBoths.get(i);
+            for (int i = 0; i < pathBoth.size(); i++) {
+                PathBoth pathBoth = this.pathBoth.get(i);
                 if (pathBoth.prefix.equals(libName)) libIndex = i;
             }
 
-            PathBoth pathBoth = pathBoths.get(libIndex);
+            PathBoth pathBoth = this.pathBoth.get(libIndex);
             pathNexus = new File(pathApp, pathBoth.nexus);
             pathLibrary = new File(pathApp, pathBoth.library);
             prefix = pathBoth.prefix;
@@ -324,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //各种初始化
         initViews();
-        initLisener();
+        initListener();
         initVariable();
 
         title.setText(prefix);
@@ -342,12 +342,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     void dataPrepared() {
         data.setOnAvalableUpdate(new ReviewData.AvalableUpdate() {
             @Override
-            public void onUpdateToAvalableComplete(int count_) {
+            public void onUpdateToAvailableComplete(int count_) {
                 if (mCanShowing) refreshShowing(false);
             }
 
             @Override
-            public void onUpdatingToAvalable(ReviewStruct dtUnion) {
+            public void onUpdatingToAvailable(ReviewStruct dtUnion) {
                 if (SortActivity.fragment != null) {
                     SortActivity.fragment.adapter.notifyItemRemoved(0);
                     if (!SortActivity.fragment.mData.isEmpty()) {
@@ -400,7 +400,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initViews() {
         textViewTime = findViewById(R.id.fragment_textView_time);
         textViewAbout = findViewById(R.id.main_textView_about);
-        textViewPersent = findViewById(R.id.fragment_textView_persent);
+        textViewPercent = findViewById(R.id.fragment_textView_persent);
         tvShow = findViewById(R.id.fragment_textView_textShow);
         textViewArrival = findViewById(R.id.main_textView_time_arrival);
 
@@ -423,7 +423,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //初始化监听器-----------------------------------------------------------------------------------
-    private void initLisener() {
+    private void initListener() {
         //显示内容
 //        tvShow.setOnClickListener(this);
         //显示框背景
@@ -539,8 +539,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         refreshProgress();
         refreshShowing(true);
 
-        NotificationManager notifiManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notifiManager.cancel(1);
+        NotificationManager notifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notifyManager.cancel(1);
     }
 
     @Override
@@ -627,9 +627,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void pickDataDialog() {
-        pathBoths = getPathBothes();
+        pathBoth = getPathBoth();
         final List<String> names = new LinkedList<>();
-        for (PathBoth pathBoth : pathBoths) names.add(pathBoth.prefix);
+        for (PathBoth pathBoth : pathBoth) names.add(pathBoth.prefix);
 
         String[] strings = new String[names.size()];
         for (int i = 0; i < strings.length; i++) strings[i] = names.get(i);
@@ -641,10 +641,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onClick(DialogInterface dialogInterface, int i) {
                         libIndex = i;
 
-                        PathBoth pathBoth = pathBoths.get(i);
+                        PathBoth pathBoth = MainActivity.this.pathBoth.get(i);
                         pathNexus = new File(pathApp, pathBoth.nexus);
                         pathLibrary = new File(pathApp, pathBoth.library);
-                        Setting.edit.putString("libName", pathBoths.get(libIndex).prefix).commit();
+                        Setting.edit.putString("libName", MainActivity.this.pathBoth.get(libIndex).prefix).commit();
                         title.setText(pathBoth.prefix);
 
                         service.initData();
@@ -654,7 +654,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .show();
     }
 
-    List<PathBoth> getPathBothes() {
+    List<PathBoth> getPathBoth() {
         String[] list = pathApp.list(new FilenameFilter() {
             @Override
             public boolean accept(File file, String str) {
@@ -662,7 +662,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        final List<PathBoth> pathes = new LinkedList<>();
+        final List<PathBoth> paths = new LinkedList<>();
         List<String>         strs   = new LinkedList<>(Arrays.asList(list));
 
         for (int i = 0; i < strs.size(); i++) {
@@ -677,7 +677,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String s = name[0] + ".library";
                 if (strs.contains(s)) {
                     strs.remove(s);
-                    pathes.add(new PathBoth(str, s, name[0]));
+                    paths.add(new PathBoth(str, s, name[0]));
                 } else {
                     break;
                 }
@@ -687,7 +687,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String s = name[0] + ".nexus";
                 if (strs.contains(s)) {
                     strs.remove(s);
-                    pathes.add(new PathBoth(s, str, name[0]));
+                    paths.add(new PathBoth(s, str, name[0]));
                 } else {
                     break;
                 }
@@ -696,7 +696,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-        return pathes;
+        return paths;
     }
 
     //todo below is detail ↓↓↓
@@ -712,7 +712,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      *  previous: @118(引用该单词的ID，4字节),@112(previous引用的暂时都记住了，才考虑复习这条单词)
      *        id: 666(该id由系统自动分配，4字节)
      *      type: 单词、解释、填空
-     *      hellow world!
+     *      hello world!
      *
      * */
 
@@ -756,9 +756,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 KeyboardType2 keyboardType2 = (KeyboardType2) keyboard;
                 correct = rs.matching(keyboardType2.frame, cl);
                 if (correct) {
-                    matchCorrect(rs, cl);
+                    matchCorrect(rs);
                 } else {
-                    matchError(rs, cl);
+                    matchError(cl);
                     tips.callOnClick();
                 }
                 break;
@@ -767,9 +767,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 KeyboardType3 keyboardType3 = (KeyboardType3) keyboard;
                 correct = rs.matchingType3(keyboardType3.mCandidateType, keyboardType3.mCandidate, cl);
                 if (correct) {
-                    matchCorrect(rs, cl);
+                    matchCorrect(rs);
                 } else {
-                    matchError(rs, cl);
+                    matchError(cl);
                     tips.callOnClick();
                 }
                 break;
@@ -783,7 +783,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addLog(rs);
     }
 
-    private void matchError(ReviewStruct rs, CountList cl) {
+    private void matchError(CountList cl) {
         canJoinLog++;
 
 //        rs.resetLevel();//重置水平
@@ -800,7 +800,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .showIn(tips);
     }
 
-    private void matchCorrect(ReviewStruct rs, CountList cl) {
+    private void matchCorrect(ReviewStruct rs) {
         canJoinLog = 0;
         data.updateInavalable_AddLevel(rs);
 
@@ -886,7 +886,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 keyboard.adapter.notifyDataSetChanged();
             } else if (MyAdapter.isShowNum) {
                 boolean b = keyboard.keyDown(keyCode, ch, -1);
-                if (b) return b;
+                if (b) return true;
             }
         }
         if (!input.hasFocus()) {
@@ -989,7 +989,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     new Timer().schedule(new TimerTask() {
                         @Override
                         public void run() {
-                            handler.sendEmptyMessage(HANDELR_UPDATESHOWING);
+                            handler.sendEmptyMessage(HANDLER_UPDATE_SHOWING);
                             mCanShowing = true;
                         }
                     }, animDuration / 2);
