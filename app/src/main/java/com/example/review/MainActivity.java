@@ -104,8 +104,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageButton  imageButtonClear;
     TextView     tvLevel;
     RecyclerView recyclerViewKeyboard;
-    TextView     title;
+    TextView     tvTitle;
     TextView     tvNext;
+    TextView     tvReviewedNum;
     //***********************************************************************************************
 
     private boolean  mCanShowing = true;
@@ -123,7 +124,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ConstraintLayout entireBackground;
 
     private List<PathBoth> pathBoth;
-    private int            libIndex = 0;
+    private int            libIndex     = 0;
+    private int            mReviewedNum = 0;
 
     @Override
     public boolean handleMessage(Message msg) {
@@ -241,6 +243,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         progressBarProgress.setMax(activateSize + InactivateSize);
 
         textViewPercent.setText(String.format(Locale.CHINA, "%d : %d", activateSize, InactivateSize));
+        tvReviewedNum.setText(String.valueOf(mReviewedNum));
+
     }
 
 
@@ -327,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initListener();
         initVariable();
 
-        title.setText(prefix);
+        tvTitle.setText(prefix);
 
     }
 
@@ -418,8 +422,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerViewKeyboard = findViewById(R.id.main_recycllerView_keyboard);
         tvLevel = findViewById(R.id.main_textView_level);
         entireBackground = findViewById(R.id.entire_background);
-        title = findViewById(R.id.main_about_textView_title);
+        tvTitle = findViewById(R.id.main_about_textView_title);
         tvNext = findViewById(R.id.main_textView_next);
+        tvReviewedNum = findViewById(R.id.main_textView_reviewedNum);
+
     }
 
     //初始化监听器-----------------------------------------------------------------------------------
@@ -535,6 +541,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
+        mReviewedNum = 0;
         isShowedScreen = true;
         refreshProgress();
         refreshShowing(true);
@@ -645,7 +652,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         pathNexus = new File(pathApp, pathBoth.nexus);
                         pathLibrary = new File(pathApp, pathBoth.library);
                         Setting.edit.putString("libName", MainActivity.this.pathBoth.get(libIndex).prefix).commit();
-                        title.setText(pathBoth.prefix);
+                        tvTitle.setText(pathBoth.prefix);
 
                         service.initData();
                         refreshShowing(true);
@@ -663,7 +670,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         final List<PathBoth> paths = new LinkedList<>();
-        List<String>         strs   = new LinkedList<>(Arrays.asList(list));
+        List<String>         strs  = new LinkedList<>(Arrays.asList(list));
 
         for (int i = 0; i < strs.size(); i++) {
             String   str  = strs.get(i);
@@ -757,6 +764,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 correct = rs.matching(keyboardType2.frame, cl);
                 if (correct) {
                     matchCorrect(rs);
+                    mReviewedNum++;
                 } else {
                     matchError(cl);
                     tips.callOnClick();
@@ -768,6 +776,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 correct = rs.matchingType3(keyboardType3.mCandidateType, keyboardType3.mCandidate, cl);
                 if (correct) {
                     matchCorrect(rs);
+                    mReviewedNum++;
                 } else {
                     matchError(cl);
                     tips.callOnClick();
@@ -824,6 +833,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //下面监听器，等颜色动画播放完毕，然后显示下一条数据在textShow中
             ValueAnim.addListener(getListener());
             ValueAnim.setDuration(400).start();
+            mReviewedNum++;
 
         } else {
             //***错误********************************************************************************

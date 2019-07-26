@@ -264,4 +264,18 @@
         app:layout_constraintStart_toStartOf="@+id/constraintLayout3"
         app:layout_constraintTop_toTopOf="@+id/constraintLayout3" />
 
+    <TextView
+        android:id="@+id/main_textView_reviewedNum"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/background_shape_circle1"
+        android:gravity="center"
+        android:text="0"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/main_textView_level"
+        app:layout_constraintTop_toTopOf="@+id/main_textView_level" />
+
 </android.support.constraint.ConstraintLayout>
