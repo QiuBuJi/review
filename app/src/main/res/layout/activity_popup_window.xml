@@ -7,7 +7,7 @@
     android:layout_marginTop="8dp"
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
-    android:background="@drawable/background_round_black"
+    android:background="@drawable/bg_round_black"
     android:inputType="textMultiLine"
     android:padding="8dp"
     android:text="TextView"

@@ -23,7 +23,7 @@
         <item name="android:layout_width">24dp</item>
         <item name="android:layout_height">30dp</item>
         <item name="android:layout_marginStart">8dp</item>
-        <item name="android:background">@drawable/background_ripple_effect_click_gray_white</item>
+        <item name="android:background">@drawable/bg_ripple_effect_click_gray_white</item>
     </style>
 
     <!--about actionbar-->

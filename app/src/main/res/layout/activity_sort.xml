@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/background_ripple_effect_click_gray_white"
+            android:background="@drawable/bg_ripple_effect_click_gray_white"
             android:entries="@array/strings_sort"
             android:spinnerMode="dropdown"
             app:layout_constraintBottom_toBottomOf="parent"

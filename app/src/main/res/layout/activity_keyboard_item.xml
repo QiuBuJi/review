@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="1dp"
-    android:background="@drawable/background_ripple_keyboard_click"
+    android:background="@drawable/bg_ripple_keyboard_click"
     android:padding="2sp">
 
     <TextView
@@ -26,7 +26,7 @@
         android:id="@+id/item_textView_number"
         android:layout_width="14dp"
         android:layout_height="14dp"
-        android:background="@drawable/background_shape_circle_keyboard"
+        android:background="@drawable/bg_shape_circle_keyboard"
         android:gravity="center"
         android:text="0"
         android:textAlignment="center"

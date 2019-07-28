@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //初始化显示界面
         View view = (View) tvShow.getParent();
-        view.setBackgroundResource(R.drawable.background_text_show);
+        view.setBackgroundResource(R.drawable.bg_text_show);
         tvShow.setText("");
         tvShow.setHint("暂时没有复习的");
 
