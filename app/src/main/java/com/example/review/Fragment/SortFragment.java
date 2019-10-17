@@ -27,6 +27,7 @@ import com.example.review.R;
 import com.example.review.Setting;
 import com.example.review.SortActivity;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -41,7 +42,7 @@ public class SortFragment extends Fragment {
     public  Context                  context;
     public  LinkedList<ReviewStruct> mData;
     public  boolean                  mIsActivity;
-    public TextView                 tip;
+    public  TextView                 tip;
 
     public SortFragment() {
     }
@@ -154,30 +155,53 @@ public class SortFragment extends Fragment {
                     public void onClick(View view) {
 
                         if (oldPosi != -1) {
-                            int          dest = data.indexOf(item);
-                            ReviewStruct rs   = data.get(oldPosi);
-                            data.remove(oldPosi);
-                            data.add(dest, rs);
-                            adapter.notifyItemMoved(oldPosi, dest);
-                            oldPosi = -1;
+                            int dest = data.indexOf(item);
+
+                            //整个类型的数据置顶
+                            if (oldPosi == dest) {
+                                ArrayList<ReviewStruct> rss     = new ArrayList<>();
+                                int                     srcType = item.match.getType();
+
+                                for (int i = data.size() - 1; i >= 0; i--) {
+                                    ReviewStruct rs       = data.get(i);
+                                    int          destType = rs.match.getType();
+
+                                    if (destType == srcType) {
+                                        data.remove(rs);
+                                        rss.add(0, rs);
+                                    }
+                                }
+                                data.addAll(0, rss);
+                                notifyItemRangeRemoved(0, data.size());
+
+
+                                //单条数据，换位置
+                            } else {
+                                ReviewStruct rs = data.get(oldPosi);
+                                data.remove(oldPosi);
+                                data.add(dest, rs);
+                                adapter.notifyItemMoved(oldPosi, dest);
 
 //                            oldView.setBackground(background);
 
 
-                            final Handler handler = new Handler(new Handler.Callback() {
-                                @Override
-                                public boolean handleMessage(Message message) {
-                                    oldView.setBackground(background);
-                                    return false;
-                                }
-                            });
+                                final Handler handler = new Handler(new Handler.Callback() {
+                                    @Override
+                                    public boolean handleMessage(Message message) {
+                                        oldView.setBackground(background);
+                                        return false;
+                                    }
+                                });
 
-                            new Timer().schedule(new TimerTask() {
-                                @Override
-                                public void run() {
-                                    handler.sendEmptyMessage(1);
-                                }
-                            }, 300);
+                                new Timer().schedule(new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        handler.sendEmptyMessage(1);
+                                    }
+                                }, 300);
+                            }
+                            oldPosi = -1;
+
                         } else {
                             oldPosi = data.indexOf(item);
                             oldView = holder.view;

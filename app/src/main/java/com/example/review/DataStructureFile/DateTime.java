@@ -279,7 +279,8 @@ public class DateTime extends SaveData {
             else multiple = 28;
 
         } else if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12)
-            multiple = 31;
+            multiple = 31
+                    ;
         borrow = subtractOf(new BorrowStru(day, month), dateTime.day, multiple);
         day = borrow.lowOrder;
         month = borrow.highOrder;
