@@ -26,35 +26,52 @@
         android:roundIcon="@mipmap/review_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!--文件挑选窗口-->
         <activity android:name=".FilePicker"></activity>
+
+        <!--库选窗口-->
         <activity
             android:name=".LibraryActivity"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
+
         <activity android:name=".PagerActivity" />
+
+        <!--设置窗口-->
         <activity android:name=".SettingActivity" />
-        <activity android:name=".SortActivity" /> <!-- 关于窗口 -->
-        <activity android:name=".AboutActivity" /> <!-- 编辑窗口 -->
+
+        <activity android:name=".SortActivity" />
+
+        <!--关于窗口-->
+        <activity android:name=".AboutActivity" />
+
+        <!--编辑窗口-->
         <activity
             android:name=".EditActivity"
-            android:windowSoftInputMode="stateHidden|stateUnchanged" /> <!-- 列表窗口 -->
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
+
+        <!--列表窗口-->
         <activity
             android:name=".ListActivity"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
+
+        <!--主窗口-->
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="stateHidden|stateUnchanged">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <!--服务-->
         <service
             android:name=".ReviewService"
             android:enabled="true" />
 
+        <!--系统消息接收者-->
         <receiver
             android:name=".MyReceiver"
             android:enabled="true"
