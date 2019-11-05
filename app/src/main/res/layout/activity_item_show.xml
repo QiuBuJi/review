@@ -8,7 +8,7 @@
     <TextView
         android:id="@+id/tv_prefix"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
@@ -43,6 +43,7 @@
         android:layout_marginStart="4dp"
         android:text="«"
         android:textColor="#0091EA"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/tv_prefix"
         app:layout_constraintStart_toEndOf="@+id/ll_container"
         app:layout_constraintTop_toTopOf="@+id/tv_prefix" />

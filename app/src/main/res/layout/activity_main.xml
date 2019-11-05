@@ -87,26 +87,6 @@
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
         <TextView
-            android:id="@+id/fragment_textView_textShow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fadeScrollbars="true"
-            android:fontFamily="serif-monospace"
-            android:hint="要显示的内容"
-            android:maxEms="18"
-            android:maxLines="8"
-            android:padding="8dp"
-            android:scrollbars="vertical"
-            android:textAlignment="viewStart"
-            android:textColor="@android:color/background_dark"
-            android:textSize="16sp"
-            android:typeface="normal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
             android:id="@+id/main_textView_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -164,13 +144,13 @@
         android:id="@+id/fragment_textView_lastText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginEnd="8dp"
         android:lines="1"
         android:text="..."
         android:textAlignment="viewEnd"
         app:layout_constraintEnd_toStartOf="@+id/main_textView_time_arrival"
-        app:layout_constraintStart_toEndOf="@+id/fragment_progressBar_progress"
+        app:layout_constraintStart_toEndOf="@+id/main_textView_reviewedNum"
         app:layout_constraintTop_toTopOf="@+id/fragment_textView_persent" />
 
     <ImageView
@@ -268,14 +248,15 @@
         android:id="@+id/main_textView_reviewedNum"
         android:layout_width="22dp"
         android:layout_height="22dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:background="@drawable/bg_shape_circle1"
         android:gravity="center"
         android:text="0"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/main_textView_level"
-        app:layout_constraintTop_toTopOf="@+id/main_textView_level" />
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_progressBar_progress"
+        app:layout_constraintStart_toEndOf="@+id/fragment_progressBar_progress"
+        app:layout_constraintTop_toTopOf="@+id/fragment_progressBar_progress" />
 
 </android.support.constraint.ConstraintLayout>

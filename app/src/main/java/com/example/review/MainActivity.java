@@ -53,6 +53,7 @@ import com.example.review.Keyboard.Keyboard;
 import com.example.review.Keyboard.KeyboardType1;
 import com.example.review.Keyboard.KeyboardType2;
 import com.example.review.Keyboard.KeyboardType3;
+import com.example.review.Keyboard.KeyboardType4;
 import com.example.review.New.CountList;
 import com.example.review.New.KeyText;
 import com.example.review.New.ReviewStruct;
@@ -89,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView textViewTime;
     TextView textViewAbout;
     TextView textViewPercent;
-    TextView tvShow;
     TextView tips;
     TextView colorIndicate;
     TextView lastText;
@@ -172,8 +172,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //初始化显示界面
         mainContainer.setBackgroundResource(R.drawable.bg_text_show);
-        tvShow.setText("");
-        tvShow.setHint("暂时没有复习的");
 
         //避开下标越界
         if (!data.mActivate.isEmpty()) {
@@ -405,7 +403,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textViewTime = findViewById(R.id.fragment_textView_time);
         textViewAbout = findViewById(R.id.main_textView_about);
         textViewPercent = findViewById(R.id.fragment_textView_persent);
-        tvShow = findViewById(R.id.fragment_textView_textShow);
         textViewArrival = findViewById(R.id.main_textView_time_arrival);
 
         imageViewDetail = findViewById(R.id.main_imageView_Detail);
@@ -431,8 +428,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //初始化监听器-----------------------------------------------------------------------------------
     private void initListener() {
-        //显示内容
-//        tvShow.setOnClickListener(this);
         //显示框背景
         textViewArrival.setOnClickListener(this);
         //输入框
@@ -506,7 +501,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 //        input.setOnClickListener(this);
-//        tvShow.setOnClickListener(this);
     }
 
     //初始化变量-------------------------------------------------------------------------------------
@@ -732,8 +726,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //避开下标越界
         if (data.mActivate.isEmpty()) {
-            tvShow.setText("");
-            tvShow.setHint("暂时没有复习的");
+//            tvShow.setHint("暂时没有复习的");
             return;
         }
 
@@ -982,10 +975,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     input.setHint("");
                     animDuration = 500;
 
-
+                    KeyboardType1 keyboardType1 = (KeyboardType1) keyboard;
                     //渐变显示新内容
                     TextColorAnimator.ofArgb(
-                            tvShow,
+                            keyboardType1.show,
                             Color.BLACK,
                             Color.WHITE,
                             Color.BLACK)

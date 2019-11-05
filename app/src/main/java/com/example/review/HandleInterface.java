@@ -28,6 +28,7 @@ public class HandleInterface {
     private ArrayList<WordExplain> frame;
     private ArrayList<WordExplain> frameTemp;
     public  WindowExplainHolder    windowExplainHolder;
+    int indexOfItem = 0;
 
     public HandleInterface(Context context, ConstraintLayout containerView, ArrayList<WordExplain> frame, ArrayList<WordExplain> frameTemp) {
         this.context = context;
@@ -52,8 +53,7 @@ public class HandleInterface {
         containerView.addView(windowExplain);
 
         windowExplainHolder = new WindowExplainHolder(windowExplain);
-
-        windowExplainHolder.explainTitle.setText("hello you guys");
+        windowExplainHolder.explainTitle.setText("nothing!");
 
         LinearLayoutManager layout = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         windowExplainHolder.explainBody.setLayoutManager(layout);
@@ -61,7 +61,6 @@ public class HandleInterface {
         windowExplainHolder.explainBody.setAdapter(adapter);
     }
 
-    int indexOfItem = 0;
 
     //移动到上一项
     public void moveUp() {
@@ -96,10 +95,10 @@ public class HandleInterface {
     //添加字符
     public void addSegment(String segment) {
         WordExplain we       = frame.get(indexOfItem);
-        WordExplain wordTemp = frameTemp.get(indexOfItem);
+        WordExplain weTemp = frameTemp.get(indexOfItem);
 
         //主动跳转下一行
-        int sizeA = we.explains.size(), sizeB = wordTemp.explains.size();
+        int sizeA = we.explains.size(), sizeB = weTemp.explains.size();
         if (sizeA < sizeB) {
 
             if (we.explains.contains(segment)) {
@@ -110,16 +109,18 @@ public class HandleInterface {
             return;
         }
 
+        sizeB = frameTemp.size();
         //目前项数据填满后，自动转移到下一项
         while (true) {
-            if (indexOfItem == sizeA - 1) break;
+            //到底就不要再跳到初始位置了
+            if (indexOfItem == sizeB - 1) break;
 
             sizeA = we.explains.size();
-            sizeB = wordTemp.explains.size();
+            sizeB = weTemp.explains.size();
 
             if (sizeA == sizeB) moveDown();
             else break;
-            wordTemp = frame.get(indexOfItem);
+            weTemp = frame.get(indexOfItem);
         }
 
         adapter.notifyDataSetChanged();

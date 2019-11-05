@@ -63,30 +63,31 @@ public class KeyboardType2 extends Keyboard {
 
 
         //单词提示；没开启朗读，则显示单词
+        SpanUtil.SpanBuilder spanBuilder = SpanUtil.create();
         if (rs.getLevel() < 3 || !camPlay) {
-            SpanUtil.SpanBuilder spanBuilder = SpanUtil.create();
-            spanBuilder.addForeColorSection("--- ", Color.LTGRAY);
-            spanBuilder.addForeColorSection(rs.getShow(), Color.BLACK);
-            spanBuilder.addForeColorSection(" ---", Color.LTGRAY);
-            spanBuilder.showIn(handleInterface.windowExplainHolder.explainTitle);
-//            String strWord = "--- " + rs.getShow() + " ---";
-//            handleInterface.windowExplainHolder.explainTitle.setText(strWord);
+            showWord();
         } else {
-            //点击提示
-            ClickableSpan clickableSpan = new ClickableSpan() {
-                @Override
-                public void onClick(@NonNull View view) {
-                    Toast.makeText(context, rs.getShow(), Toast.LENGTH_SHORT).show();
-                }
-            };
-            String section = "提示?";
+            spanBuilder.addForeColorSection("--- ", Color.LTGRAY)
+                       .addForeColorSection("?", Color.RED)
+                       .addForeColorSection(" ---", Color.LTGRAY)
+                       .showIn(handleInterface.windowExplainHolder.explainTitle);
 
-            Spannable.Factory instance  = Spannable.Factory.getInstance();
-            Spannable         spannable = instance.newSpannable(section);
-            spannable.setSpan(clickableSpan, 0, section.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            handleInterface.windowExplainHolder.explainTitle.setMovementMethod(LinkMovementMethod.getInstance());
-            handleInterface.windowExplainHolder.explainTitle.setSpannableFactory(instance);
+            handleInterface.windowExplainHolder.explainTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showWord();
+                }
+            });
+
         }
+    }
+
+    void showWord() {
+        SpanUtil.SpanBuilder spanBuilder = SpanUtil.create();
+        spanBuilder.addForeColorSection("--- ", Color.LTGRAY)
+                   .addForeColorSection(rs.getShow(), Color.BLACK)
+                   .addForeColorSection(" ---", Color.LTGRAY)
+                   .showIn(handleInterface.windowExplainHolder.explainTitle);
     }
 
     @Override

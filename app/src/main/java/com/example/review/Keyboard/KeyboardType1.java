@@ -27,8 +27,8 @@ import java.util.ArrayList;
 
 public class KeyboardType1 extends Keyboard {
 
-    private MediaPlayer mp;
-    private TextView    show;
+    public MediaPlayer mp;
+    public TextView    show;
 
     public KeyboardType1(Context context, RecyclerView keyboardView, ConstraintLayout container, EditText input, ReviewStruct reviewStruct) {
         super(context, keyboardView, container, input, reviewStruct);
