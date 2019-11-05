@@ -1,5 +1,7 @@
 package com.example.review;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -9,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -94,7 +98,7 @@ public class HandleInterface {
 
     //添加字符
     public void addSegment(String segment) {
-        WordExplain we       = frame.get(indexOfItem);
+        WordExplain we     = frame.get(indexOfItem);
         WordExplain weTemp = frameTemp.get(indexOfItem);
 
         //主动跳转下一行
@@ -207,9 +211,9 @@ public class HandleInterface {
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-            ItemHolder  holder = (ItemHolder) viewHolder;
-            WordExplain we     = frame.get(i);
-            WordExplain weTemp = frameTemp.get(i);
+            final ItemHolder holder = (ItemHolder) viewHolder;
+            WordExplain      we     = frame.get(i);
+            WordExplain      weTemp = frameTemp.get(i);
 
             //设置前缀及其颜色
             holder.prefix.setText(we.category);
@@ -227,8 +231,15 @@ public class HandleInterface {
             //设置该项内数据总量
             holder.count.setText(weTemp.explains.size() + "");
 
-            if (indexOfItem == i) holder.indicator.setVisibility(View.VISIBLE);
-            else holder.indicator.setVisibility(View.GONE);
+            if (indexOfItem == i) {
+                holder.indicator.setVisibility(View.VISIBLE);
+
+                ObjectAnimator.ofFloat(holder.indicator, "scaleX", 1f, 0f, 1f)
+                              .setDuration(200)
+                              .start();
+            } else {
+                holder.indicator.setVisibility(View.GONE);
+            }
         }
 
         @Override
