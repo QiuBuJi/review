@@ -3,8 +3,11 @@ package com.example.review.Keyboard;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.review.DataStructureFile.WordExplain;
+import com.example.review.HandleInterface;
 import com.example.review.MainActivity;
 import com.example.review.New.KeyText;
 import com.example.review.New.LibrarySet;
@@ -34,6 +38,7 @@ public class KeyboardType2 extends Keyboard {
 
     public  ArrayList<WordExplain> frame;
     private ArrayList<WordExplain> frameTemp;
+    private HandleInterface        handleInterface;
 
     public KeyboardType2(Context context, RecyclerView keyboardView, TextView show, EditText input, ReviewStruct reviewStruct) {
         super(context, keyboardView, show, input, reviewStruct);
@@ -53,40 +58,22 @@ public class KeyboardType2 extends Keyboard {
         input.setInputType(InputType.TYPE_NULL);
 
         Speech.play_Baidu(rs.getShow());
-    }
 
-    @Override
-    public void refresh() {
-        int max = 0;
-        if (frame.isEmpty()) return;
+        ConstraintLayout parent = (ConstraintLayout) show.getParent();
+        handleInterface = new HandleInterface(context, parent, frame, frameTemp);
 
-        //取最长的一条
-        for (WordExplain we : frame) {
-            int length = we.category.length();
-            if (length > max) max = length;
-        }
+        boolean camPlay = Setting.getBoolean("开启朗读");
 
-        for (WordExplain we : frame) {
-            if (!we.ediable) continue;
-            we.ediable = false;
-
-            StringBuilder buf    = new StringBuilder();
-            int           length = we.category.length();
-            length = max - length;
-
-            for (int i = 0; i < length; i++) buf.append(" ");
-            we.category = buf.toString().concat(we.category);
-        }
-
-
-        SpanUtil.SpanBuilder span    = SpanUtil.create();
-        boolean              camPlay = Setting.getBoolean("开启朗读");
 
         //单词提示；没开启朗读，则显示单词
         if (rs.getLevel() < 3 || !camPlay) {
-            String strWord = "--- " + rs.getShow() + " ---\n\n";
-            span.addForeColorSection(strWord, Color.BLUE);
-            span.setTypeface(strWord, "sans-serif");
+            SpanUtil.SpanBuilder spanBuilder = SpanUtil.create();
+            spanBuilder.addForeColorSection("--- ", Color.LTGRAY);
+            spanBuilder.addForeColorSection(rs.getShow(), Color.BLACK);
+            spanBuilder.addForeColorSection(" ---", Color.LTGRAY);
+            spanBuilder.showIn(handleInterface.windowExplainHolder.explainTitle);
+//            String strWord = "--- " + rs.getShow() + " ---";
+//            handleInterface.windowExplainHolder.explainTitle.setText(strWord);
         } else {
             //点击提示
             ClickableSpan clickableSpan = new ClickableSpan() {
@@ -95,33 +82,18 @@ public class KeyboardType2 extends Keyboard {
                     Toast.makeText(context, rs.getShow(), Toast.LENGTH_SHORT).show();
                 }
             };
-            String section = "提示?\n\n";
-            span.addAbsSizeSection(section, 38);
-            span.getSpanStrBuilder().setSpan(clickableSpan, 0, section.length() - 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            String section = "提示?";
+
+            Spannable.Factory instance  = Spannable.Factory.getInstance();
+            Spannable         spannable = instance.newSpannable(section);
+            spannable.setSpan(clickableSpan, 0, section.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            handleInterface.windowExplainHolder.explainTitle.setMovementMethod(LinkMovementMethod.getInstance());
+            handleInterface.windowExplainHolder.explainTitle.setSpannableFactory(instance);
         }
+    }
 
-        int i = 0;
-        for (WordExplain wordExplain : frame) {
-
-            int prefixColor = getColor(wordExplain.category);
-            span.addForeColorSection(wordExplain.category, prefixColor);
-
-            for (String explain : wordExplain.explains) {
-                boolean contains = "×".equals(explain.charAt(0) + "");
-                if (contains) {
-                    String section = explain.substring(1) + "；";
-                    span.addForeColorSection(section, Color.LTGRAY);
-                    span.setStrikethrough(section);
-                } else span.addSection(explain + "；");
-
-            }
-
-            if (i++ == index) span.addForeColorSection("«", Color.BLUE);
-            span.addSection("\n");
-        }
-
-        show.setMovementMethod(LinkMovementMethod.getInstance());
-        span.showIn(show);
+    @Override
+    public void refresh() {
     }
 
     @Override
@@ -227,81 +199,30 @@ public class KeyboardType2 extends Keyboard {
 
         if (keyText == null) return false;
 
-        WordExplain wordExplain;
-
         if (keyText.isCom) {
             switch (keyText.text) {
                 case COM_DONE:
                     if (onKeyDownListener != null) onKeyDownListener.onKeyDown(keyText);
                     break;
                 case COM_UP:
-                    index--;
-                    int size = frame.size();
-                    if (index < 0) index = size - 1;
+                    handleInterface.moveUp();
                     break;
                 case COM_DOWN:
-                    index++;
-                    size = frame.size();
-                    if (index == size) index = 0;
+                    handleInterface.moveDown();
                     break;
                 case COM_EMPTY:
-                    for (WordExplain explain : frame) {
-                        explain.explains.clear();
-                        index = 0;
-                    }
+                    handleInterface.emptying();
                     break;
                 case COM_DELETE:
-                    wordExplain = frame.get(index);
-                    int position = wordExplain.explains.size();
-                    if (position > 0) {
-                        wordExplain.explains.remove(--position);
-                    }
+                    handleInterface.delete();
                     break;
                 case "播放":
                     Speech.play_Baidu(rs.getShow());
                     break;
             }
         } else {
-            wordExplain = frame.get(index);
-            WordExplain we = frameTemp.get(index);
-
-            for (WordExplain explain : frameTemp) {
-                String category1 = explain.category.trim();
-                String category2 = wordExplain.category.trim();
-
-                if (category1.equals(category2)) {
-                    we = explain;
-                    break;
-                }
-            }
-
-            //主动跳转下一行
-            int size = wordExplain.explains.size();
-            if (size < we.explains.size()) {
-                if (wordExplain.explains.contains(keyText.text)) {
-                    Toast.makeText(context, "不能重复哦！", Toast.LENGTH_SHORT).show();
-                } else wordExplain.explains.add(keyText.text);
-
-            }
-
-            while (true) {
-                size = wordExplain.explains.size();
-
-                if (size == we.explains.size()) {
-                    index++;
-                    size = frame.size();
-                    if (index == size) {
-                        index = 0;
-                        break;
-                    }
-                } else {
-                    break;
-                }
-                wordExplain = frame.get(index);
-            }
+            handleInterface.addSegment(keyText.text);
         }
-
-        refresh();
         return true;
     }
 }

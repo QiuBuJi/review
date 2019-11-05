@@ -364,7 +364,7 @@ public class EditActivity extends Activity
         String        directory = data.getStringExtra("directory");
         LibraryStruct ls        = null;
         if (directory == null) {
-            int index = data.getIntExtra("index", -1);
+            int index = data.getIntExtra("indexOfItem", -1);
             ls = libraries.get(index);
         }
 

@@ -10,24 +10,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="adj."
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:text="pron."
         android:textAlignment="textEnd"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ll_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/ll_container"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -36,16 +27,37 @@
         android:orientation="vertical"
         app:layout_constraintGuide_begin="48dp" />
 
+    <LinearLayout
+        android:id="@+id/ll_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="«"
+        android:textColor="#0091EA"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_prefix"
+        app:layout_constraintStart_toEndOf="@+id/ll_container"
+        app:layout_constraintTop_toTopOf="@+id/tv_prefix" />
+
     <TextView
         android:id="@+id/tv_explain_count"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_marginStart="4dp"
         android:background="@drawable/bg_ripple_rectangle_round"
         android:gravity="center"
         android:text="1"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@+id/tv_prefix"
-        app:layout_constraintStart_toEndOf="@+id/ll_container" />
+        app:layout_constraintStart_toEndOf="@+id/tv_indicator" />
 
 </android.support.constraint.ConstraintLayout>

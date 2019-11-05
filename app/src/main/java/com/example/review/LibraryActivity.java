@@ -160,7 +160,7 @@ public class LibraryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.putExtra("index", posi);
+                intent.putExtra("indexOfItem", posi);
                 setResult(2, intent);
                 finish();
             }
