@@ -38,7 +38,7 @@ public class KeyboardType2 extends Keyboard {
 
     public  ArrayList<WordExplain> frame;
     private ArrayList<WordExplain> frameTemp;
-    private HandleInterface        handleInterface;
+    public  HandleInterface        handleInterface;
 
     public KeyboardType2(Context context, RecyclerView keyboardView, ConstraintLayout container, EditText input, ReviewStruct reviewStruct) {
         super(context, keyboardView, container, input, reviewStruct);
@@ -76,6 +76,7 @@ public class KeyboardType2 extends Keyboard {
                 @Override
                 public void onClick(View view) {
                     showWord();
+                    adapter.notifyDataSetChanged();
                 }
             });
 
@@ -92,6 +93,7 @@ public class KeyboardType2 extends Keyboard {
 
     @Override
     public void refresh() {
+//        if (adapter != null) adapter.notifyDataSetChanged();
     }
 
     @Override

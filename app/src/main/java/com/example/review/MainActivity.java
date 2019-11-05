@@ -53,7 +53,6 @@ import com.example.review.Keyboard.Keyboard;
 import com.example.review.Keyboard.KeyboardType1;
 import com.example.review.Keyboard.KeyboardType2;
 import com.example.review.Keyboard.KeyboardType3;
-import com.example.review.Keyboard.KeyboardType4;
 import com.example.review.New.CountList;
 import com.example.review.New.KeyText;
 import com.example.review.New.ReviewStruct;
@@ -539,7 +538,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mReviewedNum = 0;
         isShowedScreen = true;
         refreshProgress();
-        refreshShowing(true);
+        refreshShowing(false);
 
         NotificationManager notifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notifyManager.cancel(1);
@@ -791,7 +790,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 //        rs.resetLevel();//重置水平
 //        refreshShowing(false);
-        keyboard.refresh();
+        KeyboardType2 keyboardType2 = (KeyboardType2) keyboard;
+        keyboardType2.handleInterface.showDifferent(true);
 
         //显示错误提示
         SpanUtil.create()

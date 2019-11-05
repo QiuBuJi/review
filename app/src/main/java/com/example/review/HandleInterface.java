@@ -198,6 +198,12 @@ public class HandleInterface {
         }
     }
 
+    boolean mDifferent = false;
+
+    public void showDifferent(boolean different) {
+        mDifferent = different;
+        adapter.notifyDataSetChanged();
+    }
 
     class MyAdapter extends RecyclerView.Adapter {
 
@@ -224,8 +230,13 @@ public class HandleInterface {
             for (String explain : we.explains) {
                 TextView txt = (TextView) LayoutInflater.from(context).inflate(
                         R.layout.activity_item_text, holder.container, false);
+                explain = explain.replace("×", "");
                 txt.setText(explain);
                 holder.container.addView(txt);
+
+                if (mDifferent && !weTemp.explains.contains(explain)) {
+                    txt.setTextColor(Color.RED);
+                }
             }
 
             //设置该项内数据总量
