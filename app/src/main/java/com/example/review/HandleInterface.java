@@ -48,8 +48,6 @@ public class HandleInterface {
             }
         }
 
-        containerView.removeAllViews();
-
         View windowExplain = LayoutInflater.from(context).inflate(R.layout.activity_window_explain, containerView, false);
         containerView.addView(windowExplain);
 

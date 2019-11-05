@@ -3,6 +3,7 @@ package com.example.review.Keyboard;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.KeyEvent;
@@ -31,13 +32,18 @@ public class KeyboardType3 extends Keyboard {
     public  ArrayList<TextCom> mCandidateType;
     private Pattern            patterBitPar;
     private Pattern            patternPar;
+    private TextView show;
 
-    public KeyboardType3(Context context, RecyclerView keyboardView, TextView show, EditText input, ReviewStruct reviewStruct) {
+    public KeyboardType3(Context context, RecyclerView keyboardView, ConstraintLayout show, EditText input, ReviewStruct reviewStruct) {
         super(context, keyboardView, show, input, reviewStruct);
     }
 
     @Override
     void init() {
+        show = new TextView(context);
+        show.setTextColor(Color.BLACK);
+        container.addView(show);
+
         String strMatch = rs.getMatch();
         patternPar = Pattern.compile("\\(.*?\\)");
         String[] split   = patternPar.split(strMatch);

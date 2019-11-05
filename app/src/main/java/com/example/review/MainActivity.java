@@ -123,9 +123,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Keyboard      keyboard;
     private ConstraintLayout entireBackground;
 
-    private List<PathBoth> pathBoth;
-    private int            libIndex     = 0;
-    private int            mReviewedNum = 0;
+    private List<PathBoth>   pathBoth;
+    private int              libIndex     = 0;
+    private int              mReviewedNum = 0;
+    private ConstraintLayout mainContainer;
 
     @Override
     public boolean handleMessage(Message msg) {
@@ -170,8 +171,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!isShowedScreen) return;
 
         //初始化显示界面
-        View view = (View) tvShow.getParent();
-        view.setBackgroundResource(R.drawable.bg_text_show);
+        mainContainer.setBackgroundResource(R.drawable.bg_text_show);
         tvShow.setText("");
         tvShow.setHint("暂时没有复习的");
 
@@ -187,15 +187,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 switch (type) {
                     case Keyboard.TYPE_WORD:
-                        keyboard = new KeyboardType1(this, recyclerViewKeyboard, tvShow, input, rs);
+                        keyboard = new KeyboardType1(this, recyclerViewKeyboard, mainContainer, input, rs);
                         keyboard.buildKeyboard();
                         break;
                     case Keyboard.TYPE_EXPLAIN:
-                        keyboard = new KeyboardType2(this, recyclerViewKeyboard, tvShow, input, rs);
+                        keyboard = new KeyboardType2(this, recyclerViewKeyboard, mainContainer, input, rs);
                         keyboard.buildKeyboard(animDuration / 2);
                         break;
                     case Keyboard.TYPE_CHOOSE:
-                        keyboard = new KeyboardType3(this, recyclerViewKeyboard, tvShow, input, rs);
+                        keyboard = new KeyboardType3(this, recyclerViewKeyboard, mainContainer, input, rs);
                         keyboard.buildKeyboard();
                         break;
                     case Keyboard.TYPE_PICTURE:
@@ -426,6 +426,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvNext = findViewById(R.id.main_textView_next);
         tvReviewedNum = findViewById(R.id.main_textView_reviewedNum);
 
+        mainContainer = findViewById(R.id.cl_main_container);
     }
 
     //初始化监听器-----------------------------------------------------------------------------------

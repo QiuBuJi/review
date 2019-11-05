@@ -1,12 +1,16 @@
 package com.example.review.Keyboard;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -24,9 +28,10 @@ import java.util.ArrayList;
 public class KeyboardType1 extends Keyboard {
 
     private MediaPlayer mp;
+    private TextView    show;
 
-    public KeyboardType1(Context context, RecyclerView keyboardView, TextView show, EditText input, ReviewStruct reviewStruct) {
-        super(context, keyboardView, show, input, reviewStruct);
+    public KeyboardType1(Context context, RecyclerView keyboardView, ConstraintLayout container, EditText input, ReviewStruct reviewStruct) {
+        super(context, keyboardView, container, input, reviewStruct);
     }
 
     @Override
@@ -35,6 +40,10 @@ public class KeyboardType1 extends Keyboard {
         input.requestFocus();
 //        input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setInputType(InputType.TYPE_NULL);
+
+        View inflate = LayoutInflater.from(context).inflate(R.layout.activity_text_view, container, false);
+        show = inflate.findViewById(R.id.tv_text);
+        container.addView(inflate);
     }
 
     @Override

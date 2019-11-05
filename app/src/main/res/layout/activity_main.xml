@@ -74,7 +74,7 @@
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout3"
+        android:id="@+id/cl_main_container"
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:layout_marginStart="8dp"
@@ -197,7 +197,7 @@
         android:text="00:00:00"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout3"
+        app:layout_constraintEnd_toEndOf="@+id/cl_main_container"
         app:layout_constraintTop_toTopOf="@+id/fragment_textView_persent" />
 
     <ProgressBar
@@ -210,8 +210,8 @@
         android:max="10"
         android:progress="5"
         android:progressDrawable="@drawable/layer_list_progress_green"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout3"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
+        app:layout_constraintStart_toStartOf="@+id/cl_main_container"
+        app:layout_constraintTop_toBottomOf="@+id/cl_main_container" />
 
     <TextView
         android:id="@+id/fragment_textView_persent"
@@ -261,8 +261,8 @@
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout3"
-        app:layout_constraintTop_toTopOf="@+id/constraintLayout3" />
+        app:layout_constraintStart_toStartOf="@+id/cl_main_container"
+        app:layout_constraintTop_toTopOf="@+id/cl_main_container" />
 
     <TextView
         android:id="@+id/main_textView_reviewedNum"

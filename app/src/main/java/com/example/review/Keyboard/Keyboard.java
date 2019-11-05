@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.example.review.Adapter.MyAdapter;
 import com.example.review.New.ItemClickListener;
 import com.example.review.New.KeyText;
 import com.example.review.New.ReviewStruct;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -32,11 +34,12 @@ public abstract class Keyboard implements ItemClickListener {
     final public static String COM_UP     = "↑";
     final public static String COM_DOWN   = "↓";
 
-    final public static int TYPE_WORD    = 1;
-    final public static int TYPE_EXPLAIN = 2;
-    final public static int TYPE_CHOOSE  = 3;
-    final public static int TYPE_PICTURE = 4;
-    final public static int TYPE_SOUND   = 5;
+    final public static int              TYPE_WORD    = 1;
+    final public static int              TYPE_EXPLAIN = 2;
+    final public static int              TYPE_CHOOSE  = 3;
+    final public static int              TYPE_PICTURE = 4;
+    final public static int              TYPE_SOUND   = 5;
+    public final        ConstraintLayout container;
 
     String[]     mPriorites    = new String[]{"n.", "vt.", "adj.", "pron.", "conj.", "adv.", "intj.", "adv.", "art.", "vi."};
     List<String> strPriorities = Arrays.asList(mPriorites);
@@ -45,7 +48,6 @@ public abstract class Keyboard implements ItemClickListener {
     int          index;
     Context      context;
     RecyclerView keyboardView;
-    TextView     show;
     EditText     input;
 
     public MyAdapter adapter;
@@ -53,13 +55,14 @@ public abstract class Keyboard implements ItemClickListener {
 
     ReviewStruct rs;
 
-    public Keyboard(Context context, RecyclerView keyboardView, TextView show, EditText input, ReviewStruct reviewStruct) {
+    public Keyboard(Context context, RecyclerView keyboardView, ConstraintLayout container, EditText input, ReviewStruct reviewStruct) {
         this.context = context;
         this.keyboardView = keyboardView;
-        this.show = show;
         this.input = input;
         this.rs = reviewStruct;
+        this.container = container;
 
+        container.removeAllViews();
         init();
     }
 
@@ -76,7 +79,7 @@ public abstract class Keyboard implements ItemClickListener {
     public int getColor(String src) {
         src = src.replaceAll("\\s", "");//去除空格
         int prefixColor;
-        int i           = strPriorities.indexOf(src);
+        int i = strPriorities.indexOf(src);
 
         switch (i) {
             case 0:

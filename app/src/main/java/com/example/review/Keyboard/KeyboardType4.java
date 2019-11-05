@@ -1,6 +1,7 @@
 package com.example.review.Keyboard;
 
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.View;
@@ -13,7 +14,7 @@ import com.example.review.New.ReviewStruct;
 import java.util.ArrayList;
 
 public class KeyboardType4 extends Keyboard {
-    public KeyboardType4(Context context, RecyclerView keyboardView, TextView show, EditText input, ReviewStruct reviewStruct) {
+    public KeyboardType4(Context context, RecyclerView keyboardView, ConstraintLayout show, EditText input, ReviewStruct reviewStruct) {
         super(context, keyboardView, show, input, reviewStruct);
     }
 

@@ -40,8 +40,8 @@ public class KeyboardType2 extends Keyboard {
     private ArrayList<WordExplain> frameTemp;
     private HandleInterface        handleInterface;
 
-    public KeyboardType2(Context context, RecyclerView keyboardView, TextView show, EditText input, ReviewStruct reviewStruct) {
-        super(context, keyboardView, show, input, reviewStruct);
+    public KeyboardType2(Context context, RecyclerView keyboardView, ConstraintLayout container, EditText input, ReviewStruct reviewStruct) {
+        super(context, keyboardView, container, input, reviewStruct);
     }
 
     @Override
@@ -58,10 +58,7 @@ public class KeyboardType2 extends Keyboard {
         input.setInputType(InputType.TYPE_NULL);
 
         Speech.play_Baidu(rs.getShow());
-
-        ConstraintLayout parent = (ConstraintLayout) show.getParent();
-        handleInterface = new HandleInterface(context, parent, frame, frameTemp);
-
+        handleInterface = new HandleInterface(context, container, frame, frameTemp);
         boolean camPlay = Setting.getBoolean("开启朗读");
 
 
