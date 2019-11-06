@@ -1,6 +1,5 @@
 package com.example.review;
 
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
@@ -11,8 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,16 +26,16 @@ public class HandleInterface {
     private final Context          context;
     private final MyAdapter        adapter;
 
-    private ArrayList<WordExplain> frame;
-    private ArrayList<WordExplain> frameTemp;
+    private ArrayList<WordExplain> frameInput;
+    private ArrayList<WordExplain> frameRight;
     public  WindowExplainHolder    windowExplainHolder;
     int indexOfItem = 0;
 
     public HandleInterface(Context context, ConstraintLayout containerView, ArrayList<WordExplain> frame, ArrayList<WordExplain> frameTemp) {
         this.context = context;
         this.containerView = containerView;
-        this.frame = frame;
-        this.frameTemp = frameTemp;
+        this.frameInput = frame;
+        this.frameRight = frameTemp;
 
         //把frameTemp内成员顺序排列得跟frame一样
         for (int i = 0; i < frame.size(); i++) {
@@ -69,21 +66,21 @@ public class HandleInterface {
     //移动到上一项
     public void moveUp() {
         indexOfItem--;
-        if (indexOfItem < 0) indexOfItem = frame.size() - 1;
+        if (indexOfItem < 0) indexOfItem = frameInput.size() - 1;
         adapter.notifyDataSetChanged();
     }
 
     //移动到下一项
     public void moveDown() {
         indexOfItem++;
-        if (indexOfItem == frame.size()) indexOfItem = 0;
+        if (indexOfItem == frameInput.size()) indexOfItem = 0;
         adapter.notifyDataSetChanged();
     }
 
     //向前删除
     public void delete() {
         WordExplain we;
-        we = frame.get(indexOfItem);
+        we = frameInput.get(indexOfItem);
         int position = we.explains.size();
         if (position > 0) we.explains.remove(--position);
         adapter.notifyDataSetChanged();
@@ -92,14 +89,14 @@ public class HandleInterface {
     //清空所有输入的数据
     public void emptying() {
         indexOfItem = 0;
-        for (WordExplain explain : frame) explain.explains.clear();
+        for (WordExplain explain : frameInput) explain.explains.clear();
         adapter.notifyDataSetChanged();
     }
 
     //添加字符
     public void addSegment(String segment) {
-        WordExplain we     = frame.get(indexOfItem);
-        WordExplain weTemp = frameTemp.get(indexOfItem);
+        WordExplain we     = frameInput.get(indexOfItem);
+        WordExplain weTemp = frameRight.get(indexOfItem);
 
         //主动跳转下一行
         int sizeA = we.explains.size(), sizeB = weTemp.explains.size();
@@ -113,7 +110,7 @@ public class HandleInterface {
             return;
         }
 
-        sizeB = frameTemp.size();
+        sizeB = frameRight.size();
         //目前项数据填满后，自动转移到下一项
         while (true) {
             //到底就不要再跳到初始位置了
@@ -124,7 +121,7 @@ public class HandleInterface {
 
             if (sizeA == sizeB) moveDown();
             else break;
-            weTemp = frame.get(indexOfItem);
+            weTemp = frameInput.get(indexOfItem);
         }
 
         adapter.notifyDataSetChanged();
@@ -217,31 +214,38 @@ public class HandleInterface {
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-            final ItemHolder holder = (ItemHolder) viewHolder;
-            WordExplain      we     = frame.get(i);
-            WordExplain      weTemp = frameTemp.get(i);
+            final ItemHolder holder  = (ItemHolder) viewHolder;
+            WordExplain      weInput = frameInput.get(i);
+            WordExplain      weRight = frameRight.get(i);
 
             //设置前缀及其颜色
-            holder.prefix.setText(we.category);
-            holder.prefix.setTextColor(getColor(we.category));
+            holder.prefix.setText(weInput.category);
+            holder.prefix.setTextColor(getColor(weInput.category));
 
             //设置解释字符
             holder.container.removeAllViews();
-            for (String explain : we.explains) {
+            for (String explain : weInput.explains) {
                 TextView txt = (TextView) LayoutInflater.from(context).inflate(
                         R.layout.activity_item_text, holder.container, false);
-                explain = explain.replace("×", "");
                 txt.setText(explain);
                 holder.container.addView(txt);
 
-                if (mDifferent && !weTemp.explains.contains(explain)) {
+                if (mDifferent && !weRight.explains.contains(explain)) {
                     txt.setTextColor(Color.RED);
                 }
             }
 
             //设置该项内数据总量
-            holder.count.setText(weTemp.explains.size() + "");
+            holder.count.setText(weRight.explains.size() + "");
 
+            //正确率超过这个阈值，切换不同文字颜色
+            int countInput = 0, countRight = 0;
+            for (WordExplain we : frameInput) countInput += we.explains.size();
+            for (WordExplain we : frameRight) countRight += we.explains.size();
+            if (countInput >= countRight * 0.6f) holder.count.setTextColor(0xff3F51B5);
+            else holder.count.setTextColor(Color.WHITE);
+
+            //设置闪闪动画
             if (indexOfItem == i) {
                 holder.indicator.setVisibility(View.VISIBLE);
 
@@ -255,7 +259,7 @@ public class HandleInterface {
 
         @Override
         public int getItemCount() {
-            if (frame.size() > 0) return frame.size();
+            if (frameInput.size() > 0) return frameInput.size();
             return 0;
         }
     }
