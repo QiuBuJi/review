@@ -37,7 +37,7 @@ public class HandleInterface {
         this.frameInput = frame;
         this.frameRight = frameTemp;
 
-        //把frameTemp内成员顺序排列得跟frame一样
+        //把frameRight内成员顺序排列得跟frame一样
         for (int i = 0; i < frame.size(); i++) {
             WordExplain we = frame.get(i);
 

@@ -49,6 +49,7 @@ import com.example.review.Animator.TextPartColorAnimator;
 import com.example.review.DataStructureFile.DateTime;
 import com.example.review.DataStructureFile.ElementCategory;
 import com.example.review.DataStructureFile.ReviewData;
+import com.example.review.DataStructureFile.WordExplain;
 import com.example.review.Keyboard.Keyboard;
 import com.example.review.Keyboard.KeyboardType1;
 import com.example.review.Keyboard.KeyboardType2;
@@ -602,7 +603,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.fragment_textView_tips:
                 if (!data.mActivate.isEmpty()) {
                     ReviewStruct rs = data.mActivate.getFirst();
-                    Toast.makeText(this, rs.getMatch(), Toast.LENGTH_LONG).show();
+
+                    StringBuilder sb = new StringBuilder();
+                    if (keyboard instanceof KeyboardType2) {
+                        KeyboardType2 kt = (KeyboardType2) keyboard;
+
+                        for (WordExplain we : kt.frameRight) {
+                            String explains = we.toString();
+                            sb.append(explains + "\n");
+                        }
+                    } else sb.append(rs.getMatch());
+                    Toast.makeText(this, sb, Toast.LENGTH_LONG).show();
+
                     rs.resetLevel();
                     if (rs.match.getType() == 1) {
                         Speech.play_Baidu(rs.getMatch());
@@ -708,7 +720,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      *   explain: vi.比较;vt.比拟、誉为；
      *   picture: storage/emulate/0/Image/what the fuck?.jpg
      *     sound: storage/emulate/0/sound/what the.mp3
-     *     frame: @meat,@ant
+     *     frameInput: @meat,@ant
      * candidate: @_auto_,@meat(交集、差集),you,me,him,单击,大家好,shit
      *  previous: @118(引用该单词的ID，4字节),@112(previous引用的暂时都记住了，才考虑复习这条单词)
      *        id: 666(该id由系统自动分配，4字节)
@@ -754,7 +766,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             case 2: {
                 KeyboardType2 keyboardType2 = (KeyboardType2) keyboard;
-                correct = rs.matching(keyboardType2.frame, cl);
+                correct = rs.matching(keyboardType2.frameInput, cl);
                 if (correct) {
                     matchCorrect(rs);
                     mReviewedNum++;

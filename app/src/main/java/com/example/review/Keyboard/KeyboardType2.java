@@ -2,20 +2,12 @@ package com.example.review.Keyboard;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.review.DataStructureFile.WordExplain;
 import com.example.review.HandleInterface;
@@ -36,9 +28,9 @@ import java.util.Random;
 
 public class KeyboardType2 extends Keyboard {
 
-    public  ArrayList<WordExplain> frame;
-    private ArrayList<WordExplain> frameTemp;
-    public  HandleInterface        handleInterface;
+    public ArrayList<WordExplain> frameInput;
+    public ArrayList<WordExplain> frameRight;
+    public HandleInterface        handleInterface;
 
     public KeyboardType2(Context context, RecyclerView keyboardView, ConstraintLayout container, EditText input, ReviewStruct reviewStruct) {
         super(context, keyboardView, container, input, reviewStruct);
@@ -46,10 +38,10 @@ public class KeyboardType2 extends Keyboard {
 
     @Override
     void init() {
-        frame = rs.getFrame();
-        frameTemp = rs.getMatchWordExplains();
+        frameInput = rs.getFrame();
+        frameRight = rs.getMatchWordExplains();
 
-        makeRandom(frame);
+        makeRandom(frameInput);
         span = 6;
 
         input.setText("");
@@ -58,7 +50,7 @@ public class KeyboardType2 extends Keyboard {
         input.setInputType(InputType.TYPE_NULL);
 
         Speech.play_Baidu(rs.getShow());
-        handleInterface = new HandleInterface(context, container, frame, frameTemp);
+        handleInterface = new HandleInterface(context, container, frameInput, frameRight);
         boolean camPlay = Setting.getBoolean("开启朗读");
 
 
