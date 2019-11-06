@@ -10,6 +10,14 @@ public class WordExplain {
 
     public boolean ediable = true;
 
+    public WordExplain() {
+    }
+
+    public WordExplain(WordExplain we) {
+        category = we.category;
+        explains = new ArrayList<>(we.explains);
+    }
+
     @NonNull
     @Override
     public String toString() {

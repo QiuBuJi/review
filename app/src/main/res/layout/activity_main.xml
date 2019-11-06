@@ -86,20 +86,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
-        <TextView
-            android:id="@+id/main_textView_next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/bg_ripple_rectangle_round"
-            android:padding="2dp"
-            android:text="下一个"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
     </android.support.constraint.ConstraintLayout>
 
     <TextView
@@ -258,5 +244,19 @@
         app:layout_constraintBottom_toBottomOf="@+id/fragment_progressBar_progress"
         app:layout_constraintStart_toEndOf="@+id/fragment_progressBar_progress"
         app:layout_constraintTop_toTopOf="@+id/fragment_progressBar_progress" />
+
+    <TextView
+        android:id="@+id/main_textView_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/bg_ripple_rectangle_round"
+        android:padding="2dp"
+        android:text="下一个"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/cl_main_container"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
 </android.support.constraint.ConstraintLayout>

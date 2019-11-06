@@ -806,12 +806,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void matchCorrect(ReviewStruct rs) {
         canJoinLog = 0;
         data.updateInavalable_AddLevel(rs);
+        handler.sendEmptyMessage(HANDLER_UPDATE_SHOWING);
 
-        ValueAnimator ValueAnim = TextColorAnimator.ofArgb(input, Color.BLACK, 0xFF32CD32, 0xFFFAFAFA);
+//        ValueAnimator ValueAnim = TextColorAnimator.ofArgb(input, Color.BLACK, 0xFF32CD32, 0xFFFAFAFA);
 
         //下面监听器，等颜色动画播放完毕，然后显示下一条数据在textShow中
-        ValueAnim.addListener(getListener());
-        ValueAnim.setDuration(0).start();
+//        ValueAnim.addListener(getListener());
+//        ValueAnim.setDuration(0).start();
     }
 
 

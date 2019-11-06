@@ -7,6 +7,8 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -15,6 +17,7 @@ import com.example.review.New.KeyText;
 import com.example.review.New.LibrarySet;
 import com.example.review.New.LibraryStruct;
 import com.example.review.New.ReviewStruct;
+import com.example.review.R;
 import com.example.review.Util.SpanUtil;
 import com.example.review.Util.Speech;
 
@@ -40,8 +43,8 @@ public class KeyboardType3 extends Keyboard {
 
     @Override
     void init() {
-        show = new TextView(context);
-        show.setTextColor(Color.BLACK);
+        View inflate = LayoutInflater.from(context).inflate(R.layout.activity_text_view, container, false);
+        show = inflate.findViewById(R.id.tv_text);
         container.addView(show);
 
         String strMatch = rs.getMatch();

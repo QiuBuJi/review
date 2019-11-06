@@ -70,63 +70,43 @@ public class ReviewStruct extends SaveData {
     //完成率，到这个阈值后判断为正确
     float corRate = 0.6f;
 
-    public boolean matching(ArrayList<WordExplain> wes, CountList countList) {
-        ArrayList<WordExplain> match     = getMatchWordExplains();
+    public boolean matching(ArrayList<WordExplain> wesInput, CountList countList) {
+        ArrayList<WordExplain> wesRight  = getMatchWordExplains();
         int                    corrCount = 0, errCount = 0, total = 0;
 
-        for (int i = 0; i < match.size(); i++) {
-            WordExplain matchWE = match.get(i);
-            WordExplain we      = null;
+        for (int i = 0; i < wesRight.size(); i++) {
+            WordExplain weRight = wesRight.get(i);
+            WordExplain weInput      = null;
 
-            for (WordExplain wde : wes) {
-                String trim = wde.category.trim();
-                if (matchWE.category.equals(trim)) {
-                    we = wde;
+            //挑出和matchWE.category相同的条目到we中
+            for (WordExplain weTemp : wesInput) {
+                String trim = weTemp.category.trim();
+
+                if (weRight.category.equals(trim)) {
+                    weInput = new WordExplain(weTemp);
                     break;
                 }
             }
 
-            total += matchWE.explains.size();
+            //统计总数
+            total += weRight.explains.size();
 
-            assert we != null;
-            ArrayList<String> list = new ArrayList<>(we.explains);
+            assert weInput != null;
+            ArrayList<String> wrongInput = new ArrayList<>(weInput.explains);
 
-            for (int k = 0; k < list.size(); k++) {
-                String  str      = list.get(k);
-                boolean contains = matchWE.explains.contains(str);
+            for (int k = 0; k < wrongInput.size(); k++) {
+                String  word      = wrongInput.get(k);
+                boolean contains = weRight.explains.contains(word);
+
+                //移除正确词语，留下不正确的
                 if (contains) {
-                    list.remove(k--);
+                    wrongInput.remove(k--);
                     corrCount++;
                 }
             }
 
-            if (list.size() > 0) {
-                errCount += list.size();
-                for (String str : list) {
-                    int    index = we.explains.indexOf(str);
-                    String txt   = we.explains.get(index);
-                    if ("×".equals(txt.charAt(0) + "")) continue;
-                    we.explains.remove(index);
-                    we.explains.add(index, "×" + str);
-                }
-            }
-
-            for (WordExplain wordExplain : wes) {
-                for (int k = 0; k < wordExplain.explains.size(); k++) {
-                    String txt = wordExplain.explains.get(k);
-                    char   c   = txt.charAt(0);
-                    if ("×".equals(c + "")) continue;
-                    for (int y = k + 1; y < wordExplain.explains.size(); y++) {
-                        String s = wordExplain.explains.get(y);
-                        if (txt.equals(s)) {
-                            errCount++;
-                            wordExplain.explains.remove(y);
-                            wordExplain.explains.add(y, "×" + s);
-                            corrCount--;
-                        }
-                    }
-                }
-            }
+            //累计错误数
+            errCount += wrongInput.size();
         }
 
         int needCorrectNum = (int) (total * corRate);

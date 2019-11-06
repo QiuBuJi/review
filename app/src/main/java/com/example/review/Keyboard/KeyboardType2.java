@@ -202,7 +202,7 @@ public class KeyboardType2 extends Keyboard {
         if (keyText.isCom) {
             switch (keyText.text) {
                 case COM_DONE:
-                    if (onKeyDownListener != null) onKeyDownListener.onKeyDown(keyText);
+//                    if (onKeyDownListener != null) onKeyDownListener.onKeyDown(keyText);
                     break;
                 case COM_UP:
                     handleInterface.moveUp();
