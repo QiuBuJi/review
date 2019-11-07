@@ -32,6 +32,7 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
@@ -467,30 +468,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageButtonClear.setOnClickListener(this);
         tvNext.setOnClickListener(this);
         tips.setOnClickListener(this);
-        tips.setOnLongClickListener(new View.OnLongClickListener() {
+        tips.setOnLongClickListener(showTipsWindowListener());
+//        input.setOnClickListener(this);
+    }
+
+    private View.OnLongClickListener showTipsWindowListener() {
+        return new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 if (!data.mActivate.isEmpty()) {
-                    ReviewStruct rs    = data.mActivate.getFirst();
-                    String       match = rs.getMatch();
+                    ReviewStruct rs       = data.mActivate.getFirst();
+                    Point        size     = new Point();
+                    View         inflate  = View.inflate(MainActivity.this, R.layout.activity_popup_window, null);
+                    TextView     showText = inflate.findViewById(R.id.popupWindow_textView_txt);
 
-                    View     inflate = View.inflate(MainActivity.this, R.layout.activity_popup_window, null);
-                    TextView txt     = inflate.findViewById(R.id.popupWindow_textView_txt);
-                    Point    size    = new Point();
                     getWindowManager().getDefaultDisplay().getSize(size);
-
                     PopupWindow popupWindow = new PopupWindow(inflate, -2, -2);
 
-                    txt.setText(match);
-                    popupWindow.setBackgroundDrawable(new ColorDrawable(Color.BLACK));
-                    popupWindow.setTouchable(true);
+                    showText.setText(getTips(rs));
                     popupWindow.setOutsideTouchable(true);
-                    popupWindow.showAtLocation(entireBackground, Gravity.CENTER, 0, 0);
+                    popupWindow.showAtLocation(MainActivity.this.entireBackground, Gravity.CENTER, 0, 0);
 
                     rs.resetLevel();
-                    if (rs.match.getType() == 1) {
-                        Speech.play_Baidu(rs.getMatch());
-                    }
+                    if (rs.match.getType() == 1) Speech.play_Baidu(rs.getMatch());
 
                     correct = false;
                     canJoinLog++;
@@ -499,8 +499,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 return true;
             }
-        });
-//        input.setOnClickListener(this);
+        };
     }
 
     //初始化变量-------------------------------------------------------------------------------------
@@ -604,15 +603,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (!data.mActivate.isEmpty()) {
                     ReviewStruct rs = data.mActivate.getFirst();
 
-                    StringBuilder sb = new StringBuilder();
-                    if (keyboard instanceof KeyboardType2) {
-                        KeyboardType2 kt = (KeyboardType2) keyboard;
-
-                        for (WordExplain we : kt.frameRight) {
-                            String explains = we.toString();
-                            sb.append(explains + "\n");
-                        }
-                    } else sb.append(rs.getMatch());
+                    String sb = getTips(rs);
                     Toast.makeText(this, sb, Toast.LENGTH_LONG).show();
 
                     rs.resetLevel();
@@ -637,6 +628,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
 
+    }
+
+    private String getTips(ReviewStruct rs) {
+        StringBuilder sb = new StringBuilder();
+
+        if (keyboard instanceof KeyboardType2) {
+            KeyboardType2 kt = (KeyboardType2) keyboard;
+
+            for (WordExplain we : kt.frameRight) {
+                String explains = we.toString();
+                sb.append(explains + "\n");
+            }
+        } else sb.append(rs.getMatch());
+
+        int  index = sb.length() - 1;
+        char c     = sb.charAt(index);
+        if (c == '\n') sb = sb.replace(index, index + 1, "");
+
+        return sb.toString();
     }
 
     private void pickDataDialog() {
