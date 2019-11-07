@@ -59,9 +59,9 @@ public class HandleInterfaceType2 {
         windowExplainHolder.explainTitle.setText("nothing!");
 
         LinearLayoutManager layout = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-        windowExplainHolder.explainBody.setLayoutManager(layout);
         adapter = new MyAdapter();
         windowExplainHolder.explainBody.setAdapter(adapter);
+        windowExplainHolder.explainBody.setLayoutManager(layout);
     }
 
     public void setLightAnimation(boolean lightUp, int duration) {
@@ -113,6 +113,11 @@ public class HandleInterfaceType2 {
 
     //添加字符
     public void addSegment(String segment) {
+        //解决退出后再进入时不显示内容的问题
+        ViewGroup.LayoutParams lp = windowExplainHolder.explainBody.getLayoutParams();
+        lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        windowExplainHolder.explainBody.setLayoutParams(lp);
+
         WordExplain we     = frameInput.get(indexOfItem);
         WordExplain weTemp = frameRight.get(indexOfItem);
 
@@ -142,6 +147,10 @@ public class HandleInterfaceType2 {
             weTemp = frameInput.get(indexOfItem);
         }
 
+        adapter.notifyDataSetChanged();
+    }
+
+    public void refresh() {
         adapter.notifyDataSetChanged();
     }
 

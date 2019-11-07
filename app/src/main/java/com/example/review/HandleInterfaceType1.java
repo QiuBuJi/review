@@ -159,6 +159,7 @@ public class HandleInterfaceType1 {
                 TextView txt = (TextView) LayoutInflater.from(context).inflate(
                         R.layout.activity_item_text, holder.container, false);
                 txt.setText(explain);
+                txt.setBackgroundColor(0xFF00C853);
                 holder.container.addView(txt);
             }
 

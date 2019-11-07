@@ -8,6 +8,7 @@ import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.review.DataStructureFile.WordExplain;
 import com.example.review.HandleInterfaceType1;
@@ -26,6 +27,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class KeyboardType2 extends Keyboard {
 
@@ -69,7 +72,6 @@ public class KeyboardType2 extends Keyboard {
                 @Override
                 public void onClick(View view) {
                     showWord();
-                    adapter.notifyDataSetChanged();
                 }
             });
         }
@@ -86,7 +88,7 @@ public class KeyboardType2 extends Keyboard {
 
     @Override
     public void refresh() {
-//        if (adapter != null) adapter.notifyDataSetChanged();
+        handleInterface.refresh();
     }
 
     @Override
