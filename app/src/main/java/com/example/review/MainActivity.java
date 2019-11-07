@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,7 +31,6 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
@@ -55,6 +53,7 @@ import com.example.review.Keyboard.Keyboard;
 import com.example.review.Keyboard.KeyboardType1;
 import com.example.review.Keyboard.KeyboardType2;
 import com.example.review.Keyboard.KeyboardType3;
+import com.example.review.Keyboard.KeyboardType4;
 import com.example.review.New.CountList;
 import com.example.review.New.KeyText;
 import com.example.review.New.ReviewStruct;
@@ -110,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView     tvReviewedNum;
     //***********************************************************************************************
 
-    private boolean  mCanShowing = true;
     private TextView textViewArrival;
 
     final  int HANDLER_UPDATE_SHOWING = 4;
@@ -120,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     boolean       correct;
     Handler       handler = new Handler(this);
     ReviewService service;
-    int           animDuration;
     Keyboard      keyboard;
     private ConstraintLayout entireBackground;
 
@@ -165,8 +162,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //刷新显示界面文字
     void refreshShowing(boolean isChange) {
         input.setEnabled(true);
-        if (keyboard != null)
-            keyboard.stop();
+        if (keyboard != null) keyboard.stop();
 
         //屏幕没有显示，则不启动
         if (!isShowedScreen) return;
@@ -191,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case Keyboard.TYPE_EXPLAIN:
                         keyboard = new KeyboardType2(this, recyclerViewKeyboard, mainContainer, input, rs);
-                        keyboard.buildKeyboard(animDuration / 2);
+                        keyboard.buildKeyboard();
                         break;
                     case Keyboard.TYPE_CHOOSE:
                         keyboard = new KeyboardType3(this, recyclerViewKeyboard, mainContainer, input, rs);
@@ -346,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         data.setOnAvalableUpdate(new ReviewData.AvalableUpdate() {
             @Override
             public void onUpdateToAvailableComplete(int count_) {
-                if (mCanShowing) refreshShowing(false);
+                refreshShowing(false);
             }
 
             @Override
@@ -575,9 +571,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.main_textView_next:
                 if (!data.mActivate.isEmpty()) {
-                    ReviewStruct first = data.mActivate.getFirst();
+                    ReviewStruct first = data.mActivate.removeFirst();
                     data.mActivate.addLast(first);
-                    data.mActivate.removeFirst();
+
                     refreshShowing(false);
                 }
                 break;
@@ -741,8 +737,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //输入匹配---------------------------------------------------------------------------------------
     void matchInput() {
-        if (!mCanShowing) return;
-
         String inputText = input.getText().toString();
 
         //避开下标越界
@@ -828,28 +822,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void matchCorrect(ReviewStruct rs) {
         canJoinLog = 0;
         data.updateInavalable_AddLevel(rs);
-        handler.sendEmptyMessage(HANDLER_UPDATE_SHOWING);
-
-//        ValueAnimator ValueAnim = TextColorAnimator.ofArgb(input, Color.BLACK, 0xFF32CD32, 0xFFFAFAFA);
 
         //下面监听器，等颜色动画播放完毕，然后显示下一条数据在textShow中
-//        ValueAnim.addListener(getListener());
-//        ValueAnim.setDuration(0).start();
+        final KeyboardType2 keyboardType2 = (KeyboardType2) keyboard;
+        final int           duration      = 200;
+        keyboardType2.handleInterface.setLightAnimation(false, duration);
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.sendEmptyMessage(HANDLER_UPDATE_SHOWING);
+            }
+        }, duration);
     }
 
 
     @TargetApi(Build.VERSION_CODES.N)
     private void correctProc(String inputText, ReviewStruct rs) {
-        ValueAnimator ValueAnim;//***正确************************************************************************************
+        //***正确************************************************************************************
         if (correct) {
             data.updateInavalable_AddLevel(rs);
             canJoinLog = 0;
 
-            ValueAnim = TextColorAnimator.ofArgb(input, Color.BLACK, 0xFF32CD32, 0xFFFAFAFA);
-
             //下面监听器，等颜色动画播放完毕，然后显示下一条数据在textShow中
-            ValueAnim.addListener(getListener());
-            ValueAnim.setDuration(400).start();
+            KeyboardType1 keyboardType1 = (KeyboardType1) keyboard;
+            int           duration      = 200;
+            keyboardType1.handleInterfaceType1.setLightAnimation(false, duration);
+
+            input.setHint("");
+            colorIndicate.setVisibility(View.INVISIBLE);
+            tips.setText("");
+            input.setText("");
+
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    handler.sendEmptyMessage(HANDLER_UPDATE_SHOWING);
+                }
+            }, duration);
+
             mReviewedNum++;
 
         } else {
@@ -984,54 +995,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private Animator.AnimatorListener getListener() {
-        return new Animator.AnimatorListener() {
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                mCanShowing = false;
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (correct) {
-                    input.setHint("");
-                    animDuration = 500;
-
-                    KeyboardType1 keyboardType1 = (KeyboardType1) keyboard;
-                    //渐变显示新内容
-                    TextColorAnimator.ofArgb(
-                            keyboardType1.show,
-                            Color.BLACK,
-                            Color.WHITE,
-                            Color.BLACK)
-                                     .setDuration(animDuration)
-                                     .start();
-
-                    colorIndicate.setVisibility(View.INVISIBLE);
-                    tips.setText("");
-                    input.setText("");
-
-
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            handler.sendEmptyMessage(HANDLER_UPDATE_SHOWING);
-                            mCanShowing = true;
-                        }
-                    }, animDuration / 2);
-                }
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        };
-    }
 }
 
 

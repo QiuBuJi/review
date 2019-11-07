@@ -76,7 +76,7 @@ public class ReviewStruct extends SaveData {
 
         for (int i = 0; i < wesRight.size(); i++) {
             WordExplain weRight = wesRight.get(i);
-            WordExplain weInput      = null;
+            WordExplain weInput = null;
 
             //挑出和matchWE.category相同的条目到we中
             for (WordExplain weTemp : wesInput) {
@@ -95,7 +95,7 @@ public class ReviewStruct extends SaveData {
             ArrayList<String> wrongInput = new ArrayList<>(weInput.explains);
 
             for (int k = 0; k < wrongInput.size(); k++) {
-                String  word      = wrongInput.get(k);
+                String  word     = wrongInput.get(k);
                 boolean contains = weRight.explains.contains(word);
 
                 //移除正确词语，留下不正确的
@@ -161,9 +161,9 @@ public class ReviewStruct extends SaveData {
 
     public ArrayList<WordExplain> getFrame() {
         ArrayList<WordExplain> wordExplains = getMatchWordExplains();
-        for (WordExplain wordExplain : wordExplains) {
+
+        for (WordExplain wordExplain : wordExplains)
             wordExplain.explains.clear();
-        }
         return wordExplains;
     }
 

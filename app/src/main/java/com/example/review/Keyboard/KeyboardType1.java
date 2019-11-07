@@ -1,7 +1,6 @@
 package com.example.review.Keyboard;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.support.constraint.ConstraintLayout;
@@ -10,12 +9,12 @@ import android.text.Editable;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.review.Adapter.MyAdapter;
 import com.example.review.DataStructureFile.WordExplain;
+import com.example.review.HandleInterfaceType1;
 import com.example.review.New.KeyText;
 import com.example.review.New.ReviewStruct;
 import com.example.review.R;
@@ -27,8 +26,8 @@ import java.util.ArrayList;
 
 public class KeyboardType1 extends Keyboard {
 
-    public MediaPlayer mp;
-    public TextView    show;
+    public MediaPlayer          mp;
+    public HandleInterfaceType1 handleInterfaceType1;
 
     public KeyboardType1(Context context, RecyclerView keyboardView, ConstraintLayout container, EditText input, ReviewStruct reviewStruct) {
         super(context, keyboardView, container, input, reviewStruct);
@@ -40,10 +39,11 @@ public class KeyboardType1 extends Keyboard {
         input.requestFocus();
 //        input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setInputType(InputType.TYPE_NULL);
+        input.setHint("请输入");
 
-        View inflate = LayoutInflater.from(context).inflate(R.layout.activity_text_view, container, false);
-        show = inflate.findViewById(R.id.tv_text);
-        container.addView(inflate);
+        ArrayList<WordExplain> frameRight = rs.getMatchWordExplains(rs.getShow());
+        handleInterfaceType1 = new HandleInterfaceType1(context, container, frameRight);
+        handleInterfaceType1.setLightAnimation(true, 200);
     }
 
     @Override
@@ -56,14 +56,13 @@ public class KeyboardType1 extends Keyboard {
 //            case TYPE_EXPLAIN:
 //            case TYPE_CHOOSE:
             case TYPE_PICTURE:
-                View parent = ((View) show.getParent());
                 Drawable drawable = Drawable.createFromPath(text);
 
                 if (drawable == null) {
-                    show.setHint("路径内容不是图片！");
+                    handleInterfaceType1.windowExplainHolder.explainTitle.setHint("路径内容不是图片！");
                 } else {
-                    show.setHint("");
-                    parent.setBackground(drawable);
+                    handleInterfaceType1.windowExplainHolder.explainTitle.setHint("");
+                    container.setBackground(drawable);
                 }
                 break;
             case TYPE_SOUND:
@@ -83,52 +82,10 @@ public class KeyboardType1 extends Keyboard {
                 } catch (IOException e) {
                     Speech.play(text);
                 }
-                show.setHint("听声音...");
+                handleInterfaceType1.windowExplainHolder.explainTitle.setHint("听声音...");
 
                 break;
             default:
-                ArrayList<WordExplain> mwe = ReviewStruct.getMatchWordExplains(text);
-                if (!mwe.isEmpty()) {
-                    int max = 0;
-
-                    //取最长的一条
-                    for (WordExplain we : mwe) {
-                        int length = we.category.length();
-                        if (length > max) max = length;
-                    }
-
-                    for (WordExplain we : mwe) {
-                        if (!we.ediable) continue;
-                        we.ediable = false;
-
-                        StringBuilder buf    = new StringBuilder();
-                        int           length = we.category.length();
-                        length = max - length;
-
-                        //添加空格，达到对齐目的
-                        for (int i = 0; i < length; i++) buf.append(" ");
-                        we.category = buf.toString().concat(we.category);
-                    }
-
-
-                    SpanUtil.SpanBuilder span = SpanUtil.create();
-
-                    for (WordExplain wordExplain : mwe) {
-
-                        int color = getColor(wordExplain.category);
-                        span.addForeColorSection(wordExplain.category, color);
-
-                        for (String explain : wordExplain.explains) {
-                            span.addSection(explain + "；");
-                        }
-                        span.addSection("\n");
-                    }
-
-                    span.showIn(show);
-                } else {
-                    show.setText(text);
-                }
-
                 break;
         }
 

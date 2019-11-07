@@ -1,6 +1,7 @@
 package com.example.review;
 
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -20,37 +21,38 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class HandleInterface {
+public class HandleInterfaceType2 {
 
-    private final ConstraintLayout containerView;
-    private final Context          context;
-    private final MyAdapter        adapter;
+    public ConstraintLayout containerView;
+    public Context          context;
+    public MyAdapter        adapter;
 
-    private ArrayList<WordExplain> frameInput;
-    private ArrayList<WordExplain> frameRight;
-    public  WindowExplainHolder    windowExplainHolder;
+    public ArrayList<WordExplain> frameInput;
+    public ArrayList<WordExplain> frameRight;
+    public WindowExplainHolder    windowExplainHolder;
     int indexOfItem = 0;
+    private final View windowExplain;
 
-    public HandleInterface(Context context, ConstraintLayout containerView, ArrayList<WordExplain> frame, ArrayList<WordExplain> frameTemp) {
+    public HandleInterfaceType2(Context context, ConstraintLayout containerView, ArrayList<WordExplain> frameInput, ArrayList<WordExplain> frameRight) {
         this.context = context;
         this.containerView = containerView;
-        this.frameInput = frame;
-        this.frameRight = frameTemp;
+        this.frameInput = frameInput;
+        this.frameRight = frameRight;
 
         //把frameRight内成员顺序排列得跟frame一样
-        for (int i = 0; i < frame.size(); i++) {
-            WordExplain we = frame.get(i);
+        for (int i = 0; i < frameInput.size(); i++) {
+            WordExplain we = frameInput.get(i);
 
-            for (WordExplain wordExplain : frameTemp) {
+            for (WordExplain wordExplain : frameRight) {
                 if (wordExplain.category.trim().equals(we.category.trim())) {
-                    frameTemp.remove(wordExplain);
-                    frameTemp.add(i, wordExplain);
+                    frameRight.remove(wordExplain);
+                    frameRight.add(i, wordExplain);
                     break;
                 }
             }
         }
 
-        View windowExplain = LayoutInflater.from(context).inflate(R.layout.activity_window_explain, containerView, false);
+        windowExplain = LayoutInflater.from(context).inflate(R.layout.activity_window_explain, containerView, false);
         containerView.addView(windowExplain);
 
         windowExplainHolder = new WindowExplainHolder(windowExplain);
@@ -62,6 +64,22 @@ public class HandleInterface {
         windowExplainHolder.explainBody.setAdapter(adapter);
     }
 
+    public void setLightAnimation(boolean lightUp, int duration) {
+        ValueAnimator valueAnim;
+        if (lightUp)
+            valueAnim = ValueAnimator.ofFloat(0f, 1f);
+        else valueAnim = ValueAnimator.ofFloat(1f, 0f);
+
+        valueAnim.setDuration(duration);
+        valueAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float value = (Float) valueAnimator.getAnimatedValue();
+                windowExplain.setAlpha(value);
+            }
+        });
+        valueAnim.start();
+    }
 
     //移动到上一项
     public void moveUp() {

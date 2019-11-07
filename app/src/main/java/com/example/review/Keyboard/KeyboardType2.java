@@ -10,7 +10,8 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.example.review.DataStructureFile.WordExplain;
-import com.example.review.HandleInterface;
+import com.example.review.HandleInterfaceType1;
+import com.example.review.HandleInterfaceType2;
 import com.example.review.MainActivity;
 import com.example.review.New.KeyText;
 import com.example.review.New.LibrarySet;
@@ -30,7 +31,7 @@ public class KeyboardType2 extends Keyboard {
 
     public ArrayList<WordExplain> frameInput;
     public ArrayList<WordExplain> frameRight;
-    public HandleInterface        handleInterface;
+    public HandleInterfaceType2   handleInterface;
 
     public KeyboardType2(Context context, RecyclerView keyboardView, ConstraintLayout container, EditText input, ReviewStruct reviewStruct) {
         super(context, keyboardView, container, input, reviewStruct);
@@ -50,7 +51,7 @@ public class KeyboardType2 extends Keyboard {
         input.setInputType(InputType.TYPE_NULL);
 
         Speech.play_Baidu(rs.getShow());
-        handleInterface = new HandleInterface(context, container, frameInput, frameRight);
+        handleInterface = new HandleInterfaceType2(context, container, frameInput, frameRight);
         boolean camPlay = Setting.getBoolean("开启朗读");
 
 
@@ -71,8 +72,8 @@ public class KeyboardType2 extends Keyboard {
                     adapter.notifyDataSetChanged();
                 }
             });
-
         }
+        handleInterface.setLightAnimation(true, 200);
     }
 
     void showWord() {
