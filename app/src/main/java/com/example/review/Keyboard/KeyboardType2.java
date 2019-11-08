@@ -207,16 +207,52 @@ public class KeyboardType2 extends Keyboard {
                     break;
                 case COM_EMPTY:
                     handleInterface.emptying();
+                    //设置给按键，显示字符
+                    for (KeyText kt : strData) kt.isPressed = false;
+                    adapter.notifyDataSetChanged();
                     break;
                 case COM_DELETE:
-                    handleInterface.delete();
+                    String deletedStr = handleInterface.delete();
+
+                    //设置给按键，显示字符
+                    for (int i = 0; i < strData.size(); i++) {
+                        KeyText kt = strData.get(i);
+
+                        if (kt.text.equals(deletedStr)) {
+                            kt.isPressed = false;
+                            adapter.notifyItemChanged(i);
+                            break;
+                        }
+                    }
                     break;
                 case "播放":
                     Speech.play_Baidu(rs.getShow());
                     break;
             }
         } else {
-            handleInterface.addSegment(keyText.text);
+            boolean isSuccess = handleInterface.addSegment(keyText.text);
+
+            //设置给按键，不显示字符
+            if (isSuccess) {
+                int wordCountRight = 0, wordCountInput = 0;
+
+                //累计keyText.text在frameRight中重复数量
+                for (WordExplain we : frameRight) {
+                    for (String word : we.explains) if (word.equals(keyText.text)) wordCountRight++;
+                }
+
+                //累计keyText.text在frameInput中重复数量
+                for (WordExplain we : frameInput) {
+                    for (String word : we.explains) if (word.equals(keyText.text)) wordCountInput++;
+                }
+
+                //wordCountRight为0，则keyText.text它不是正确的，就只能单击1次
+                if (wordCountRight == wordCountInput || wordCountRight == 0)
+                    keyText.isPressed = true;
+                else keyText.isPressed = false;
+
+                adapter.notifyItemChanged(posi);
+            }
         }
         return true;
     }

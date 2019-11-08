@@ -5,6 +5,7 @@ import android.view.View;
 public class KeyText {
     public String  text;
     public boolean isCom;
+    public boolean isPressed;
 
     public int  keyCode = -1;
     public char key     = 1;

@@ -92,12 +92,13 @@
         android:id="@+id/fragment_textView_tips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/bg_ripple_effect_click1"
         android:hint="tips..."
         android:textColor="@android:color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_textView_colorIndicate" />
+        app:layout_constraintEnd_toStartOf="@+id/main_textView_next"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_editText_input" />
 
     <EditText
         android:id="@+id/fragment_editText_input"
@@ -116,15 +117,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/main_imageView_play_sound"
         app:layout_constraintTop_toBottomOf="@+id/fragment_progressBar_progress" />
-
-    <TextView
-        android:id="@+id/fragment_textView_colorIndicate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textSize="10sp"
-        app:layout_constraintStart_toStartOf="@+id/fragment_editText_input"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_editText_input" />
 
     <TextView
         android:id="@+id/fragment_textView_lastText"
@@ -205,11 +197,13 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/main_recycllerView_keyboard"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_textView_tips" />
 
     <TextView
         android:id="@+id/main_textView_level"
@@ -245,14 +239,14 @@
         android:id="@+id/main_textView_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/bg_ripple_rectangle_round"
         android:padding="2dp"
         android:text="下一个"
         android:textColor="#FFFFFF"
         android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_textView_tips"
         app:layout_constraintEnd_toEndOf="@+id/cl_main_container"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+        app:layout_constraintTop_toTopOf="@+id/fragment_textView_tips" />
 
 </android.support.constraint.ConstraintLayout>

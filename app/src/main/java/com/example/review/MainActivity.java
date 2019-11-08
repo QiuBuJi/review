@@ -1,8 +1,5 @@
 package com.example.review;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -32,7 +29,6 @@ import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -44,7 +40,6 @@ import android.widget.Toast;
 
 import com.example.review.Adapter.MyAdapter;
 import com.example.review.Animator.TextColorAnimator;
-import com.example.review.Animator.TextPartColorAnimator;
 import com.example.review.DataStructureFile.DateTime;
 import com.example.review.DataStructureFile.ElementCategory;
 import com.example.review.DataStructureFile.ReviewData;
@@ -53,7 +48,6 @@ import com.example.review.Keyboard.Keyboard;
 import com.example.review.Keyboard.KeyboardType1;
 import com.example.review.Keyboard.KeyboardType2;
 import com.example.review.Keyboard.KeyboardType3;
-import com.example.review.Keyboard.KeyboardType4;
 import com.example.review.New.CountList;
 import com.example.review.New.KeyText;
 import com.example.review.New.ReviewStruct;
@@ -91,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView textViewAbout;
     TextView textViewPercent;
     TextView tips;
-    TextView colorIndicate;
     TextView lastText;
 
     ImageView imageViewDetail;
@@ -99,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageView imageViewPlaySound;
 
     ProgressBar  progressBarProgress;
-    EditText     input;
+    EditText     etInput;
     ImageButton  imageButtonSetting;
     ImageButton  imageButtonClear;
     TextView     tvLevel;
@@ -161,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //刷新显示界面文字
     void refreshShowing(boolean isChange) {
-        input.setEnabled(true);
+        etInput.setEnabled(true);
         if (keyboard != null) keyboard.stop();
 
         //屏幕没有显示，则不启动
@@ -174,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!data.mActivate.isEmpty()) {
             ReviewStruct rs = data.mActivate.getFirst();
             tvLevel.setText(String.format(Locale.CHINA, "%d", rs.getLevel()));
+            tips.setText("");
 
             //不让重复刷新
             if (isChange || lastRs != rs) {
@@ -182,15 +176,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 switch (type) {
                     case Keyboard.TYPE_WORD:
-                        keyboard = new KeyboardType1(this, recyclerViewKeyboard, mainContainer, input, rs);
+                        keyboard = new KeyboardType1(this, recyclerViewKeyboard, mainContainer, etInput, rs);
                         keyboard.buildKeyboard();
                         break;
                     case Keyboard.TYPE_EXPLAIN:
-                        keyboard = new KeyboardType2(this, recyclerViewKeyboard, mainContainer, input, rs);
+                        keyboard = new KeyboardType2(this, recyclerViewKeyboard, mainContainer, etInput, rs);
                         keyboard.buildKeyboard();
                         break;
                     case Keyboard.TYPE_CHOOSE:
-                        keyboard = new KeyboardType3(this, recyclerViewKeyboard, mainContainer, input, rs);
+                        keyboard = new KeyboardType3(this, recyclerViewKeyboard, mainContainer, etInput, rs);
                         keyboard.buildKeyboard();
                         break;
                     case Keyboard.TYPE_PICTURE:
@@ -208,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             lastRs = null;
 
-            input.setShowSoftInputOnFocus(true);
+            etInput.setShowSoftInputOnFocus(true);
 
             tvLevel.setText("☺");
             if (state == 1 && !data.isEmpty()) data.save();
@@ -407,9 +401,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageViewPlaySound = findViewById(R.id.main_imageView_play_sound);
 
         progressBarProgress = findViewById(R.id.fragment_progressBar_progress);
-        input = findViewById(R.id.fragment_editText_input);
+        etInput = findViewById(R.id.fragment_editText_input);
         tips = findViewById(R.id.fragment_textView_tips);
-        colorIndicate = findViewById(R.id.fragment_textView_colorIndicate);
         lastText = findViewById(R.id.fragment_textView_lastText);
         imageButtonSetting = findViewById(R.id.main_imageButton_setting);
         imageButtonClear = findViewById(R.id.main_imageButton_clear);
@@ -428,7 +421,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //显示框背景
         textViewArrival.setOnClickListener(this);
         //输入框
-        input.addTextChangedListener(this);
+        etInput.addTextChangedListener(this);
         //分类列表按钮
         imageViewSort.setOnClickListener(this);
         //关于按钮
@@ -442,8 +435,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         imageButtonSetting.setOnClickListener(this);
 
-        input.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        input.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        etInput.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        etInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
@@ -465,7 +458,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvNext.setOnClickListener(this);
         tips.setOnClickListener(this);
         tips.setOnLongClickListener(showTipsWindowListener());
-//        input.setOnClickListener(this);
+//        etInput.setOnClickListener(this);
     }
 
     private View.OnLongClickListener showTipsWindowListener() {
@@ -502,14 +495,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     void initVariable() {
         Speech.initVoice(this);
 
-        //设置颜色提示字符
-        String sb = "";
-        sb = sb.concat("<font color='#ff0000'>■</font> 位置错误&nbsp&nbsp");//0CC3F1
-        sb = sb.concat("<font color='#0'>■</font> 正确字符&nbsp&nbsp");
-        sb = sb.concat("<font color='#C3C3C3'>■</font> 多余字符&nbsp&nbsp");
-        colorIndicate.setText(Html.fromHtml(sb));
-        colorIndicate.setVisibility(View.INVISIBLE);
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -517,7 +502,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }).start();
     }
-
 
     @Override
     protected void onDestroy() {
@@ -581,7 +565,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(MainActivity.this, AboutActivity.class));
                 break;
             case R.id.main_imageView_play_sound:
-                Speech.play_Baidu(input.getText().toString(), imageViewPlaySound);
+                Speech.play_Baidu(etInput.getText().toString(), imageViewPlaySound);
                 break;
             case R.id.main_imageView_Detail:
                 startActivity(new Intent(MainActivity.this, ListActivity.class));
@@ -593,7 +577,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(MainActivity.this, SettingActivity.class));
                 break;
             case R.id.main_imageButton_clear:
-                input.setText("");
+                etInput.setText("");
                 break;
             case R.id.fragment_textView_tips:
                 if (!data.mActivate.isEmpty()) {
@@ -737,7 +721,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //输入匹配---------------------------------------------------------------------------------------
     void matchInput() {
-        String inputText = input.getText().toString();
+        String inputText = etInput.getText().toString();
 
         //避开下标越界
         if (data.mActivate.isEmpty()) {
@@ -745,19 +729,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        ReviewStruct rs = data.mActivate.getFirst();
-
-        input.setText(inputText);//清楚文字残留颜色
-
-        CountList cl   = new CountList();
-        int       type = rs.match.getType();
+        etInput.setText(inputText);//清楚文字残留颜色
+        ReviewStruct rs   = data.mActivate.getFirst();
+        CountList    cl   = new CountList();
+        int          type = rs.match.getType();
 
         switch (type) {
             case 1: {
                 //如果输入为空，就显示listen...
                 if (inputText.isEmpty()) {
                     tips.setText("");
-                    input.setHint("听发音...");
+                    etInput.setHint("听发音...");
 //                    Speech.play_Baidu(rs.getMatch());
                     tips.callOnClick();
                     return;
@@ -774,6 +756,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (correct) {
                     matchCorrect(rs);
                     mReviewedNum++;
+
+                    //下面监听器，等颜色动画播放完毕，然后显示下一条数据在textShow中
+                    final int duration = 200;
+                    keyboardType2.handleInterface.setLightAnimation(false, duration);
+
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            handler.sendEmptyMessage(HANDLER_UPDATE_SHOWING);
+                        }
+                    }, duration);
                 } else {
                     matchError(cl);
                     tips.callOnClick();
@@ -786,6 +779,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (correct) {
                     matchCorrect(rs);
                     mReviewedNum++;
+
+
+                    //下面监听器，等颜色动画播放完毕，然后显示下一条数据在textShow中
+                    final int duration = 200;
+                    keyboardType3.setLightAnimation(false, duration);
+
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            handler.sendEmptyMessage(HANDLER_UPDATE_SHOWING);
+                        }
+                    }, duration);
                 } else {
                     matchError(cl);
                     tips.callOnClick();
@@ -793,7 +798,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             }
             case 4: {
-
                 break;
             }
         }
@@ -822,18 +826,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void matchCorrect(ReviewStruct rs) {
         canJoinLog = 0;
         data.updateInavalable_AddLevel(rs);
-
-        //下面监听器，等颜色动画播放完毕，然后显示下一条数据在textShow中
-        final KeyboardType2 keyboardType2 = (KeyboardType2) keyboard;
-        final int           duration      = 200;
-        keyboardType2.handleInterface.setLightAnimation(false, duration);
-
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.sendEmptyMessage(HANDLER_UPDATE_SHOWING);
-            }
-        }, duration);
     }
 
 
@@ -849,11 +841,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int           duration      = 200;
             keyboardType1.handleInterfaceType1.setLightAnimation(false, duration);
 
-            input.setHint("");
-            colorIndicate.setVisibility(View.INVISIBLE);
-            tips.setText("");
-            input.setText("");
+            //渐变显示绿色动画，表示输入正确
+            TextColorAnimator.ofArgb(etInput, Color.BLACK, Color.GREEN, Color.TRANSPARENT).setDuration(duration).start();
 
+            //延时后，再进入下一条复习计划
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -868,43 +859,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             canJoinLog++;
             rs.resetLevel();//重置水平
 
-            ColorfulText               colorfulText = new ColorfulText();
-            ArrayList<ElementCategory> ecs          = colorfulText.categoryString(inputText, rs.getMatch());//todo
+            ColorfulText               ct  = new ColorfulText();
+            ArrayList<ElementCategory> ecs = ct.categoryString(inputText, rs.getMatch());//todo
 
-
-            tips.setText(Html.fromHtml(colorfulText.txt, 1));//显示缺少的字符
+            tips.setText(Html.fromHtml(ct.txt, 1));//显示缺少的字符
             Speech.play_Baidu(rs.getMatch());//播放单词发音
-            colorIndicate.setVisibility(View.VISIBLE);//显示输入框，错误颜色说明
-//            input.setSelection(input.length());//全选输入框
 
-            Editable    editable  = input.getEditableText();
-            AnimatorSet animators = new AnimatorSet();
-
-
-            //输入错误后，显示错误夜色的过渡动画
-            int begin = 0, end;
+            //输入错误后，指出错误类型
+            SpanUtil.SpanBuilder spanBuilder = SpanUtil.create();
             for (ElementCategory ec : ecs) {
-                end = begin + ec.txt.length();
-                ValueAnimator av = null;
 
                 switch (ec.category) {
                     case correct:
-
+                        spanBuilder.addForeColorSection(ec.txt, Color.BLACK);
                         break;
                     case malposition:
-                        av = TextPartColorAnimator.ofArgb(editable, begin, end, Color.BLACK, Color.RED);
+                        spanBuilder.addUnderlineSection(ec.txt);
                         break;
                     case unnecesary:
-                        av = TextPartColorAnimator.ofArgb(editable, begin, end, Color.BLACK, 0xffc3c3c3);
+                        spanBuilder.addStrickoutSection(ec.txt).setForeColor(ec.txt, 0xffc3c3c3);
+                        break;
+                    case missing:
+//                        spanBuilder.addForeColorSection(ec.txt, Color.YELLOW);
                         break;
                 }
-                animators.play(av);
-                begin = end;
             }
-            animators.setDuration(0);
-            animators.setInterpolator(new AccelerateInterpolator());
-            animators.start();
-            refreshShowing(false);
+            spanBuilder.showIn(etInput);
+//            etInput.setSelection(etInput.length());//全选输入框
         }
     }
 
@@ -927,9 +908,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (b) return true;
             }
         }
-        if (!input.hasFocus()) {
-            input.requestFocus();
-            input.setText("");
+        if (!etInput.hasFocus()) {
+            etInput.requestFocus();
+            etInput.setText("");
         }
         return super.dispatchKeyEvent(event);
     }
@@ -970,8 +951,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void afterTextChanged(Editable s) {
-        input.setTextColor(Color.BLACK);
-        String text = input.getText().toString();
+        etInput.setTextColor(Color.BLACK);
+        String text = etInput.getText().toString();
 
         if (text.equals("")) {
             if (state1 == 2) return;

@@ -96,12 +96,15 @@ public class HandleInterfaceType2 {
     }
 
     //向前删除
-    public void delete() {
-        WordExplain we;
-        we = frameInput.get(indexOfItem);
-        int position = we.explains.size();
-        if (position > 0) we.explains.remove(--position);
+    public String delete() {
+        WordExplain we  = frameInput.get(indexOfItem);
+        String      str = null;
+        try {
+            str = we.explains.removeLast();
+        } catch (Exception e) {
+        }
         adapter.notifyDataSetChanged();
+        return str;
     }
 
     //清空所有输入的数据
@@ -112,7 +115,9 @@ public class HandleInterfaceType2 {
     }
 
     //添加字符
-    public void addSegment(String segment) {
+    public boolean addSegment(String segment) {
+        boolean returnValue = false;
+
         //解决退出后再进入时不显示内容的问题
         ViewGroup.LayoutParams lp = windowExplainHolder.explainBody.getLayoutParams();
         lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -127,10 +132,14 @@ public class HandleInterfaceType2 {
 
             if (we.explains.contains(segment)) {
                 Toast.makeText(context, "不能重复哦！", Toast.LENGTH_SHORT).show();
-            } else we.explains.add(segment);
+            } else {
+                we.explains.add(segment);
+                returnValue = true;
+            }
+
         } else {
             adapter.notifyDataSetChanged();
-            return;
+            return returnValue;
         }
 
         sizeB = frameRight.size();
@@ -146,8 +155,9 @@ public class HandleInterfaceType2 {
             else break;
             weTemp = frameInput.get(indexOfItem);
         }
-
         adapter.notifyDataSetChanged();
+
+        return returnValue;
     }
 
     public void refresh() {

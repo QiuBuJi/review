@@ -1,5 +1,6 @@
 package com.example.review.Keyboard;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -35,17 +36,38 @@ public class KeyboardType3 extends Keyboard {
     public  ArrayList<TextCom> mCandidateType;
     private Pattern            patterBitPar;
     private Pattern            patternPar;
-    private TextView show;
+    private TextView           show;
+    private View inflate;
 
     public KeyboardType3(Context context, RecyclerView keyboardView, ConstraintLayout show, EditText input, ReviewStruct reviewStruct) {
         super(context, keyboardView, show, input, reviewStruct);
     }
 
+    public void setLightAnimation(boolean lightUp, int duration) {
+        ValueAnimator valueAnim;
+        if (lightUp)
+            valueAnim = ValueAnimator.ofFloat(0f, 1f);
+        else valueAnim = ValueAnimator.ofFloat(1f, 0f);
+
+        valueAnim.setDuration(duration);
+        valueAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float value = (Float) valueAnimator.getAnimatedValue();
+                inflate.setAlpha(value);
+            }
+        });
+        valueAnim.start();
+    }
+
     @Override
     void init() {
-        View inflate = LayoutInflater.from(context).inflate(R.layout.activity_text_view, container, false);
+        input.setHint("");
+        input.setText("");
+
+        inflate = LayoutInflater.from(context).inflate(R.layout.activity_text_view, container, false);
         show = inflate.findViewById(R.id.tv_text);
-        container.addView(show);
+        container.addView(inflate);
 
         String strMatch = rs.getMatch();
         patternPar = Pattern.compile("\\(.*?\\)");

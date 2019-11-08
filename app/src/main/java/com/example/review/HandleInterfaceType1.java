@@ -42,10 +42,19 @@ public class HandleInterfaceType1 {
         windowExplainHolder = new WindowExplainHolder(windowExplain);
         windowExplainHolder.explainTitle.setText("");
 
+        //解决退出后再进入时不显示内容的问题
+        ViewGroup.LayoutParams lp = windowExplainHolder.explainBody.getLayoutParams();
+        lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        windowExplainHolder.explainBody.setLayoutParams(lp);
+
         LinearLayoutManager layout = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         windowExplainHolder.explainBody.setLayoutManager(layout);
         adapter = new MyAdapter();
         windowExplainHolder.explainBody.setAdapter(adapter);
+    }
+
+    public void refresh() {
+        adapter.notifyDataSetChanged();
     }
 
     public void setLightAnimation(boolean lightUp, int duration) {

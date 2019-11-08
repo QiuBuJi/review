@@ -40,6 +40,7 @@ public class KeyboardType1 extends Keyboard {
 //        input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setInputType(InputType.TYPE_NULL);
         input.setHint("请输入");
+        input.setText("");
 
         ArrayList<WordExplain> frameRight = rs.getMatchWordExplains(rs.getShow());
         handleInterfaceType1 = new HandleInterfaceType1(context, container, frameRight);
@@ -50,6 +51,7 @@ public class KeyboardType1 extends Keyboard {
     public void refresh() {
         String text = rs.getShow();
         int    type = rs.show.getType();
+        handleInterfaceType1.refresh();
 
         switch (type) {
 //            case TYPE_WORD:

@@ -3,10 +3,11 @@ package com.example.review.DataStructureFile;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class WordExplain {
-    public String            category = "";
-    public ArrayList<String> explains = new ArrayList<>();
+    public String             category = "";
+    public LinkedList<String> explains = new LinkedList<String>();
 
     public boolean ediable = true;
 
@@ -15,7 +16,7 @@ public class WordExplain {
 
     public WordExplain(WordExplain we) {
         category = we.category;
-        explains = new ArrayList<>(we.explains);
+        explains = new LinkedList<>(we.explains);
     }
 
     @NonNull
