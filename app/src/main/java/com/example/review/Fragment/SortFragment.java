@@ -61,8 +61,8 @@ public class SortFragment extends Fragment {
         displayField = Setting.getInt("displayField");
         data = MainActivity.data;
         context = getContext();
-        recyclerView = view.findViewById(R.id.sort_fragment_recyclerView);
-        tip = view.findViewById(R.id.sort_fragment_textView_noData);
+        recyclerView = (RecyclerView) view.findViewById(R.id.sort_fragment_recyclerView);
+        tip = (TextView) view.findViewById(R.id.sort_fragment_textView_noData);
 
         if (mIsActivity) mData = data.mActivate;
         else mData = data.mInactivate;
@@ -241,9 +241,7 @@ public class SortFragment extends Fragment {
                     addExtraText(item.time, TimeFieldEnum.MONTH, sb, "（本年）");
                     throw new Exception();
                 }
-                int month = item.time.getMonth();
-                if (month == 0) sb.append(12).append("月");
-                else sb.append(month).append("月");
+                sb.append(item.time.getMonth() + 1).append("月");
                 if (SortActivity.fragment.displayField == DateTime.MONTH) {
                     addExtraText(item.time, TimeFieldEnum.DAY, sb, "（本月）");
                     throw new Exception();
@@ -316,14 +314,14 @@ public class SortFragment extends Fragment {
                 super(itemView);
                 view = itemView;
 
-                index = view.findViewById(R.id.item_sort_textView_index);
-                title1 = view.findViewById(R.id.item_sort_textView_title1);
-                title2 = view.findViewById(R.id.item_sort_textView_title2);
-                region = view.findViewById(R.id.item_sort_textView_region);
-                level1 = view.findViewById(R.id.item_sort_textView_level1);
-                level2 = view.findViewById(R.id.item_sort_textView_level2);
-                timeTips = view.findViewById(R.id.item_sort_textView_timeTips);
-                line = view.findViewById(R.id.item_sort_imageView_line);
+                index = (TextView) view.findViewById(R.id.item_sort_textView_index);
+                title1 = (TextView) view.findViewById(R.id.item_sort_textView_title1);
+                title2 = (TextView) view.findViewById(R.id.item_sort_textView_title2);
+                region = (TextView) view.findViewById(R.id.item_sort_textView_region);
+                level1 = (TextView) view.findViewById(R.id.item_sort_textView_level1);
+                level2 = (TextView) view.findViewById(R.id.item_sort_textView_level2);
+                timeTips = (TextView) view.findViewById(R.id.item_sort_textView_timeTips);
+                line = (ImageView) view.findViewById(R.id.item_sort_imageView_line);
             }
         }
 

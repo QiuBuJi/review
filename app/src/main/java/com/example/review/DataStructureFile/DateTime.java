@@ -61,7 +61,7 @@ public class DateTime extends SaveData {
 
     public DateTime(Calendar calendar) {
         year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH) + 1;
+        month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
         hour = calendar.get(Calendar.HOUR_OF_DAY);
         minute = calendar.get(Calendar.MINUTE);
@@ -273,14 +273,14 @@ public class DateTime extends SaveData {
         day = borrow.highOrder;
 
         int multiple = 30;
-        if (month == 2) {
-            if (year % 4 == 0 && year % 100 > 0)//闰年判断
-                multiple = 29;
+        if (month == 1) {
+            //闰年判断
+            if (year % 4 == 0 && year % 100 > 0) multiple = 29;
             else multiple = 28;
 
-        } else if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12)
-            multiple = 31
-                    ;
+        } else if (month == 0 || month == 2 || month == 4 || month == 6 || month == 7 || month == 9 || month == 11)
+            multiple = 31;
+
         borrow = subtractOf(new BorrowStru(day, month), dateTime.day, multiple);
         day = borrow.lowOrder;
         month = borrow.highOrder;
@@ -328,12 +328,23 @@ public class DateTime extends SaveData {
      */
     private BorrowStru subtractOf(BorrowStru val, int subtractor, int multiple) {
         val.lowOrder -= subtractor;
+
         if (val.lowOrder < 0) {
+            //得出要借的数量
             int times = Math.abs(val.lowOrder / multiple);
+
+            //val.lowOrder还有余数的话，要多借1
             val.lowOrder %= multiple;
-            val.highOrder -= times + (val.lowOrder == 0 ? 0 : 1);
+            times += (val.lowOrder == 0 ? 0 : 1);
+
+            //向高位借数
+            val.highOrder -= times;
+
+            //todo ??
             val.lowOrder = (val.lowOrder == 0 ? 0 : multiple) + val.lowOrder;
+
         } else if (val.lowOrder >= multiple) {
+            //低位数大于进制数，则向高位进位
             int times = val.lowOrder / multiple;
             val.lowOrder %= multiple;
             val.highOrder += times;
@@ -347,10 +358,10 @@ public class DateTime extends SaveData {
     public String toString() {
         StringBuilder buffer = new StringBuilder();
 
-        buffer.append(fillZero(year  , 4)).append("年")
-              .append(fillZero(month , 2)).append("月")
-              .append(fillZero(day   , 2)).append("日 ")
-              .append(fillZero(hour  , 2)).append("时")
+        buffer.append(fillZero(year, 4)).append("年")
+              .append(fillZero(month + 1, 2)).append("月")
+              .append(fillZero(day, 2)).append("日 ")
+              .append(fillZero(hour, 2)).append("时")
               .append(fillZero(minute, 2)).append("分")
               .append(fillZero(Math.abs(second), 2)).append('秒')
               .append(second < 0 ? " ✘" : " ");//✔
@@ -360,10 +371,10 @@ public class DateTime extends SaveData {
     public String toStringTime() {
         StringBuilder str = new StringBuilder();
 
-        if (year   > 0) str.append(year).append("年");
-        if (month  > 0) str.append(fillZero(month , 2)).append("月");
-        if (day    > 0) str.append(fillZero(day   , 2)).append("日");
-        if (hour   > 0) str.append(fillZero(hour  , 2)).append("时");
+        if (year > 0) str.append(year).append("年");
+        if (month > 0) str.append(fillZero(month + 1, 2)).append("月");
+        if (day > 0) str.append(fillZero(day, 2)).append("日");
+        if (hour > 0) str.append(fillZero(hour, 2)).append("时");
         if (minute > 0) str.append(fillZero(minute, 2)).append("分");
         if (second > 0) str.append(fillZero(second, 2)).append("秒");
         return str.toString();
@@ -372,11 +383,12 @@ public class DateTime extends SaveData {
     public String toAboutValue() {
         StringBuilder strTime = new StringBuilder();
 
-        if      (year   > 0) strTime.append(String.format("%.1f", year   + (month  / 12f))).append("年");
-        else if (month  > 0) strTime.append(String.format("%.1f", month  + (day    / 31f))).append("月");
-        else if (day    > 0) strTime.append(String.format("%.1f", day    + (hour   / 24f))).append("日");
-        else if (hour   > 0) strTime.append(String.format("%.1f", hour   + (minute / 60f))).append("时");
-        else if (minute > 0) strTime.append(String.format("%.1f", minute + (second / 60f))).append("分");
+        if (year > 0) strTime.append(String.format("%.1f", year + (month / 12f))).append("年");
+        else if (month > 0) strTime.append(String.format("%.1f", month + (day / 31f))).append("月");
+        else if (day > 0) strTime.append(String.format("%.1f", day + (hour / 24f))).append("日");
+        else if (hour > 0) strTime.append(String.format("%.1f", hour + (minute / 60f))).append("时");
+        else if (minute > 0)
+            strTime.append(String.format("%.1f", minute + (second / 60f))).append("分");
         else if (second > 0) strTime.append(String.format("%.1f", second)).append("秒");
 
         return strTime.toString();
@@ -385,9 +397,9 @@ public class DateTime extends SaveData {
     public StringBuffer toNoneZero0String() {
         StringBuffer sb = new StringBuffer();
 
-        if (year  > 0) sb.append(year ).append("年");
-        if (month > 0) sb.append(month).append("月");
-        if (day   > 0) sb.append(day  ).append("日 ");
+        if (year > 0) sb.append(year).append("年");
+        if (month > 0) sb.append(month + 1).append("月");
+        if (day > 0) sb.append(day).append("日 ");
 
         if (hour > 0) sb.append(fillZero(hour, 2)).append(":");
 

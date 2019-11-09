@@ -7,6 +7,7 @@ import com.example.review.New.LibrarySet;
 import com.example.review.New.LibraryStruct;
 import com.example.review.New.ReviewSet;
 import com.example.review.New.ReviewStruct;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -111,8 +112,8 @@ public class ReviewData extends ReviewSet {
         readDataFrom(fileNexus);
         library.readOf(fileLibrary);
 
-        int        sizeNexus     = size() * 2;
-        int        sizeLibrary   = library.size();
+        int sizeNexus   = size() * 2;
+        int sizeLibrary = library.size();
 
         if (sizeNexus != sizeLibrary) {
             throw new IllegalArgumentException("数据不一致 sizeNexus*2 = " + sizeNexus + " sizeLibrary = " + sizeLibrary);
@@ -269,7 +270,7 @@ public class ReviewData extends ReviewSet {
             e.printStackTrace();
         }
 
-        boolean state  = !split[2].contains("F");
+        boolean state = !split[2].contains("F");
         assert time != null;
         int second = time.getSecond();
         if (!state) time.setSecond(-second);
@@ -299,6 +300,7 @@ public class ReviewData extends ReviewSet {
                     //没有log数据
                 }
             }
+
             //从小到大的时间排序
             sortAddToInactivate(rs);
         }
@@ -330,22 +332,20 @@ public class ReviewData extends ReviewSet {
             ReviewStruct rs = mInactivate.getFirst();
 
             if (currTime.biggerThan(rs.time)) {
-                if (!sortToAvalable(rs))
-                    mActivate.add(rs);
+                if (!sortToAvalable(rs)) mActivate.add(rs);
                 mInactivate.removeFirst();
-                if (avalableUpdate != null)
-                    avalableUpdate.onUpdatingToAvailable(rs);
+                if (avalableUpdate != null) avalableUpdate.onUpdatingToAvailable(rs);
 
                 count++;
             } else break;
         }
+
         if (count > 0) {
             if (avalableUpdate != null) avalableUpdate.onUpdateToAvailableComplete(count);
             if (avalableComplete != null) avalableComplete.onAvalablecomplete();
 
         } else {
-            if (avalableUpdate != null)
-                avalableUpdate.onUpdatedNoChange();
+            if (avalableUpdate != null) avalableUpdate.onUpdatedNoChange();
         }
 
     }

@@ -312,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String prefix = "";
         pathBoth = getPathBoth();
 
-        if (!pathBoth.isEmpty()) {
+        if (pathBoth != null && !pathBoth.isEmpty()) {
             String libName = Setting.sp.getString("libName", "");
 
             for (int i = 0; i < pathBoth.size(); i++) {
@@ -347,6 +347,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ReviewService.LocalBinder binder = (ReviewService.LocalBinder) iBinder;
         service = binder.getService();
         data = service.data;
+
         dataPrepared();
     }
 
@@ -478,6 +479,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tips.setOnClickListener(this);
         tips.setOnLongClickListener(showTipsWindowListener());
 //        etInput.setOnClickListener(this);
+
+        //长按显示上一个复习条目
+        tvNext.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+
+                if (!data.mActivate.isEmpty()) {
+                    ReviewStruct last = data.mActivate.removeLast();
+                    data.mActivate.addFirst(last);
+
+                    refreshShowing(false);
+                }
+
+                return true;
+            }
+        });
     }
 
     private View.OnLongClickListener showTipsWindowListener() {
@@ -688,6 +705,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return str.endsWith("nexus") || str.endsWith("library");
             }
         });
+        if (list == null) return null;
 
         final List<PathBoth> paths = new LinkedList<>();
         List<String>         strs  = new LinkedList<>(Arrays.asList(list));
