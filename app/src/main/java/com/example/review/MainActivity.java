@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int              libIndex     = 0;
     private int              mReviewedNum = 0;
     private ConstraintLayout mainContainer;
+    private TextView         tvLastDuration;
 
     @Override
     public boolean handleMessage(Message msg) {
@@ -168,6 +169,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ReviewStruct rs = data.mActivate.getFirst();
             tvLevel.setText(String.format(Locale.CHINA, "%d", rs.getLevel()));
             tips.setText("");
+
+            //显示距离上次复习间隔了多久
+            DateTime dateTime = new DateTime(rs.logs.getLast());
+            DateTime subtract = DateTime.getCurrentTime().subtract(dateTime);
+            String text = subtract.toAboutValue();
+
+            SpanUtil.create()
+                    .addUnderlineSection(text)
+                    .showIn(tvLastDuration);
+
 
             //不让重复刷新
             if (isChange || lastRs != rs) {
@@ -414,6 +425,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvReviewedNum = findViewById(R.id.main_textView_reviewedNum);
 
         mainContainer = findViewById(R.id.cl_main_container);
+        tvLastDuration = findViewById(R.id.tvLastDuration);
     }
 
     //初始化监听器-----------------------------------------------------------------------------------

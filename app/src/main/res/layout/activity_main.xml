@@ -202,8 +202,10 @@
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_textView_tips" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_textView_tips"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/main_textView_level"
@@ -248,5 +250,15 @@
         app:layout_constraintBottom_toBottomOf="@+id/fragment_textView_tips"
         app:layout_constraintEnd_toEndOf="@+id/cl_main_container"
         app:layout_constraintTop_toTopOf="@+id/fragment_textView_tips" />
+
+    <TextView
+        android:id="@+id/tvLastDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="last duration"
+        app:layout_constraintEnd_toEndOf="@+id/cl_main_container"
+        app:layout_constraintTop_toTopOf="@+id/cl_main_container" />
 
 </android.support.constraint.ConstraintLayout>

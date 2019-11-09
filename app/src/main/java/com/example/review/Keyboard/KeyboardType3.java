@@ -37,7 +37,7 @@ public class KeyboardType3 extends Keyboard {
     private Pattern            patterBitPar;
     private Pattern            patternPar;
     private TextView           show;
-    private View inflate;
+    private View               inflate;
 
     public KeyboardType3(Context context, RecyclerView keyboardView, ConstraintLayout show, EditText input, ReviewStruct reviewStruct) {
         super(context, keyboardView, show, input, reviewStruct);
@@ -174,21 +174,15 @@ public class KeyboardType3 extends Keyboard {
         for (TextCom tc : mCandidateType) {
             if (tc.isCandidate) {
 
-                if (posi == index) {
-                    spanBuilder.addBackColorSection(tc.text, Color.LTGRAY)
-                               .setStyle(tc.text, Typeface.BOLD);
-                } else {
-                    spanBuilder.addForeColorSection(tc.text, Color.BLACK)
-                               .setStyle(tc.text, Typeface.BOLD);
-                }
-
+                if (posi == index)
+                    spanBuilder.addBackColorSection(tc.text, Color.LTGRAY).setStyle(tc.text, Typeface.BOLD);
+                else
+                    spanBuilder.addForeColorSection(tc.text, Color.BLACK).setStyle(tc.text, Typeface.BOLD);
 
                 if (tc.isStrike) spanBuilder.setStrikethrough(tc.text);
                 spanBuilder.setUnderline(tc.text);
                 posi++;
-            } else {
-                spanBuilder.addForeColorSection(tc.text, Color.GRAY);
-            }
+            } else spanBuilder.addForeColorSection(tc.text, Color.GRAY);
         }
         spanBuilder.showIn(this.show);
 
