@@ -25,7 +25,7 @@ public class ReviewData extends ReviewSet {
 
     private static DateTime[] reviewRegions = new DateTime[]{
             new DateTime("0秒"),  // 0级
-            new DateTime("2秒"),  // 1级，插入mActivate第三个位置-----------
+//            new DateTime("2秒"),  // 1级，插入mActivate第三个位置-----------
             new DateTime("10秒"), // 2级
             new DateTime("5分"),  // 3级
             new DateTime("15分"), // 4级

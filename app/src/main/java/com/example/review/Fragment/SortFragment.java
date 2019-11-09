@@ -60,19 +60,15 @@ public class SortFragment extends Fragment {
 
         displayField = Setting.getInt("displayField");
         data = MainActivity.data;
+        context = getContext();
         recyclerView = view.findViewById(R.id.sort_fragment_recyclerView);
         tip = view.findViewById(R.id.sort_fragment_textView_noData);
-
-        context = getContext();
 
         if (mIsActivity) mData = data.mActivate;
         else mData = data.mInactivate;
 
-        if (mData.isEmpty()) {
-            tip.setVisibility(View.VISIBLE);
-        } else {
-            tip.setVisibility(View.INVISIBLE);
-        }
+        if (mData.isEmpty()) tip.setVisibility(View.VISIBLE);
+        else tip.setVisibility(View.INVISIBLE);
 
         selectPartToShow(displayField);
 
@@ -236,19 +232,20 @@ public class SortFragment extends Fragment {
         }
 
         private void make(int posi, MyHolder holder) {
-            StringBuilder sb           = new StringBuilder();
-            SortActivity  sortActivity = (SortActivity) context;
-            ReviewStruct  item         = data.get(posi);
+            StringBuilder sb   = new StringBuilder();
+            ReviewStruct  item = data.get(posi);
 
             try {
                 sb.append(item.time.getYear()).append("年");
                 if (SortActivity.fragment.displayField == DateTime.YEAR) {
-                    addExtraText(new DateTime(item.time), TimeFieldEnum.MONTH, sb, "（本年）");
+                    addExtraText(item.time, TimeFieldEnum.MONTH, sb, "（本年）");
                     throw new Exception();
                 }
-                sb.append(item.time.getMonth()).append("月");
+                int month = item.time.getMonth();
+                if (month == 0) sb.append(12).append("月");
+                else sb.append(month).append("月");
                 if (SortActivity.fragment.displayField == DateTime.MONTH) {
-                    addExtraText(new DateTime(item.time), TimeFieldEnum.DAY, sb, "（本月）");
+                    addExtraText(item.time, TimeFieldEnum.DAY, sb, "（本月）");
                     throw new Exception();
                 }
                 sb.append(item.time.getDay()).append("日");

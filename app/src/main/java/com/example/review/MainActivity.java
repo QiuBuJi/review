@@ -956,7 +956,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             dateTime.setSecond(-second);
         }
         rs.logs.add(dateTime.getBytes());
-
     }
 
     int start_ = 0;
