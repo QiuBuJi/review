@@ -166,19 +166,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //避开下标越界
         if (!data.mActivate.isEmpty()) {
-            ReviewStruct rs = data.mActivate.getFirst();
+            final ReviewStruct rs = data.mActivate.getFirst();
             tvLevel.setText(String.format(Locale.CHINA, "%d", rs.getLevel()));
             tips.setText("");
 
             //显示距离上次复习间隔了多久
             DateTime dateTime = new DateTime(rs.logs.getLast());
             DateTime subtract = DateTime.getCurrentTime().subtract(dateTime);
-            String text = subtract.toAboutValue();
+            String   text     = subtract.toAboutValue();
 
             SpanUtil.create()
                     .addUnderlineSection(text)
                     .showIn(tvLastDuration);
 
+            tvLastDuration.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    //跳转页面，到编辑窗口
+                    ListActivity.currentClickedRs = rs;
+                    MainActivity.this.startActivity(new Intent(MainActivity.this, EditActivity.class));
+                }
+            });
 
             //不让重复刷新
             if (isChange || lastRs != rs) {
@@ -212,13 +221,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             state = 1;
         } else {
             lastRs = null;
-
-            etInput.setShowSoftInputOnFocus(true);
-
-            tvLevel.setText("☺");
-            if (state == 1 && !data.isEmpty()) data.save();
             state = 2;
+            etInput.setShowSoftInputOnFocus(true);
+            tvLevel.setText("☺");
 
+            if (state == 1 && !data.isEmpty()) data.save();
             if (keyboard != null) keyboard.clearKeyboard();
         }
     }
@@ -530,7 +537,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mReviewedNum = 0;
         isShowedScreen = true;
         refreshProgress();
-        refreshShowing(false);
+
+        //如果打开过编辑窗口，则要刷新显示界面数据
+        if (ListActivity.currentClickedRs != null) {
+            ListActivity.currentClickedRs = null;
+            refreshShowing(true);
+        } else refreshShowing(false);
 
         NotificationManager notifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notifyManager.cancel(1);
