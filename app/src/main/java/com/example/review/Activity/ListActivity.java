@@ -1,4 +1,4 @@
-package com.example.review;
+package com.example.review.Activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.example.review.Adapter.AdapterList;
 import com.example.review.DataStructureFile.ReviewData;
 import com.example.review.New.ReviewStruct;
+import com.example.review.R;
 
 import java.util.Timer;
 import java.util.TimerTask;

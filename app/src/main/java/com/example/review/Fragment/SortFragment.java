@@ -2,6 +2,7 @@ package com.example.review.Fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -18,14 +19,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.review.Activity.EditActivity;
+import com.example.review.Activity.ListActivity;
 import com.example.review.DataStructureFile.DateTime;
 import com.example.review.DataStructureFile.ReviewData;
 import com.example.review.DataStructureFile.TimeFieldEnum;
-import com.example.review.MainActivity;
+import com.example.review.Activity.MainActivity;
 import com.example.review.New.ReviewStruct;
 import com.example.review.R;
 import com.example.review.Setting;
-import com.example.review.SortActivity;
+import com.example.review.Activity.SortActivity;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -229,6 +232,16 @@ public class SortFragment extends Fragment {
                 holder.line.setVisibility(View.INVISIBLE);
             }
 
+            //长按加入编辑界面
+            holder.view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    //跳转页面，到编辑窗口
+                    ListActivity.currentClickedRs = item;
+                    context.startActivity(new Intent(context, EditActivity.class));
+                    return false;
+                }
+            });
         }
 
         private void make(int posi, MyHolder holder) {

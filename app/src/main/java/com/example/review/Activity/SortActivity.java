@@ -1,4 +1,4 @@
-package com.example.review;
+package com.example.review.Activity;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.example.review.Fragment.OutlineFragment;
 import com.example.review.Fragment.SortFragment;
+import com.example.review.R;
+import com.example.review.Setting;
 
 import java.util.ArrayList;
 

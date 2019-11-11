@@ -19,8 +19,8 @@ import android.widget.TextView;
 
 import com.example.review.DataStructureFile.DateTime;
 import com.example.review.DataStructureFile.ReviewData;
-import com.example.review.EditActivity;
-import com.example.review.ListActivity;
+import com.example.review.Activity.EditActivity;
+import com.example.review.Activity.ListActivity;
 import com.example.review.New.ReviewStruct;
 import com.example.review.R;
 import com.example.review.Util.Speech;
@@ -76,9 +76,7 @@ public class AdapterList extends RecyclerView.Adapter {
         for (byte[] log : rs.logs) {
             DateTime dateTime = new DateTime(log);
             int      second   = dateTime.getSecond();
-            if (second < 0) {
-                count++;
-            }
+            if (second < 0) count++;
         }
 
         holder.errorProgress.setMax(size);
@@ -157,6 +155,7 @@ public class AdapterList extends RecyclerView.Adapter {
                 Speech.play_Baidu(rs.getMatch(), holder.playSound);
             }
         });
+
     }
 
     @Override

@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.review.DataStructureFile.DateTime;
-import com.example.review.MainActivity;
+import com.example.review.Activity.MainActivity;
 import com.example.review.New.ReviewStruct;
 import com.example.review.R;
 import com.example.review.Setting;

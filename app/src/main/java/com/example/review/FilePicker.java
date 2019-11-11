@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.review.Activity.MainActivity;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;

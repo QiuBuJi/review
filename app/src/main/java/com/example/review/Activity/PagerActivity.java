@@ -1,4 +1,4 @@
-package com.example.review;
+package com.example.review.Activity;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.review.Fragment.MyFragment;
+import com.example.review.R;
 
 import java.util.ArrayList;
 
@@ -44,11 +45,7 @@ public class PagerActivity extends AppCompatActivity {
 
         titles = new ArrayList<>();
         ArrayList<String> data = new ArrayList<>();
-
-        for (int i = 0; i < 4; i++) {
-            data.add(i + "个数据");
-        }
-
+        for (int i = 0; i < 4; i++) data.add(i + "个数据");
 
         final ArrayList<Fragment> fragments = new ArrayList<>();
 

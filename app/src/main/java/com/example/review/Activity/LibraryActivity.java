@@ -1,4 +1,4 @@
-package com.example.review;
+package com.example.review.Activity;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.review.New.LibrarySet;
 import com.example.review.New.LibraryStruct;
+import com.example.review.R;
 
 public class LibraryActivity extends AppCompatActivity {
 

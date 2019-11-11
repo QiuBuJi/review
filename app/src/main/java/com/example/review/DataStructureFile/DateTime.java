@@ -369,45 +369,40 @@ public class DateTime extends SaveData {
     }
 
     public String toStringTime() {
-        StringBuilder str = new StringBuilder();
+        StringBuilder time = new StringBuilder();
 
-        if (year > 0) str.append(year).append("年");
-        if (month > 0) str.append(fillZero(month + 1, 2)).append("月");
-        if (day > 0) str.append(fillZero(day, 2)).append("日");
-        if (hour > 0) str.append(fillZero(hour, 2)).append("时");
-        if (minute > 0) str.append(fillZero(minute, 2)).append("分");
-        if (second > 0) str.append(fillZero(second, 2)).append("秒");
-        return str.toString();
+        if (year > 0) time.append(String.format("%d年", year));
+        if (month >= 0) time.append(String.format("%d月", month + 1));
+        if (day > 0) time.append(String.format("%d日", day));
+        if (hour > 0) time.append(String.format("%d时", hour));
+        if (minute > 0) time.append(String.format("%d分", minute));
+        if (second > 0) time.append(String.format("%d秒", second));
+        return time.toString();
     }
 
     public String toAboutValue() {
         StringBuilder strTime = new StringBuilder();
 
-        if (year > 0) strTime.append(String.format("%.1f", year + (month / 12f))).append("年");
-        else if (month > 0) strTime.append(String.format("%.1f", month + (day / 31f))).append("月");
-        else if (day > 0) strTime.append(String.format("%.1f", day + (hour / 24f))).append("日");
-        else if (hour > 0) strTime.append(String.format("%.1f", hour + (minute / 60f))).append("时");
-        else if (minute > 0)
-            strTime.append(String.format("%.1f", minute + (second / 60f))).append("分");
-        else if (second > 0) strTime.append(String.format("%.1f", second)).append("秒");
+        if (year > 0) strTime.append(String.format("%.1f年", year + (month / 12f)));
+        else if (month > 0) strTime.append(String.format("%.1f月", month + (day / 31f)));
+        else if (day > 0) strTime.append(String.format("%.1f日", day + (hour / 24f)));
+        else if (hour > 0) strTime.append(String.format("%.1f时", hour + (minute / 60f)));
+        else if (minute > 0) strTime.append(String.format("%.1f分", minute + (second / 60f)));
+        else if (second > 0) strTime.append(String.format("%.1f秒", second + 0.0f));
 
         return strTime.toString();
     }
 
     public StringBuffer toNoneZero0String() {
-        StringBuffer sb = new StringBuffer();
+        StringBuffer time = new StringBuffer();
 
-        if (year > 0) sb.append(year).append("年");
-        if (month > 0) sb.append(month + 1).append("月");
-        if (day > 0) sb.append(day).append("日 ");
+        if (year > 0) time.append(String.format("%d年", year));
+        if (month > 0) time.append(String.format("%d月", month + 1));
+        if (day > 0) time.append(String.format("%d日 ", day));
+        if (hour > 0) time.append(String.format("%s:", fillZero(hour, 2)));
 
-        if (hour > 0) sb.append(fillZero(hour, 2)).append(":");
-
-        sb.append(fillZero(minute, 2));
-        sb.append(':');
-        sb.append(fillZero(second, 2));
-
-        return sb;
+        time.append(String.format("%s:%s", fillZero(minute, 2), fillZero(second + 1, 2)));
+        return time;
     }
 
     /**

@@ -7,18 +7,15 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.review.Adapter.MyAdapter;
 import com.example.review.DataStructureFile.WordExplain;
-import com.example.review.HandleInterfaceType1;
 import com.example.review.New.KeyText;
 import com.example.review.New.ReviewStruct;
 import com.example.review.R;
-import com.example.review.Util.SpanUtil;
 import com.example.review.Util.Speech;
 
 import java.io.IOException;
@@ -35,12 +32,22 @@ public class KeyboardType1 extends Keyboard {
 
     @Override
     void init() {
-        input.setShowSoftInputOnFocus(false);
+        input.setEnabled(true);
         input.requestFocus();
-//        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setInputType(InputType.TYPE_NULL);
         input.setHint("请输入");
         input.setText("");
+
+        input.setShowSoftInputOnFocus(false);
+        input.setInputType(InputType.TYPE_NULL);
+
+//        if (rs.getLevel() <= 3) {
+//            input.setShowSoftInputOnFocus(false);
+//            input.setInputType(InputType.TYPE_NULL);
+//
+//        } else {
+//            input.setShowSoftInputOnFocus(true);
+//            input.setInputType(InputType.TYPE_CLASS_TEXT);
+//        }
 
         ArrayList<WordExplain> frameRight = rs.getMatchWordExplains(rs.getShow());
         handleInterfaceType1 = new HandleInterfaceType1(context, container, frameRight);

@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.review.MainActivity;
+import com.example.review.Activity.MainActivity;
 import com.example.review.New.LibrarySet;
 import com.example.review.New.ReviewSet;
 import com.example.review.R;

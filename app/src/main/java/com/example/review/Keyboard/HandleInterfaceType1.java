@@ -1,4 +1,4 @@
-package com.example.review;
+package com.example.review.Keyboard;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.review.DataStructureFile.WordExplain;
+import com.example.review.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;

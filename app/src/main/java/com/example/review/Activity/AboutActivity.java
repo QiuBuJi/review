@@ -1,4 +1,4 @@
-package com.example.review;
+package com.example.review.Activity;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -9,6 +9,8 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.review.R;
 
 public class AboutActivity extends Activity {
 

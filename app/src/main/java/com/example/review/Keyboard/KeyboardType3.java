@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.review.MainActivity;
+import com.example.review.Activity.MainActivity;
 import com.example.review.New.KeyText;
 import com.example.review.New.LibrarySet;
 import com.example.review.New.LibraryStruct;

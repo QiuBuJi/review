@@ -33,32 +33,32 @@
 
         <!--库选窗口-->
         <activity
-            android:name=".LibraryActivity"
+            android:name=".Activity.LibraryActivity"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
 
-        <activity android:name=".PagerActivity" />
+        <activity android:name=".Activity.PagerActivity" />
 
         <!--设置窗口-->
-        <activity android:name=".SettingActivity" />
+        <activity android:name=".Activity.SettingActivity" />
 
-        <activity android:name=".SortActivity" />
+        <activity android:name=".Activity.SortActivity" />
 
         <!--关于窗口-->
-        <activity android:name=".AboutActivity" />
+        <activity android:name=".Activity.AboutActivity" />
 
         <!--编辑窗口-->
         <activity
-            android:name=".EditActivity"
+            android:name=".Activity.EditActivity"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
 
         <!--列表窗口-->
         <activity
-            android:name=".ListActivity"
+            android:name=".Activity.ListActivity"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
 
         <!--主窗口-->
         <activity
-            android:name=".MainActivity"
+            android:name=".Activity.MainActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="stateHidden|stateUnchanged">
             <intent-filter>

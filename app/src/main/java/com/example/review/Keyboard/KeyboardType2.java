@@ -8,12 +8,9 @@ import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.review.DataStructureFile.WordExplain;
-import com.example.review.HandleInterfaceType1;
-import com.example.review.HandleInterfaceType2;
-import com.example.review.MainActivity;
+import com.example.review.Activity.MainActivity;
 import com.example.review.New.KeyText;
 import com.example.review.New.LibrarySet;
 import com.example.review.New.LibraryStruct;
@@ -27,8 +24,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class KeyboardType2 extends Keyboard {
 
@@ -48,6 +43,7 @@ public class KeyboardType2 extends Keyboard {
         makeRandom(frameInput);
         span = 6;
 
+        input.setEnabled(false);
         input.setText("");
         input.setHint("↑↑↑在上面操作↑↑↑");
         input.setShowSoftInputOnFocus(false);
@@ -60,7 +56,7 @@ public class KeyboardType2 extends Keyboard {
 
         //单词提示；没开启朗读，则显示单词
         SpanUtil.SpanBuilder spanBuilder = SpanUtil.create();
-        if (rs.getLevel() < 3 || !camPlay) {
+        if (rs.getLevel() <= 3 || !camPlay) {
             showWord();
         } else {
             spanBuilder.addForeColorSection("--- ", Color.LTGRAY)

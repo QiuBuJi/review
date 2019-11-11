@@ -6,7 +6,7 @@ import android.media.MediaPlayer;
 import android.view.View;
 
 import com.baidu.tts.client.TtsMode;
-import com.example.review.MainActivity;
+import com.example.review.Activity.MainActivity;
 import com.example.review.Setting;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechSynthesizer;

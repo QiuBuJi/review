@@ -1,4 +1,4 @@
-package com.example.review;
+package com.example.review.Activity;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -16,11 +16,13 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
+import android.text.InputType;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -29,6 +31,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -51,6 +54,9 @@ import com.example.review.Keyboard.KeyboardType3;
 import com.example.review.New.CountList;
 import com.example.review.New.KeyText;
 import com.example.review.New.ReviewStruct;
+import com.example.review.R;
+import com.example.review.ReviewService;
+import com.example.review.Setting;
 import com.example.review.Util.ColorfulText;
 import com.example.review.Util.SpanUtil;
 import com.example.review.Util.Speech;
@@ -70,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                                                ServiceConnection,
                                                                Handler.Callback {
 
-//    private static final String TAG = "msg";
+    private static final String TAG = "msg_mine";
 
     static public ReviewData data = new ReviewData();
 
@@ -155,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //刷新显示界面文字
     void refreshShowing(boolean isChange) {
-        etInput.setEnabled(true);
         if (keyboard != null) keyboard.stop();
 
         //屏幕没有显示，则不启动
@@ -164,16 +169,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //初始化显示界面
         mainContainer.setBackgroundResource(R.drawable.bg_text_show);
 
-        //避开下标越界
+        //避开下标越界，有复习数据*********************************************************************
         if (!data.mActivate.isEmpty()) {
             final ReviewStruct rs = data.mActivate.getFirst();
             tvLevel.setText(String.format(Locale.CHINA, "%d", rs.getLevel()));
             tips.setText("");
 
             //显示距离上次复习间隔了多久
-            DateTime dateTime = new DateTime(rs.logs.getLast());
-            DateTime subtract = DateTime.getCurrentTime().subtract(dateTime);
-            String   text     = subtract.toAboutValue();
+            DateTime dateTime;
+            String   text;
+            try {
+                dateTime = new DateTime(rs.logs.getLast());
+                DateTime subtract = DateTime.getCurrentTime().subtract(dateTime);
+                text = subtract.toAboutValue();
+            } catch (Exception e) {
+                text = "编辑";
+            }
 
             SpanUtil.create()
                     .addUnderlineSection(text)
@@ -220,10 +231,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             state = 1;
         } else {
+            //当没有复习数据时，要配置的参数************************************************************
             lastRs = null;
             state = 2;
             etInput.setShowSoftInputOnFocus(true);
             tvLevel.setText("☺");
+            tvLastDuration.setText("---");
+            tvLastDuration.setOnClickListener(null);
+            textViewArrival.setText("**:**");
+
+            etInput.setHint("");
+            etInput.setEnabled(true);
+            etInput.setInputType(InputType.TYPE_CLASS_TEXT);
+
+            //显示界面，显示文字“当前没有复习计划”
+            mainContainer.removeAllViews();
+            TextView textView = new TextView(this);
+            textView.setHint("当前没有复习计划");
+            textView.setGravity(Gravity.CENTER);
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            textView.setLayoutParams(lp);
+            mainContainer.addView(textView);
 
             if (state == 1 && !data.isEmpty()) data.save();
             if (keyboard != null) keyboard.clearKeyboard();
@@ -560,6 +590,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ListActivity.currentClickedRs = null;
             refreshShowing(true);
         } else refreshShowing(false);
+
+
+        //延迟刷新界面，不延迟则界面刷新不了
+        if (keyboard != null) {
+            new Handler(new Handler.Callback() {
+                @Override
+                public boolean handleMessage(@NonNull Message message) {
+                    keyboard.refresh();
+                    return false;
+                }
+            }).sendMessageDelayed(new Message(), 20);
+        }
 
         NotificationManager notifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notifyManager.cancel(1);
@@ -934,33 +976,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        char ch = (char) event.getUnicodeChar();
+        char ch     = (char) event.getUnicodeChar();
+        int  action = event.getAction();
 
         //键盘按键被按下
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+        if (action == KeyEvent.ACTION_DOWN) {
             int keyCode = event.getKeyCode();
-            if (keyCode == KeyEvent.KEYCODE_BACK) return super.dispatchKeyEvent(event);
 
-            //显示代替字符
-            if (event.isCtrlPressed() && keyCode == KeyEvent.KEYCODE_S) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_BACK:
+                    break;
+                case KeyEvent.KEYCODE_FORWARD_DEL:
+                    etInput.setText("");
+                    break;
+                case KeyEvent.KEYCODE_DEL:
 
-                MyAdapter.isShowNum = !MyAdapter.isShowNum;
-                keyboard.adapter.notifyDataSetChanged();
-            } else if (MyAdapter.isShowNum) {
+                    break;
+                case KeyEvent.KEYCODE_S:
+                    //显示代替字符
+                    if (event.isAltPressed()) {
+                        MyAdapter.isShowNum = !MyAdapter.isShowNum;
+                        keyboard.adapter.notifyDataSetChanged();
+                        return super.dispatchKeyEvent(event);
+                    }
+            }
+
+            if (MyAdapter.isShowNum) {
                 boolean b = keyboard.keyDown(keyCode, ch, -1);
                 if (b) return true;
             }
         }
-        if (!etInput.hasFocus()) {
-            etInput.requestFocus();
-            etInput.setText("");
-        }
         return super.dispatchKeyEvent(event);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return super.onKeyDown(keyCode, event);
     }
 
     private void addLog(ReviewStruct rs) {

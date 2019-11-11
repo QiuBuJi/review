@@ -8,7 +8,9 @@ import com.example.review.Keyboard.KeyboardType3;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -172,50 +174,52 @@ public class ReviewStruct extends SaveData {
         return getMatchWordExplains(match);
     }
 
-    public static ArrayList<WordExplain> getMatchWordExplains(String text) {
-        text = Pattern.compile("\\r\\n|\\r|\\n|\\s").matcher(text).replaceAll("");
-        Pattern pattern = Pattern.compile("[a-zA-Z*]+\\.");
-        Matcher matcher = pattern.matcher(text);
+    // 吴攀.afiaejfaei hello.youoaerfuckyou.为了看风景 <>}|. this is what.那算了
+    static public LinkedList<String> toMatchList(String text, String regex) {
+        Matcher            mat         = Pattern.compile(regex).matcher(text);
+        LinkedList<String> matchedList = new LinkedList<>();
 
-        String[]               strPrefixs = pattern.split(text);
-        ArrayList<String>      prefixs    = new ArrayList<>();
-        ArrayList<WordExplain> item       = new ArrayList<>();
-
-        for (String prefix : strPrefixs) {
-            if (prefix.equals("")) continue;
-            prefixs.add(prefix);
+        while (mat.find()) {
+            int    start    = mat.start();
+            int    end      = mat.end();
+            String strMatch = text.substring(start, end);
+            matchedList.add(strMatch);
         }
+        return matchedList;
+    }
 
-        int i = 0;
-        while (matcher.find()) {
-            if (i == prefixs.size()) break;
+    public static ArrayList<WordExplain> getMatchWordExplains(String text) {
+        ArrayList<WordExplain> item        = new ArrayList<>();
+        String                 regex       = "\\S+?\\.";
+        String[]               strsPostfix = text.split(regex);
+        LinkedList<String>     strsPrefix  = toMatchList(text, regex);
+        Iterator<String>       iterator    = strsPrefix.iterator();
+        WordExplain            we          = null;
+        String                 splitChar   = "[;；，,]";
 
-            int start = matcher.start();
-            int end   = matcher.end();
+        for (String postfix : strsPostfix) {
+            if (!postfix.equals("")) {
+                if (iterator.hasNext()) {
+                    we = new WordExplain();
+                    String prefix = iterator.next();
+                    we.category = prefix;
+                    String[] words = postfix.split(splitChar);
 
-            String   category = text.substring(start, end);
-            String[] explains = Pattern.compile("[;；，,]").split(prefixs.get(i++));
-
-            WordExplain wordExplain = new WordExplain();
-            wordExplain.category = category;
-            for (String explain : explains) {
-                if (explain.equals("")) continue;
-                wordExplain.explains.add(explain);
+                    for (String word : words) if (!word.equals("")) we.explains.add(word);
+                    item.add(we);
+                }
             }
-
-            item.add(wordExplain);
         }
 
         //没有前缀的解释，这样处理
-        if (i == 0) {
-            WordExplain wordExplain = new WordExplain();
-            String[]    explains    = Pattern.compile("[;；，,]").split(text);
+        if (strsPrefix.isEmpty()) {
+            we = new WordExplain();
+            String[] explains = Pattern.compile(splitChar).split(text);
+            we.category = "*.";
 
-            Collections.addAll(wordExplain.explains, explains);
-            wordExplain.category = "*.";
-            item.add(wordExplain);
+            for (String word : explains) if (!word.equals("")) we.explains.add(word);
+            item.add(we);
         }
-
         return item;
     }
 

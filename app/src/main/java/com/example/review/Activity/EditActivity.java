@@ -1,4 +1,4 @@
-package com.example.review;
+package com.example.review.Activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,9 +18,11 @@ import android.widget.Toast;
 
 import com.example.review.DataStructureFile.DateTime;
 import com.example.review.DataStructureFile.ReviewData;
+import com.example.review.FilePicker;
 import com.example.review.New.LibrarySet;
 import com.example.review.New.LibraryStruct;
 import com.example.review.New.ReviewStruct;
+import com.example.review.R;
 
 
 public class EditActivity extends Activity
@@ -53,37 +55,7 @@ public class EditActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
-        textViewNumber = findViewById(R.id.textView_number);
-        editTextExplain = findViewById(R.id.editText_explain);
-        editTextWord = findViewById(R.id.editText_word);
-        imageViewBackButton = findViewById(R.id.edit_imageView_back_button);
-        textViewSave = findViewById(R.id.edit_button_save);
-        picker = findViewById(R.id.edit_numberPiker_piker);
-        switchJoin = findViewById(R.id.edit_switch_join);
-        textViewTypeWord = findViewById(R.id.edit_textView_type_word);
-        textViewTypeExplain = findViewById(R.id.edit_textView_type_explain);
-
-        scrollList = findViewById(R.id.edit_scrollView_list);
-        timeLogs = findViewById(R.id.edit_scrollView_textView_detail);
-
-        buttonUp = findViewById(R.id.edit_button_up);
-        buttonDown = findViewById(R.id.edit_button_down);
-        swGenerate = findViewById(R.id.edit_switch_generate_reverse);
-
-
-        //设置监听器
-        switchJoin.setOnCheckedChangeListener(this);
-        picker.setOnValueChangedListener(this);
-        imageViewBackButton.setOnClickListener(this);
-        textViewSave.setOnClickListener(this);
-        textViewTypeWord.setOnClickListener(this);
-        textViewTypeExplain.setOnClickListener(this);
-        textViewNumber.setOnClickListener(this);
-//        editTextWord.setOnClickListener(this);
-//        editTextExplain.setOnClickListener(this);
-        buttonUp.setOnClickListener(this);
-        buttonDown.setOnClickListener(this);
-
+        initViewAndListener();
 
         data = MainActivity.data;
         picker.setMaxValue(12);
@@ -167,6 +139,39 @@ public class EditActivity extends Activity
 
             switchJoin.setChecked(rs.joined);
         }
+    }
+
+    private void initViewAndListener() {
+        textViewNumber = findViewById(R.id.textView_number);
+        editTextExplain = findViewById(R.id.editText_explain);
+        editTextWord = findViewById(R.id.editText_word);
+        imageViewBackButton = findViewById(R.id.edit_imageView_back_button);
+        textViewSave = findViewById(R.id.edit_button_save);
+        picker = findViewById(R.id.edit_numberPiker_piker);
+        switchJoin = findViewById(R.id.edit_switch_join);
+        textViewTypeWord = findViewById(R.id.edit_textView_type_word);
+        textViewTypeExplain = findViewById(R.id.edit_textView_type_explain);
+
+        scrollList = findViewById(R.id.edit_scrollView_list);
+        timeLogs = findViewById(R.id.edit_scrollView_textView_detail);
+
+        buttonUp = findViewById(R.id.edit_button_up);
+        buttonDown = findViewById(R.id.edit_button_down);
+        swGenerate = findViewById(R.id.edit_switch_generate_reverse);
+
+
+        //设置监听器
+        switchJoin.setOnCheckedChangeListener(this);
+        picker.setOnValueChangedListener(this);
+        imageViewBackButton.setOnClickListener(this);
+        textViewSave.setOnClickListener(this);
+        textViewTypeWord.setOnClickListener(this);
+        textViewTypeExplain.setOnClickListener(this);
+        textViewNumber.setOnClickListener(this);
+//        editTextWord.setOnClickListener(this);
+//        editTextExplain.setOnClickListener(this);
+        buttonUp.setOnClickListener(this);
+        buttonDown.setOnClickListener(this);
     }
 
 
@@ -280,6 +285,7 @@ public class EditActivity extends Activity
         data.addLibrary(0, rsTemp.match, rsTemp.show);
         data.add(0, rsTemp);//数据添加到顶部
 
+        //添加单词、解释，相反的内容：解释、单词
         if (swGenerate.isChecked()) {
             ReviewStruct  rs   = getSavingData();
             LibraryStruct show = rs.show;
@@ -296,10 +302,7 @@ public class EditActivity extends Activity
         Toast.makeText(EditActivity.this, "保存成功！", Toast.LENGTH_SHORT).show();
 
         //加入复习
-        if (rsTemp.joined) {
-            data.sortAddToInactivate(rsTemp);
-        }
-
+        if (rsTemp.joined) data.sortAddToInactivate(rsTemp);
 
         finish();
     }
@@ -323,12 +326,8 @@ public class EditActivity extends Activity
                 if (isChange) {
                     rs.setLevel(rs.getLevel() - 1);
                     data.updateInavalable_AddLevel(rs);
-                } else {
-                    data.sortAddToInactivate(rs);
-                }
-            } else {
-                data.removeFromInavalable_Avalable(rs);
-            }
+                } else data.sortAddToInactivate(rs);
+            } else data.removeFromInavalable_Avalable(rs);
 
             data.saveLibrary();
             data.save();//保存数据
@@ -343,7 +342,7 @@ public class EditActivity extends Activity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ListActivity.currentClickedRs = null;
+//        ListActivity.currentClickedRs = null;
     }
 
 

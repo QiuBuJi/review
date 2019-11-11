@@ -12,9 +12,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ReviewData extends ReviewSet {
@@ -404,12 +406,12 @@ public class ReviewData extends ReviewSet {
 
         mActivate.remove(rs);
         int level = rs.getLevel();
+        level++;//增加水平
         if (level < 0) level = 0;
         int tempLevel = level;
 
 
         rs.time = DateTime.getCurrentTime();//取当前时间
-        level++;//增加水平
         rs.time.add(reviewRegions[level]);
         rs.setLevel(level);
 
