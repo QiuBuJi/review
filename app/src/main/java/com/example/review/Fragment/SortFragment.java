@@ -217,6 +217,17 @@ public class SortFragment extends Fragment {
                 DateTime tempTime = new DateTime(item.time);
                 tempTime.subtractOf(dateTime);
                 holder.timeTips.setText(tempTime.toAboutValue());
+
+                //长按进入编辑界面
+                holder.view.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        //跳转页面，到编辑窗口
+                        ListActivity.currentClickedRs = item;
+                        context.startActivity(new Intent(context, EditActivity.class));
+                        return false;
+                    }
+                });
             }
             holder.title2.setText(item.getShow());
             holder.level1.setText(String.format("%d", item.getLevel()));
@@ -231,17 +242,6 @@ public class SortFragment extends Fragment {
                 holder.region.setVisibility(View.GONE);
                 holder.line.setVisibility(View.INVISIBLE);
             }
-
-            //长按加入编辑界面
-            holder.view.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    //跳转页面，到编辑窗口
-                    ListActivity.currentClickedRs = item;
-                    context.startActivity(new Intent(context, EditActivity.class));
-                    return false;
-                }
-            });
         }
 
         private void make(int posi, MyHolder holder) {

@@ -4,17 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_ripple_effect"
     android:visibility="visible">
 
-    <TextView
-        android:id="@+id/item_sort_textView_region"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="最近"
-        android:textAlignment="center"
-        app:layout_constraintStart_toStartOf="@+id/item_sort_imageView_line"
-        app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/item_sort_imageView_line"
+        android:layout_width="0dp"
+        android:layout_height="3px"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_sort_textView_region"
+        app:srcCompat="@android:color/darker_gray" />
 
     <TextView
         android:id="@+id/item_sort_textView_title2"
@@ -31,16 +33,15 @@
         app:layout_constraintStart_toStartOf="@+id/item_sort_textView_title1"
         app:layout_constraintTop_toBottomOf="@+id/item_sort_textView_title1" />
 
-    <ImageView
-        android:id="@+id/item_sort_imageView_line"
-        android:layout_width="0dp"
-        android:layout_height="3px"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_sort_textView_region"
-        app:srcCompat="@android:color/darker_gray" />
+    <TextView
+        android:id="@+id/item_sort_textView_region"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="最近"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@+id/item_sort_imageView_line"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/item_sort_textView_title1"
