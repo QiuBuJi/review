@@ -12,7 +12,7 @@ import android.widget.EditText;
 import com.example.review.DataStructureFile.WordExplain;
 import com.example.review.Activity.MainActivity;
 import com.example.review.New.KeyText;
-import com.example.review.New.LibrarySet;
+import com.example.review.New.LibraryList;
 import com.example.review.New.LibraryStruct;
 import com.example.review.New.ReviewStruct;
 import com.example.review.Setting;
@@ -106,8 +106,8 @@ public class KeyboardType2 extends Keyboard {
 
         ArrayList<KeyText> data = new ArrayList<>(kts);
 
-        LibrarySet libs    = MainActivity.data.getLibraries();
-        LibrarySet tempLib = new LibrarySet();
+        LibraryList libs    = MainActivity.data.getLibraries();
+        LibraryList tempLib = new LibraryList();
 
         //在库内取出类型为2的数据
         for (LibraryStruct lib : libs) {

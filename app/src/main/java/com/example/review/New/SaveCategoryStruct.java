@@ -5,7 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 
-public class SaveCategoryStruct extends SaveData {
+public class SaveCategoryStruct extends StoreData {
     public LinkedList<String> names = new LinkedList<>();
 
     public SaveCategoryStruct() {
@@ -13,7 +13,7 @@ public class SaveCategoryStruct extends SaveData {
     }
 
     @Override
-    public void getBytes(DataOutputStream dos) throws IOException {
+    public void toBytes(DataOutputStream dos) throws IOException {
         dos.writeInt(names.size());
         for (String str : names) dos.writeUTF(str);
     }

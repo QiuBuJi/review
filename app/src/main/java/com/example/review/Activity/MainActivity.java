@@ -1019,7 +1019,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             int second = dateTime.getSecond();
             dateTime.setSecond(-second);
         }
-        rs.logs.add(dateTime.getBytes());
+        rs.logs.add(dateTime.toBytes());
     }
 
     int start_ = 0;
@@ -1063,7 +1063,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             state1 = 1;
         }
     }
-
 }
-
-

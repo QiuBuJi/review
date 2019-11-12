@@ -12,18 +12,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.review.Activity.MainActivity;
-import com.example.review.New.LibrarySet;
-import com.example.review.New.ReviewSet;
+import com.example.review.New.LibraryList;
+import com.example.review.New.ReviewList;
 import com.example.review.R;
 
 import java.io.File;
 
 public class MyFragment extends Fragment {
 
-    private View       mainView;
-    private Context    context;
-    private LibrarySet librarySet;
-    private ReviewSet  reviewSet;
+    private View        mainView;
+    private Context     context;
+    private LibraryList librarySet;
+    private ReviewList  reviewSet;
 
     @Nullable
     @Override
@@ -34,15 +34,15 @@ public class MyFragment extends Fragment {
         TextView     textView     = mainView.findViewById(R.id.text);
         context = getContext();
 
-        librarySet = new LibrarySet();
-        reviewSet = new ReviewSet();
+        librarySet = new LibraryList();
+        reviewSet = new ReviewList();
 
         long millis = System.currentTimeMillis();
-        librarySet.readOf(new File(MainActivity.pathApp, "library.lib"));
+        librarySet.read(new File(MainActivity.pathApp, "library.lib"));
         long millis1 = System.currentTimeMillis();
         millis = millis1 - millis;
 
-        reviewSet.readOf(new File(MainActivity.pathApp, "nexus.lib"));
+        reviewSet.read(new File(MainActivity.pathApp, "nexus.lib"));
         long millis2 = System.currentTimeMillis();
         millis1 = millis2 - millis1;
 

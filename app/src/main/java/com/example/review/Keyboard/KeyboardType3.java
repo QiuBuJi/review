@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.example.review.Activity.MainActivity;
 import com.example.review.New.KeyText;
-import com.example.review.New.LibrarySet;
+import com.example.review.New.LibraryList;
 import com.example.review.New.LibraryStruct;
 import com.example.review.New.ReviewStruct;
 import com.example.review.R;
@@ -91,7 +91,7 @@ public class KeyboardType3 extends Keyboard {
         }
 
 
-        LibrarySet        libs  = MainActivity.data.getLibraries();
+        LibraryList       libs  = MainActivity.data.getLibraries();
         ArrayList<String> list  = new ArrayList<>();
         int               index = 0;
 

@@ -18,13 +18,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.review.New.LibrarySet;
+import com.example.review.New.LibraryList;
 import com.example.review.New.LibraryStruct;
 import com.example.review.R;
 
 public class LibraryActivity extends AppCompatActivity {
 
-    private LibrarySet           libraries;
+    private LibraryList          libraries;
     private MyAdapter            adapter;
     private ImageView            imageViewBack;
     private EditText             search;
@@ -101,8 +101,8 @@ public class LibraryActivity extends AppCompatActivity {
     }
 
     private void acc() {
-        LibrarySet libs = new LibrarySet();
-        String     text = search.getText().toString();
+        LibraryList libs = new LibraryList();
+        String      text = search.getText().toString();
 
         for (LibraryStruct library : libraries) {
             String libText = library.getText();
@@ -125,9 +125,9 @@ public class LibraryActivity extends AppCompatActivity {
     }
 
     class MyAdapter extends RecyclerView.Adapter {
-        private LibrarySet libraries;
+        private LibraryList libraries;
 
-        public MyAdapter(LibrarySet libraries) {
+        public MyAdapter(LibraryList libraries) {
             this.libraries = libraries;
         }
 

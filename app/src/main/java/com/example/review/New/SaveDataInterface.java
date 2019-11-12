@@ -4,13 +4,15 @@ import java.io.*;
 
 public interface SaveDataInterface {
 
-    byte[] getBytes();
+    byte[] toBytes();
 
-    void getBytes(DataOutputStream dos) throws IOException;
+    void toBytes(DataOutputStream dos) throws IOException;
 
     void loadWith(byte[] rawBytes);
 
     void loadWith(DataInputStream dis) throws IOException;
 
+    void save(File path);
 
+    void read(File path);
 }

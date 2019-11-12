@@ -72,7 +72,6 @@ public class AdapterList extends RecyclerView.Adapter {
         int size  = rs.logs.size();
         int count = 0;
 
-
         for (byte[] log : rs.logs) {
             DateTime dateTime = new DateTime(log);
             int      second   = dateTime.getSecond();
@@ -137,7 +136,6 @@ public class AdapterList extends RecyclerView.Adapter {
                 }
             });
         } else holder.switch_.setVisibility(View.GONE);
-
 
         //选择&没被选择，的背景区别
         if (rs.selected) {
@@ -219,6 +217,7 @@ public class AdapterList extends RecyclerView.Adapter {
             if (ListActivity.checked) {
                 parent.buttonDelete.setText("删除");
                 parent.buttonDelete.setBackgroundColor(Color.RED);
+
                 if (ListActivity.switch_state) {
                     ListActivity.switch_state = false;
                     notifyDataSetChanged();

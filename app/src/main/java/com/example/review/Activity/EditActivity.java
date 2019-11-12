@@ -19,7 +19,7 @@ import android.widget.Toast;
 import com.example.review.DataStructureFile.DateTime;
 import com.example.review.DataStructureFile.ReviewData;
 import com.example.review.FilePicker;
-import com.example.review.New.LibrarySet;
+import com.example.review.New.LibraryList;
 import com.example.review.New.LibraryStruct;
 import com.example.review.New.ReviewStruct;
 import com.example.review.R;
@@ -27,34 +27,40 @@ import com.example.review.R;
 
 public class EditActivity extends Activity
         implements View.OnClickListener,
-                   CompoundButton.OnCheckedChangeListener,
-                   NumberPicker.OnValueChangeListener {
+        CompoundButton.OnCheckedChangeListener,
+        NumberPicker.OnValueChangeListener {
 
-    EditText     editTextExplain;
-    TextView     textViewNumber;
-    TextView     textViewSave;
+    EditText editTextExplain;
+    EditText editTextWord;
+
+    TextView textViewNumber;
+    TextView textViewSave;
+    TextView textViewTypeWord;
+    TextView textViewTypeExplain;
+    TextView timeLogs;
+
     ImageView    imageViewBackButton;
-    EditText     editTextWord;
     ReviewStruct rs;
     NumberPicker picker;
     ReviewData   data;
-    Switch       switchJoin;
-    int          level;
-    boolean      checked;
-    LibrarySet   libraries;
-    TextView     textViewTypeWord;
-    TextView     textViewTypeExplain;
-    ScrollView   scrollList;
-    TextView     timeLogs;
-    private Button buttonUp;
-    private Button buttonDown;
-    private Switch swGenerate;
+
+    Switch switchJoin;
+    Switch swGenerate;
+
+    int         level;
+    boolean     checked;
+    LibraryList libraries;
+    ScrollView  scrollList;
+
+    Button btUp;
+    Button btDown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
+        //初始化视图&监听器
         initViewAndListener();
 
         data = MainActivity.data;
@@ -70,6 +76,16 @@ public class EditActivity extends Activity
             //显示************************************************************
             rs = ListActivity.currentClickedRs;
 
+            //如果是引用，则不能编辑
+            if (rs.match.refer > 0) {
+                editTextWord.setEnabled(false);
+                btUp.setEnabled(false);
+            }
+            if (rs.show.refer > 0) {
+                editTextExplain.setEnabled(false);
+                btDown.setEnabled(false);
+            }
+
             //设置要显示的数据
             editTextWord.setText(rs.getMatch());
             editTextExplain.setText(rs.getShow());
@@ -79,11 +95,9 @@ public class EditActivity extends Activity
             textViewTypeExplain.setText(String.valueOf(rs.show.getType()));
 
             swGenerate.setEnabled(false);
-
             level = rs.getLevel();
             picker.setValue(level);
             int count = 0;
-
 
             DateTime oldLog = null;
             for (byte[] mlog : rs.logs) {
@@ -142,21 +156,21 @@ public class EditActivity extends Activity
     }
 
     private void initViewAndListener() {
-        textViewNumber = findViewById(R.id.textView_number);
-        editTextExplain = findViewById(R.id.editText_explain);
-        editTextWord = findViewById(R.id.editText_word);
+        textViewNumber      = findViewById(R.id.textView_number);
+        editTextExplain     = findViewById(R.id.editText_explain);
+        editTextWord        = findViewById(R.id.editText_word);
         imageViewBackButton = findViewById(R.id.edit_imageView_back_button);
-        textViewSave = findViewById(R.id.edit_button_save);
-        picker = findViewById(R.id.edit_numberPiker_piker);
-        switchJoin = findViewById(R.id.edit_switch_join);
-        textViewTypeWord = findViewById(R.id.edit_textView_type_word);
+        textViewSave        = findViewById(R.id.edit_button_save);
+        picker              = findViewById(R.id.edit_numberPiker_piker);
+        switchJoin          = findViewById(R.id.edit_switch_join);
+        textViewTypeWord    = findViewById(R.id.edit_textView_type_word);
         textViewTypeExplain = findViewById(R.id.edit_textView_type_explain);
 
         scrollList = findViewById(R.id.edit_scrollView_list);
-        timeLogs = findViewById(R.id.edit_scrollView_textView_detail);
+        timeLogs   = findViewById(R.id.edit_scrollView_textView_detail);
 
-        buttonUp = findViewById(R.id.edit_button_up);
-        buttonDown = findViewById(R.id.edit_button_down);
+        btUp       = findViewById(R.id.edit_button_up);
+        btDown     = findViewById(R.id.edit_button_down);
         swGenerate = findViewById(R.id.edit_switch_generate_reverse);
 
 
@@ -170,10 +184,9 @@ public class EditActivity extends Activity
         textViewNumber.setOnClickListener(this);
 //        editTextWord.setOnClickListener(this);
 //        editTextExplain.setOnClickListener(this);
-        buttonUp.setOnClickListener(this);
-        buttonDown.setOnClickListener(this);
+        btUp.setOnClickListener(this);
+        btDown.setOnClickListener(this);
     }
-
 
     String[] items = {"1 纯单词", "2 单词解释", "3 填空式", "4 图片", "5 声音"};
 
@@ -253,23 +266,19 @@ public class EditActivity extends Activity
     ReviewStruct getSavingData() {
         ReviewStruct rsSave = new ReviewStruct();
 
-
         String word    = editTextWord.getText().toString();
         String explain = editTextExplain.getText().toString();
 
         LibraryStruct lsWord    = new LibraryStruct(word, 1);
         LibraryStruct lsExplain = new LibraryStruct(explain, 2);
 
-
         CharSequence textWord = textViewTypeWord.getText();
         int          typeWord = Integer.valueOf((String) textWord);
         lsWord.setType(typeWord);
 
-
         CharSequence textExplain = textViewTypeExplain.getText();
         int          typeExplain = Integer.valueOf((String) textExplain);
         lsExplain.setType(typeExplain);
-
 
         rsSave.addData(lsExplain, lsWord);
         rsSave.joined = checked;
@@ -282,17 +291,31 @@ public class EditActivity extends Activity
     private void addData() {
         ReviewStruct rsTemp = getSavingData();
 
+        //自动生成ID
+        rsTemp.match.setIdAuto();
+        rsTemp.show.setIdAuto();
+
         data.addLibrary(0, rsTemp.match, rsTemp.show);
         data.add(0, rsTemp);//数据添加到顶部
 
         //添加单词、解释，相反的内容：解释、单词
         if (swGenerate.isChecked()) {
-            ReviewStruct  rs   = getSavingData();
+            ReviewStruct rs = getSavingData();
+
+            //交换显示字符串
             LibraryStruct show = rs.show;
-            rs.show = rs.match;
+            rs.show  = rs.match;
             rs.match = show;
+
+            //设置相反的类型
             rs.show.setType(1);
             rs.match.setType(2);
+
+            //绑定引用
+            rs.show.refer  = rsTemp.match.id;
+            rs.match.refer = rsTemp.show.id;
+
+            //添加数据
             data.addLibrary(0, rs.match, rs.show);
             data.add(0, rs);//数据添加到顶部
         }
@@ -344,7 +367,6 @@ public class EditActivity extends Activity
         super.onDestroy();
 //        ListActivity.currentClickedRs = null;
     }
-
 
     String[] itemsChoose = {"在库内选择", "选择图片"};
 

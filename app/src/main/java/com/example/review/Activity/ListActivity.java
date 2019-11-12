@@ -331,6 +331,7 @@ public class ListActivity extends Activity implements View.OnClickListener, Text
                 finish();
                 break;
             case R.id.imageView_add:
+                currentClickedRs = null;
                 startActivity(new Intent(ListActivity.this, EditActivity.class));
                 break;
             case R.id.imageView_import:
@@ -474,6 +475,4 @@ public class ListActivity extends Activity implements View.OnClickListener, Text
     protected void onDestroy() {
         super.onDestroy();
     }
-
-
 }

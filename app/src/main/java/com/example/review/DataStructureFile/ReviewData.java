@@ -3,23 +3,21 @@ package com.example.review.DataStructureFile;
 import android.os.Handler;
 import android.os.Message;
 
-import com.example.review.New.LibrarySet;
+import com.example.review.New.LibraryList;
 import com.example.review.New.LibraryStruct;
-import com.example.review.New.ReviewSet;
+import com.example.review.New.ReviewList;
 import com.example.review.New.ReviewStruct;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ReviewData extends ReviewSet {
+public class ReviewData extends ReviewList {
     private File fileLibrary;
     private File fileNexus;
 
@@ -46,10 +44,12 @@ public class ReviewData extends ReviewSet {
 
     private Timer timer = null;
 
-    final private int        UPDATE_TO_AVALABLE = 0;
-    final private int        DATA_SAVE          = 1;
-    final private int        DATA_SAVE_COMPLETE = 2;
-    private       LibrarySet library            = new LibrarySet();
+    final private int         UPDATE_TO_AVALABLE = 0;
+    final private int         DATA_SAVE          = 1;
+    final private int         DATA_SAVE_COMPLETE = 2;
+    private       LibraryList library            = new LibraryList();
+
+    public static LibraryList mLibraries = null;
 
     public ReviewData() {
     }
@@ -79,13 +79,14 @@ public class ReviewData extends ReviewSet {
 
     public void setDefaultPath(File fileLibrary, File fileNexus) {
         this.fileLibrary = fileLibrary;
-        this.fileNexus = fileNexus;
+        this.fileNexus   = fileNexus;
     }
 
     /**
      * 开启一条线程，保存数据
      */
     public void save() {
+        //在数据有变动时，才会执行保存程序
         if (dataChangeCount == 0) return;
         dataChangeCount = 0;
 
@@ -112,7 +113,7 @@ public class ReviewData extends ReviewSet {
     public void read() {
         if (fileNexus == null || fileLibrary == null) return;
         readDataFrom(fileNexus);
-        library.readOf(fileLibrary);
+        library.read(fileLibrary);
 
         int sizeNexus   = size() * 2;
         int sizeLibrary = library.size();
@@ -122,6 +123,7 @@ public class ReviewData extends ReviewSet {
         }
 
         connectOf(library);
+        mLibraries = library;
     }
 
     /**
@@ -142,7 +144,7 @@ public class ReviewData extends ReviewSet {
      */
     public void readDataFrom(File path) {
         clear();//清空原有数据
-        super.readOf(path);
+        super.read(path);
     }
 
     public void loadDataOf(File path) {
@@ -160,7 +162,7 @@ public class ReviewData extends ReviewSet {
             library.add(index, show);
 
             rs.match = show;
-            rs.show = match;
+            rs.show  = match;
             add(++i, rs);
         }
 
@@ -186,7 +188,7 @@ public class ReviewData extends ReviewSet {
      * @param path 需要转换为本土数据的文件路径
      * @return LinkedList 转换好的本土数据
      */
-    public void loadDataOf(File path, LibrarySet librarySet, ReviewSet reviewSet) {
+    public void loadDataOf(File path, LibraryList librarySet, ReviewList reviewSet) {
         clear();//清空原有数据
 
         try {
@@ -225,7 +227,7 @@ public class ReviewData extends ReviewSet {
                     if (txt.length() < 25) continue;
 
                     DateTime dt = toDateTime(txt);
-                    reviewStruct.logs.add(dt.getBytes());
+                    reviewStruct.logs.add(dt.toBytes());
                 }
 
                 reviewSet.add(reviewStruct);
@@ -323,7 +325,6 @@ public class ReviewData extends ReviewSet {
         return false;
     }
 
-
     /**
      * mInactivate更新到mAvalable中
      */
@@ -361,7 +362,6 @@ public class ReviewData extends ReviewSet {
     public interface AvalableComplete {
         void onAvalablecomplete();
     }
-
 
     public void setOnAvalableUpdate(AvalableUpdate avalableUpdate) {
         this.avalableUpdate = avalableUpdate;
@@ -435,7 +435,6 @@ public class ReviewData extends ReviewSet {
 
     }
 
-
     /**
      * 排序加入到mInactivate中
      */
@@ -504,8 +503,7 @@ public class ReviewData extends ReviewSet {
         dataChangeCount++;
     }
 
-
-    public LibrarySet getLibraries() {
+    public LibraryList getLibraries() {
         return library;
     }
 }

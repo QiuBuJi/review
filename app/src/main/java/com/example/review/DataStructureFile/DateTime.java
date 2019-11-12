@@ -2,13 +2,13 @@ package com.example.review.DataStructureFile;
 
 import android.support.annotation.NonNull;
 
-import com.example.review.New.SaveData;
+import com.example.review.New.StoreData;
 
 import java.io.*;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class DateTime extends SaveData {
+public class DateTime extends StoreData {
     public static int YEAR   = 0;
     public static int MONTH  = 1;
     public static int DAY    = 2;
@@ -446,7 +446,7 @@ public class DateTime extends SaveData {
     static public int MAX_BYTES = 7;
 
     @Override
-    public void getBytes(DataOutputStream dos) throws IOException {
+    public void toBytes(DataOutputStream dos) throws IOException {
         dos.writeShort(year);//2
         dos.writeByte(month);//1
         dos.writeByte(day);//1

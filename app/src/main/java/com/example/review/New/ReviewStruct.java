@@ -8,14 +8,12 @@ import com.example.review.Keyboard.KeyboardType3;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ReviewStruct extends SaveData {
+public class ReviewStruct extends StoreData {
     public LibraryStruct show;
     public LibraryStruct match;
 
@@ -23,6 +21,7 @@ public class ReviewStruct extends SaveData {
     int classType  = 0;
     int level;
 
+    public int      posi;
     public int      viewCount;
     public boolean  joined;
     public boolean  selected;
@@ -31,21 +30,19 @@ public class ReviewStruct extends SaveData {
 
     public LinkedList<byte[]> logs = new LinkedList<>();
 
-    public int posi;
-
     public ReviewStruct() {
     }
 
     public ReviewStruct(ReviewStruct rs) {
-        this.show = rs.show;
-        this.showed = rs.showed;
-        this.time = rs.time;
-        this.match = rs.match;
-        this.joined = rs.joined;
-        this.logs = rs.logs;
-        this.posi = rs.posi;
-        this.level = rs.level;
-        this.classType = rs.classType;
+        this.show       = rs.show;
+        this.showed     = rs.showed;
+        this.time       = rs.time;
+        this.match      = rs.match;
+        this.joined     = rs.joined;
+        this.logs       = rs.logs;
+        this.posi       = rs.posi;
+        this.level      = rs.level;
+        this.classType  = rs.classType;
         this.previousID = rs.previousID;
     }
 
@@ -59,6 +56,10 @@ public class ReviewStruct extends SaveData {
 
     public String getShow() {
         return show.getText();
+    }
+
+    public void setShow(LibraryStruct show) {
+        this.show = show;
     }
 
     public void setShow(String text) {
@@ -113,10 +114,10 @@ public class ReviewStruct extends SaveData {
 
         int needCorrectNum = (int) (total * corRate);
 
-        countList.corrCount = corrCount;
-        countList.errCount = errCount;
-        countList.totalNum = total;
-        countList.corrRate = corRate;
+        countList.corrCount   = corrCount;
+        countList.errCount    = errCount;
+        countList.totalNum    = total;
+        countList.corrRate    = corRate;
         countList.needCorrNum = needCorrectNum;
 
         return errCount == 0 && corrCount >= needCorrectNum;
@@ -147,15 +148,14 @@ public class ReviewStruct extends SaveData {
 
         int needCorrectNum = total;
 
-        countList.corrCount = corrCount;
-        countList.errCount = errCount;
-        countList.totalNum = total;
-        countList.corrRate = 1;
+        countList.corrCount   = corrCount;
+        countList.errCount    = errCount;
+        countList.totalNum    = total;
+        countList.corrRate    = 1;
         countList.needCorrNum = needCorrectNum;
 
         return errCount == 0 && corrCount >= needCorrectNum;
     }
-
 
     public boolean matching(String text) {
         return getMatch().equals(text);
@@ -174,7 +174,13 @@ public class ReviewStruct extends SaveData {
         return getMatchWordExplains(match);
     }
 
-    // 吴攀.afiaejfaei hello.youoaerfuckyou.为了看风景 <>}|. this is what.那算了
+    /**
+     * 取字符串text中匹配regex的所有字符
+     *
+     * @param text  要从中检索的字符串
+     * @param regex 要匹配的正则表达式
+     * @return 返回所有匹配的字符串
+     */
     static public LinkedList<String> toMatchList(String text, String regex) {
         Matcher            mat         = Pattern.compile(regex).matcher(text);
         LinkedList<String> matchedList = new LinkedList<>();
@@ -189,21 +195,22 @@ public class ReviewStruct extends SaveData {
     }
 
     public static ArrayList<WordExplain> getMatchWordExplains(String text) {
-        ArrayList<WordExplain> item        = new ArrayList<>();
-        String                 regex       = "\\S+?\\.";
-        String[]               strsPostfix = text.split(regex);
-        LinkedList<String>     strsPrefix  = toMatchList(text, regex);
+        String                 regexPrefix = "\\S+?\\.";
+        String                 regexSplit  = "[;；，,]";
+        String[]               strsPostfix = text.split(regexPrefix);
+        LinkedList<String>     strsPrefix  = toMatchList(text, regexPrefix);
         Iterator<String>       iterator    = strsPrefix.iterator();
+        ArrayList<WordExplain> item        = new ArrayList<>();
         WordExplain            we          = null;
-        String                 splitChar   = "[;；，,]";
 
+        //把找到的前缀和后缀，放在WordExplain数据中
         for (String postfix : strsPostfix) {
             if (!postfix.equals("")) {
                 if (iterator.hasNext()) {
                     we = new WordExplain();
                     String prefix = iterator.next();
                     we.category = prefix;
-                    String[] words = postfix.split(splitChar);
+                    String[] words = postfix.split(regexSplit);
 
                     for (String word : words) if (!word.equals("")) we.explains.add(word);
                     item.add(we);
@@ -214,7 +221,7 @@ public class ReviewStruct extends SaveData {
         //没有前缀的解释，这样处理
         if (strsPrefix.isEmpty()) {
             we = new WordExplain();
-            String[] explains = Pattern.compile(splitChar).split(text);
+            String[] explains = Pattern.compile(regexSplit).split(text);
             we.category = "*.";
 
             for (String word : explains) if (!word.equals("")) we.explains.add(word);
@@ -235,16 +242,12 @@ public class ReviewStruct extends SaveData {
         return match;
     }
 
-    public void setShow(LibraryStruct show) {
-        this.show = show;
-    }
-
     public void setMatch(LibraryStruct match) {
         this.match = match;
     }
 
     public void addData(LibraryStruct show, LibraryStruct match) {
-        this.show = show;
+        this.show  = show;
         this.match = match;
     }
 
@@ -261,7 +264,7 @@ public class ReviewStruct extends SaveData {
     }
 
     @Override
-    public void getBytes(DataOutputStream dos) throws IOException {
+    public void toBytes(DataOutputStream dos) throws IOException {
         dos.writeInt(previousID);
         dos.writeByte(classType);
         dos.writeByte(level);
@@ -271,7 +274,7 @@ public class ReviewStruct extends SaveData {
         dos.writeBoolean(selected);
         dos.writeBoolean(showed);
 
-        dos.write(time.getBytes());
+        dos.write(time.toBytes());
 
         int size = logs.size();
         dos.writeInt(size);
@@ -303,17 +306,16 @@ public class ReviewStruct extends SaveData {
 //        }
     }
 
-
     @Override
     public void loadWith(DataInputStream dis) throws IOException {
         previousID = dis.readInt();
-        classType = dis.readByte();
-        level = dis.readByte();
+        classType  = dis.readByte();
+        level      = dis.readByte();
 //        viewCount = dis.readByte();
 
-        joined = dis.readBoolean();
+        joined   = dis.readBoolean();
         selected = dis.readBoolean();
-        showed = dis.readBoolean();
+        showed   = dis.readBoolean();
 
 
         byte[] bytes = new byte[7];
@@ -344,7 +346,6 @@ public class ReviewStruct extends SaveData {
 //        }
 
     }
-
 
     @NonNull
     @Override
