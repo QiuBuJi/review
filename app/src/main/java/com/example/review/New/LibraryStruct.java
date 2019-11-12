@@ -38,11 +38,11 @@ public class LibraryStruct extends StoreData {
         loadWith(rawBytes);
     }
 
-    public void setIdAuto() {
+    public void setIdAuto(int value) {
         if (ReviewData.mLibraries != null) {
             int maxId = 0;
             for (LibraryStruct ls : ReviewData.mLibraries) if (ls.id > maxId) maxId = ls.id;
-            id = maxId + 1;
+            id = maxId + 1 + value;
         }
     }
 

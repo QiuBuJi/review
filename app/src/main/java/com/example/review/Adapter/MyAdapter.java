@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +26,8 @@ public class MyAdapter extends RecyclerView.Adapter {
     private       ItemClickListener  clickListener;
 
     public MyAdapter(Context context, ArrayList<KeyText> data, ItemClickListener click) {
-        this.context = context;
-        this.data = data;
+        this.context       = context;
+        this.data          = data;
         this.clickListener = click;
     }
 
@@ -47,17 +48,19 @@ public class MyAdapter extends RecyclerView.Adapter {
             //功能键，配置
             holder.textView.setMaxLines(10);
             holder.textView.setTextSize(16);
-            holder.textView.setTextColor(Color.BLUE);
+//            holder.textView.setTextColor(Color.BLUE);
+            holder.textView.setTextColor(Color.WHITE);
             holder.textView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+            holder.view.setBackgroundResource(R.drawable.bg_ripple_keyboard_click_commen);
         } else {
             //非功能键，配置
             holder.textView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
             holder.textView.setMaxLines(6);
             holder.textView.setTextColor(Color.BLACK);
+            holder.view.setBackgroundResource(R.drawable.bg_ripple_keyboard_click);
 
             if (textSize > 0) {
                 int length = item.text.length();
-
                 switch (length) {
                     case 1:
                     case 2:
@@ -72,19 +75,13 @@ public class MyAdapter extends RecyclerView.Adapter {
                         holder.textView.setTextSize(textSize - 4);
                 }
             }
-
-
         }
         if (isShowNum) {
             if (item.key != 1) {
-                holder.textViewNum.setText(String.format(Locale.CHINA, "%c", item.key));
+                holder.textViewNum.setText(String.format("%c", item.key));
                 holder.textViewNum.setVisibility(View.VISIBLE);
-            } else {
-                holder.textViewNum.setVisibility(View.INVISIBLE);
-            }
-        } else {
-            holder.textViewNum.setVisibility(View.INVISIBLE);
-        }
+            } else holder.textViewNum.setVisibility(View.INVISIBLE);
+        } else holder.textViewNum.setVisibility(View.INVISIBLE);
 
         //被单击过，就不显示该字符
         if (item.isPressed && !item.isCom) {
@@ -123,7 +120,7 @@ public class MyAdapter extends RecyclerView.Adapter {
             super(itemView);
             view = itemView;
 
-            textView = view.findViewById(R.id.item_textView_word);
+            textView    = view.findViewById(R.id.item_textView_word);
             textViewNum = view.findViewById(R.id.item_textView_number);
         }
     }

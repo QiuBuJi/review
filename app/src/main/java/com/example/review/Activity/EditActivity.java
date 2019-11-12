@@ -292,8 +292,8 @@ public class EditActivity extends Activity
         ReviewStruct rsTemp = getSavingData();
 
         //自动生成ID
-        rsTemp.match.setIdAuto();
-        rsTemp.show.setIdAuto();
+        rsTemp.match.setIdAuto(0);
+        rsTemp.show.setIdAuto(1);
 
         data.addLibrary(0, rsTemp.match, rsTemp.show);
         data.add(0, rsTemp);//数据添加到顶部

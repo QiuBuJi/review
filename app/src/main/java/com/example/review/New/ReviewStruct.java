@@ -185,6 +185,7 @@ public class ReviewStruct extends StoreData {
         Matcher            mat         = Pattern.compile(regex).matcher(text);
         LinkedList<String> matchedList = new LinkedList<>();
 
+        //寻找匹配regex的字符串
         while (mat.find()) {
             int    start    = mat.start();
             int    end      = mat.end();
@@ -199,17 +200,19 @@ public class ReviewStruct extends StoreData {
         String                 regexSplit  = "[;；，,]";
         String[]               strsPostfix = text.split(regexPrefix);
         LinkedList<String>     strsPrefix  = toMatchList(text, regexPrefix);
-        Iterator<String>       iterator    = strsPrefix.iterator();
+        Iterator<String>       prefixesIterator    = strsPrefix.iterator();
         ArrayList<WordExplain> item        = new ArrayList<>();
         WordExplain            we          = null;
 
         //把找到的前缀和后缀，放在WordExplain数据中
         for (String postfix : strsPostfix) {
             if (!postfix.equals("")) {
-                if (iterator.hasNext()) {
+                if (prefixesIterator.hasNext()) {
                     we = new WordExplain();
-                    String prefix = iterator.next();
-                    we.category = prefix;
+
+                    //剔除回车符，不然键盘排列就异常了
+                    postfix     = postfix.replaceAll("\n", "");
+                    we.category = prefixesIterator.next();//添加前缀
                     String[] words = postfix.split(regexSplit);
 
                     for (String word : words) if (!word.equals("")) we.explains.add(word);
