@@ -94,6 +94,10 @@ public class ReviewData extends ReviewList {
             @Override
             public void run() {
                 saveDataTo(fileNexus);
+                if (librarySaveMark) {
+                    library.save(fileLibrary);
+                    librarySaveMark = false;
+                }
             }
         }).start();
     }
@@ -505,5 +509,14 @@ public class ReviewData extends ReviewList {
 
     public LibraryList getLibraries() {
         return library;
+    }
+
+    boolean librarySaveMark = false;
+
+    /**
+     * 调用此函数才能保存library内的数据到本地
+     */
+    public void setLibrarySaveMark() {
+        librarySaveMark = true;
     }
 }

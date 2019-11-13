@@ -36,9 +36,9 @@ public class AdapterList extends RecyclerView.Adapter {
     public  int          posi;
 
     public AdapterList(Context context, ReviewData data) {
-        this.data = data;
+        this.data    = data;
         this.context = context;
-        parent = (ListActivity) context;
+        parent       = (ListActivity) context;
     }
 
     @NonNull
@@ -68,6 +68,12 @@ public class AdapterList extends RecyclerView.Adapter {
         holder.explain.setText(rs.getShow());
         holder.progress.setProgress(rs.getLevel());
         holder.levelNumber.setText(String.format(Locale.CHINA, "%d", rs.getLevel()));
+
+        //显示隐藏锁图标
+        if (rs.match.refer == 0) holder.ivLockUp.setVisibility(View.GONE);
+        else holder.ivLockUp.setVisibility(View.VISIBLE);
+        if (rs.show.refer == 0) holder.ivLockDown.setVisibility(View.GONE);
+        else holder.ivLockDown.setVisibility(View.VISIBLE);
 
         int size  = rs.logs.size();
         int count = 0;
@@ -168,7 +174,7 @@ public class AdapterList extends RecyclerView.Adapter {
 
         LongClick(ReviewStruct rs, int position) {
             this.reviewStruct = rs;
-            this.position = position;
+            this.position     = position;
         }
 
         @Override
@@ -191,7 +197,7 @@ public class AdapterList extends RecyclerView.Adapter {
             } else {
                 parent.buttonDelete.setText("删除");
                 parent.buttonDelete.setBackgroundColor(Color.RED);
-                ListActivity.checked = true;
+                ListActivity.checked  = true;
                 reviewStruct.selected = true;//设置该条被选择
                 notifyItemChanged(position);
 
@@ -208,7 +214,7 @@ public class AdapterList extends RecyclerView.Adapter {
 
         Click(ReviewStruct rs, int position) {
             this.reviewStruct = rs;
-            this.position = position;
+            this.position     = position;
         }
 
         @Override
@@ -239,6 +245,8 @@ public class AdapterList extends RecyclerView.Adapter {
 
     class Holder extends RecyclerView.ViewHolder {
 
+        ImageView   ivLockUp;
+        ImageView   ivLockDown;
         TextView    errorNum;
         ProgressBar errorProgress;
         View        view;
@@ -254,16 +262,19 @@ public class AdapterList extends RecyclerView.Adapter {
             super(itemView);
             view = itemView;
 
-            index = view.findViewById(R.id.item_textView_index);
-            word = view.findViewById(R.id.item_textView_word);
-            explain = view.findViewById(R.id.item_textView_explain);
-            progress = view.findViewById(R.id.item_progressBar_Level_forward);
+            index       = view.findViewById(R.id.item_textView_index);
+            word        = view.findViewById(R.id.item_textView_word);
+            explain     = view.findViewById(R.id.item_textView_explain);
+            progress    = view.findViewById(R.id.item_progressBar_Level_forward);
             levelNumber = view.findViewById(R.id.item_textView_level_number_up);
-            switch_ = view.findViewById(R.id.item_switch_JoinReview);
-            playSound = view.findViewById(R.id.item_imageView_play_sound);
+            switch_     = view.findViewById(R.id.item_switch_JoinReview);
+            playSound   = view.findViewById(R.id.item_imageView_play_sound);
 
             errorProgress = view.findViewById(R.id.item_progressBar_error);
-            errorNum = view.findViewById(R.id.item_textView_error_num);
+            errorNum      = view.findViewById(R.id.item_textView_error_num);
+
+            ivLockUp   = view.findViewById(R.id.ivLockUp);
+            ivLockDown = view.findViewById(R.id.ivLockDown);
         }
     }
 

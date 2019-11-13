@@ -320,7 +320,8 @@ public class EditActivity extends Activity
             data.add(0, rs);//数据添加到顶部
         }
 
-        data.saveLibrary();
+        data.setLibrarySaveMark();
+//        data.saveLibrary();
 //        data.save();//保存数据
 
         //加入复习
@@ -351,7 +352,8 @@ public class EditActivity extends Activity
                 } else data.sortAddToInactivate(rs);
             } else data.removeFromInavalable_Avalable(rs);
 
-            data.saveLibrary();
+            data.setLibrarySaveMark();
+//            data.saveLibrary();
 //            data.save();//保存数据
 
             finish();
