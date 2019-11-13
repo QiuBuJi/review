@@ -104,8 +104,6 @@ public class MainActivity extends AppCompatActivity implements
     ImageView imageViewSort;
 
     ImageButton imageButtonSetting;
-    ImageButton imageButtonClear;
-
     RecyclerView recyclerViewKeyboard;
     ProgressBar  progressBarProgress;
     EditText     etInput;
@@ -458,7 +456,6 @@ public class MainActivity extends AppCompatActivity implements
         tips                 = findViewById(R.id.fragment_textView_tips);
         lastText             = findViewById(R.id.fragment_textView_lastText);
         imageButtonSetting   = findViewById(R.id.main_imageButton_setting);
-        imageButtonClear     = findViewById(R.id.main_imageButton_clear);
         recyclerViewKeyboard = findViewById(R.id.main_recycllerView_keyboard);
         tvLevel              = findViewById(R.id.main_textView_level);
         entireBackground     = findViewById(R.id.entire_background);
@@ -500,9 +497,6 @@ public class MainActivity extends AppCompatActivity implements
                         break;
                     case R.id.main_imageButton_setting:
                         startActivity(new Intent(MainActivity.this, SettingActivity.class));
-                        break;
-                    case R.id.main_imageButton_clear:
-                        etInput.setText("");
                         break;
                     case R.id.fragment_textView_tips:
                         if (!data.mActivate.isEmpty()) {
@@ -559,7 +553,6 @@ public class MainActivity extends AppCompatActivity implements
         etInput.setImeOptions(EditorInfo.IME_ACTION_DONE);
         etInput.setOnEditorActionListener(getOnEditorActionListener());
 
-        imageButtonClear.setOnClickListener(getOnClickListener());
         tvNext.setOnClickListener(getOnClickListener());
         tips.setOnClickListener(getOnClickListener());
         tips.setOnLongClickListener(showTipsWindowListener());
@@ -1066,7 +1059,6 @@ public class MainActivity extends AppCompatActivity implements
         if (text.equals("")) {
             if (state1 == 2) return;
             state1 = 2;
-            imageButtonClear.setVisibility(View.INVISIBLE);
             SpannableStringBuilder ssb = new SpannableStringBuilder("上个单词: " + lastText.getText().toString());
 
             ssb.setSpan(new AbsoluteSizeSpan(28),
@@ -1080,7 +1072,6 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             lastText.setText(text);
             lastText.setTextColor(Color.BLACK);
-            imageButtonClear.setVisibility(View.VISIBLE);
             state1 = 1;
         }
     }

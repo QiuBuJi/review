@@ -41,7 +41,7 @@ public class KeyboardType2 extends Keyboard {
     void init() {
         input.setEnabled(false);
         input.setText("");
-        input.setHint("↑↑↑在上面操作↑↑↑");
+        input.setHint("");
         input.setShowSoftInputOnFocus(false);
         input.setInputType(InputType.TYPE_NULL);
 
@@ -137,8 +137,8 @@ public class KeyboardType2 extends Keyboard {
         for (WordExplain we : wesAdded) wordsAdded.addAll(we.explains);
 
         //去重复
+        removeRedundancy(wordsNative);
         removeRedundancy(wordsAdded);
-        makeRandom(wordsAdded);
 
         int nativeSize = wordsNative.size();
         int num        = nativeSize / 6;
@@ -153,7 +153,7 @@ public class KeyboardType2 extends Keyboard {
         //去掉多余的数据
         for (int i = 0; i < size; i++) wordsAdded.removeFirst();
         wordsAdded.addAll(wordsNative);
-
+        makeRandom(wordsAdded);
         sortByCharLen(wordsAdded);
 
         //键盘索引字符
@@ -167,7 +167,6 @@ public class KeyboardType2 extends Keyboard {
         }
 
         data.add(new KeyText("播放", true, KeyEvent.KEYCODE_DPAD_LEFT));
-
         return data;
     }
 

@@ -1,5 +1,6 @@
 package com.example.review.DataStructureFile;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 
 import com.example.review.New.StoreData;
@@ -380,15 +381,42 @@ public class DateTime extends StoreData {
         return time.toString();
     }
 
+    @SuppressLint("DefaultLocale")
     public String toAboutValue() {
-        StringBuilder strTime = new StringBuilder();
+        StringBuilder strTime     = new StringBuilder();
+        int           rate, value = 0;
 
-        if (year > 0) strTime.append(String.format("%.1f年", year + (month / 12f)));
-        else if (month > 0) strTime.append(String.format("%.1f月", month + (day / 31f)));
-        else if (day > 0) strTime.append(String.format("%.1f日", day + (hour / 24f)));
-        else if (hour > 0) strTime.append(String.format("%.1f时", hour + (minute / 60f)));
-        else if (minute > 0) strTime.append(String.format("%.1f分", minute + (second / 60f)));
-        else if (second > 0) strTime.append(String.format("%.1f秒", second + 0.0f));
+        if (year > 0) {
+            rate = (int) ((month / 12f) * 10);
+            strTime.append(year);
+            if (rate > value) strTime.append('.').append(rate);
+            strTime.append("年");
+
+        } else if (month > 0) {
+            rate = (int) ((day / 31f) * 10);
+            strTime.append(month);
+            if (rate > value) strTime.append('.').append(rate);
+            strTime.append("月");
+
+        } else if (day > 0) {
+            rate = (int) ((hour / 24f) * 10);
+            strTime.append(day);
+            if (rate > value) strTime.append('.').append(rate);
+            strTime.append("日");
+
+        } else if (hour > 0) {
+            rate = (int) ((minute / 60f) * 10);
+            strTime.append(hour);
+            if (rate > value) strTime.append('.').append(rate);
+            strTime.append("时");
+
+        } else if (minute > 0) {
+            rate = (int) ((second / 60f) * 10);
+            strTime.append(minute);
+            if (rate > value) strTime.append('.').append(rate);
+            strTime.append("分");
+
+        } else if (second > 0) strTime.append(second).append("秒");
 
         return strTime.toString();
     }
@@ -396,12 +424,12 @@ public class DateTime extends StoreData {
     public String toAboutValueNoDot() {
         StringBuilder strTime = new StringBuilder();
 
-        if (year > 0)        strTime.append(String.format("%d年", year   ));
-        else if (month > 0)  strTime.append(String.format("%d月", month  ));
-        else if (day > 0)    strTime.append(String.format("%d日", day    ));
-        else if (hour > 0)   strTime.append(String.format("%d时", hour   ));
-        else if (minute > 0) strTime.append(String.format("%d分", minute ));
-        else if (second > 0) strTime.append(String.format("%d秒", second ));
+        if (year > 0) strTime.append(String.format("%d年", year));
+        else if (month > 0) strTime.append(String.format("%d月", month));
+        else if (day > 0) strTime.append(String.format("%d日", day));
+        else if (hour > 0) strTime.append(String.format("%d时", hour));
+        else if (minute > 0) strTime.append(String.format("%d分", minute));
+        else if (second > 0) strTime.append(String.format("%d秒", second));
 
         return strTime.toString();
     }
