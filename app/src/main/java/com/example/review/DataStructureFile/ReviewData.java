@@ -507,7 +507,7 @@ public class ReviewData extends ReviewList {
         dataChangeCount++;
     }
 
-    public LibraryList getLibraries() {
+    public LibraryList getLibrary() {
         return library;
     }
 

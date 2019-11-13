@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import com.example.review.New.LibraryList;
 import com.example.review.New.LibraryStruct;
 import com.example.review.New.ReviewStruct;
 import com.example.review.R;
+import com.example.review.Util.SpanUtil;
 
 
 public class EditActivity extends Activity
@@ -52,8 +54,9 @@ public class EditActivity extends Activity
     LibraryList libraries;
     ScrollView  scrollList;
 
-    Button btUp;
-    Button btDown;
+    Button   btUp;
+    Button   btDown;
+    TextView tvPeriod;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +71,7 @@ public class EditActivity extends Activity
         picker.setMinValue(0);
         switchJoin.setChecked(false);
 
-        libraries = MainActivity.data.getLibraries();
+        libraries = MainActivity.data.getLibrary();
 
 
         //添加编辑内容&显示详细内容，的分支************************************************************
@@ -172,6 +175,7 @@ public class EditActivity extends Activity
         btUp       = findViewById(R.id.edit_button_up);
         btDown     = findViewById(R.id.edit_button_down);
         swGenerate = findViewById(R.id.edit_switch_generate_reverse);
+        tvPeriod   = findViewById(R.id.tvPeriod);
 
 
         //设置监听器
@@ -424,8 +428,12 @@ public class EditActivity extends Activity
 
         DateTime reviewRegion = ReviewData.reviewRegions[level];
         String   text         = reviewRegion.toAboutValueNoDot();
-        text += "后复习";
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+        String   textB          = "后复习";
+        SpanUtil.create()
+                .addForeColorSection(text, Color.BLACK)
+                .addForeColorSection(textB, Color.LTGRAY)
+                .setAbsSize(textB,24)
+                .showIn(tvPeriod);
     }
 
 }

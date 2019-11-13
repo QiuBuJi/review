@@ -93,7 +93,7 @@ public class KeyboardType3 extends Keyboard {
         }
 
 
-        LibraryList       libs  = MainActivity.data.getLibraries();
+        LibraryList       libs  = MainActivity.data.getLibrary();
         ArrayList<String> list  = new ArrayList<>();
         int               index = 0;
 

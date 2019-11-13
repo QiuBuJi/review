@@ -31,23 +31,25 @@ public class KeyboardType2 extends Keyboard {
     public ArrayList<WordExplain> frameRight;
     public HandleInterfaceType2   handleInterface;
 
+    public static LibraryList libTemp;
+
     public KeyboardType2(Context context, RecyclerView keyboardView, ConstraintLayout container, EditText input, ReviewStruct reviewStruct) {
         super(context, keyboardView, container, input, reviewStruct);
     }
 
     @Override
     void init() {
-        frameInput = rs.getFrame();
-        frameRight = rs.getMatchWordExplains();
-
-        makeRandom(frameInput);
-        span = 6;
-
         input.setEnabled(false);
         input.setText("");
         input.setHint("↑↑↑在上面操作↑↑↑");
         input.setShowSoftInputOnFocus(false);
         input.setInputType(InputType.TYPE_NULL);
+
+        frameInput = rs.getFrame();
+        frameRight = rs.getMatchWordExplains();
+
+        makeRandom(frameInput);
+        span = 6;
 
         Speech.play_Baidu(rs.getShow());
         handleInterface = new HandleInterfaceType2(context, container, frameInput, frameRight);
@@ -56,9 +58,8 @@ public class KeyboardType2 extends Keyboard {
 
         //单词提示；没开启朗读，则显示单词
         SpanUtil.SpanBuilder spanBuilder = SpanUtil.create();
-        if (rs.getLevel() <= 3 || !camPlay) {
-            showWord();
-        } else {
+        if (rs.getLevel() <= 3 || !camPlay) showWord();
+        else {
             spanBuilder.addForeColorSection("--- ", Color.LTGRAY)
                        .addForeColorSection("?", Color.RED)
                        .addForeColorSection(" ---", Color.LTGRAY)
@@ -94,7 +95,7 @@ public class KeyboardType2 extends Keyboard {
 
     private ArrayList<KeyText> getWideLayout() {
 
-        ArrayList<WordExplain> wes = rs.getMatchWordExplains();
+        ArrayList<WordExplain> wesNative = rs.getMatchWordExplains();
 
         List<KeyText> kts = Arrays.asList(
                 new KeyText(COM_DONE, true, KeyEvent.KEYCODE_ENTER),
@@ -106,51 +107,60 @@ public class KeyboardType2 extends Keyboard {
 
         ArrayList<KeyText> data = new ArrayList<>(kts);
 
-        LibraryList libs    = MainActivity.data.getLibraries();
-        LibraryList tempLib = new LibraryList();
+        //libTemp没数据就要弄点数据了
+        if (libTemp == null) {
+            libTemp = new LibraryList();
+            LibraryList library = MainActivity.data.getLibrary();
 
-        //在库内取出类型为2的数据
-        for (LibraryStruct lib : libs) {
-            int type = lib.getType();
-            if (type == 2) tempLib.add(lib);
+            //在库内取出类型为2且不是引用的数据
+            for (LibraryStruct lib : library)
+                if (lib.getType() == 2 && lib.refer == 0) libTemp.add(lib);
         }
 
-        int                    size    = tempLib.size();
-        Random                 random  = new Random(System.currentTimeMillis());
-        ArrayList<WordExplain> wesTemp = new ArrayList<>();
+        int                    size     = libTemp.size();
+        Random                 random   = new Random(System.currentTimeMillis());
+        ArrayList<WordExplain> wesAdded = new ArrayList<>();
 
         //把数据解释取出来
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             int           ramdomNum = random.nextInt(size);
-            LibraryStruct ls        = tempLib.get(ramdomNum);
+            LibraryStruct ls        = libTemp.get(ramdomNum);
 
             ArrayList<WordExplain> mwe = ReviewStruct.getMatchWordExplains(ls.getText());
-            wesTemp.addAll(mwe);
+            wesAdded.addAll(mwe);
         }
 
         //收集为单列数据
-        LinkedList<String> link    = new LinkedList<>();
-        LinkedList<String> ownList = new LinkedList<>();
-        for (WordExplain we : wesTemp) link.addAll(we.explains);
-        for (WordExplain we : wes) ownList.addAll(we.explains);
-
-        //让数量保持在24个以内
-        int len = link.size() + ownList.size();
-        len -= 23;
-        if (len > 0) {
-            for (int i = 0; i < len; i++) link.removeFirst();
-        }
-        link.addAll(ownList);
+        LinkedList<String> wordsNative = new LinkedList<>();
+        LinkedList<String> wordsAdded  = new LinkedList<>();
+        for (WordExplain we : wesNative) wordsNative.addAll(we.explains);
+        for (WordExplain we : wesAdded) wordsAdded.addAll(we.explains);
 
         //去重复
-        removeRedundancy(link);
-        makeRandom(link);
-        sortByCharLen(link);
+        removeRedundancy(wordsAdded);
+        makeRandom(wordsAdded);
+
+        int nativeSize = wordsNative.size();
+        int num        = nativeSize / 6;
+        int mode       = nativeSize % 6;
+
+        if (mode > 0) num++;
+        float nativeRate = wordsNative.size() / (num * 6f - 1);
+        if (nativeRate >= 0.5) num++;//本地词语数超过这个阈值，则增加一行的混淆词语
+        size = wordsNative.size() + wordsAdded.size() + 1;
+        size -= num * 6;
+
+        //去掉多余的数据
+        for (int i = 0; i < size; i++) wordsAdded.removeFirst();
+        wordsAdded.addAll(wordsNative);
+
+        sortByCharLen(wordsAdded);
 
         //键盘索引字符
         char key = 'a';
-        for (int i = 0; i < link.size(); i++) {
-            String str = link.get(i);
+        for (int i = 0; i < wordsAdded.size(); i++) {
+            String str = wordsAdded.get(i);
+
             if (key == 'u' || key == 'd') key++;
             data.add(new KeyText(str, false, 0, key));
             key++;

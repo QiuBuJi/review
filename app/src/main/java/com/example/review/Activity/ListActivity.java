@@ -439,7 +439,7 @@ public class ListActivity extends Activity implements View.OnClickListener, Text
         }
 
         int sizeData    = data.size() * 2;
-        int sizeLibrary = data.getLibraries().size();
+        int sizeLibrary = data.getLibrary().size();
 
         if (sizeData != sizeLibrary) {
             throw new IllegalStateException("数据不一致");

@@ -68,11 +68,16 @@ public class MyAdapter extends RecyclerView.Adapter {
                         break;
                     case 3:
                         holder.textView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-//                        holder.textView.setTextColor(Color.MAGENTA);
+                        holder.textView.setTextSize(textSize - 2);
+                        //holder.textView.setTextColor(Color.MAGENTA);
+                        break;
                     case 4:
-//                        holder.textView.setTextSize(textSize - 4);
-                    default:
+                    case 5:
                         holder.textView.setTextSize(textSize - 4);
+                        break;
+                    case 6:
+                    default:
+                        holder.textView.setTextSize(textSize - 6);
                 }
             }
         }

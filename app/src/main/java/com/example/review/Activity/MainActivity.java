@@ -258,6 +258,8 @@ public class MainActivity extends AppCompatActivity implements
 
             if (state == 1 && !data.isEmpty()) data.save();
             if (keyboard != null) keyboard.clearKeyboard();
+
+            data.save();
         }
     }
 

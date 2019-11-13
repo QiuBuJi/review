@@ -196,39 +196,28 @@ public class ReviewStruct extends StoreData {
     }
 
     public static ArrayList<WordExplain> getMatchWordExplains(String text) {
-        String                 regexPrefix = "\\S+?\\.";
-        String                 regexSplit  = "[;；，,]";
-        String[]               strsPostfix = text.split(regexPrefix);
-        LinkedList<String>     strsPrefix  = toMatchList(text, regexPrefix);
-        Iterator<String>       prefixesIterator    = strsPrefix.iterator();
-        ArrayList<WordExplain> item        = new ArrayList<>();
-        WordExplain            we          = null;
+        ArrayList<WordExplain> item  = new ArrayList<>();
+        String[]               lines = text.split("\n");
 
-        //把找到的前缀和后缀，放在WordExplain数据中
-        for (String postfix : strsPostfix) {
-            if (!postfix.equals("")) {
-                if (prefixesIterator.hasNext()) {
-                    we = new WordExplain();
+        //把字符串以\n拆分
+        for (String line : lines) {
+            //去掉空字符串
+            if (!line.equals("")) {
+                WordExplain we    = new WordExplain();
+                int         index = line.indexOf('.') + 1;
 
-                    //剔除回车符，不然键盘排列就异常了
-                    postfix     = postfix.replaceAll("\n", "");
-                    we.category = prefixesIterator.next();//添加前缀
-                    String[] words = postfix.split(regexSplit);
-
-                    for (String word : words) if (!word.equals("")) we.explains.add(word);
-                    item.add(we);
+                //找不到‘.’，分类设置为默认的“*.”
+                if (index == -1) we.category = "*.";
+                else {
+                    we.category = line.substring(0, index);
+                    line        = line.substring(index);
                 }
+
+                //把词语分离出来
+                String[] words = line.split("[;；，,]");
+                for (String word : words) if (!word.equals("")) we.explains.add(word);
+                item.add(we);
             }
-        }
-
-        //没有前缀的解释，这样处理
-        if (strsPrefix.isEmpty()) {
-            we = new WordExplain();
-            String[] explains = Pattern.compile(regexSplit).split(text);
-            we.category = "*.";
-
-            for (String word : explains) if (!word.equals("")) we.explains.add(word);
-            item.add(we);
         }
         return item;
     }

@@ -41,7 +41,7 @@ public class LibraryActivity extends AppCompatActivity {
         imageViewBack = findViewById(R.id.library_imageView_back_button);
         floating = findViewById(R.id.library_floatingActionButton);
 
-        libraries = MainActivity.data.getLibraries();
+        libraries = MainActivity.data.getLibrary();
 
         adapter = new MyAdapter(libraries);
         list.setAdapter(adapter);
