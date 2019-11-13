@@ -36,34 +36,34 @@ public class DateTime extends StoreData {
     }
 
     public DateTime(int years, int months, int days, int hours, int minuts, int seconds) {
-        this.year = years;
-        this.month = months;
-        this.day = days;
-        this.hour = hours;
+        this.year   = years;
+        this.month  = months;
+        this.day    = days;
+        this.hour   = hours;
         this.minute = minuts;
         this.second = seconds;
     }
 
     public DateTime(int years, int months, int days) {
-        this.year = years;
+        this.year  = years;
         this.month = months;
-        this.day = days;
+        this.day   = days;
     }
 
     public DateTime(DateTime dateTime) {
-        this.year = dateTime.year;
-        this.month = dateTime.month;
-        this.day = dateTime.day;
-        this.hour = dateTime.hour;
+        this.year   = dateTime.year;
+        this.month  = dateTime.month;
+        this.day    = dateTime.day;
+        this.hour   = dateTime.hour;
         this.minute = dateTime.minute;
         this.second = dateTime.second;
     }
 
     public DateTime(Calendar calendar) {
-        year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
-        hour = calendar.get(Calendar.HOUR_OF_DAY);
+        year   = calendar.get(Calendar.YEAR);
+        month  = calendar.get(Calendar.MONTH);
+        day    = calendar.get(Calendar.DAY_OF_MONTH);
+        hour   = calendar.get(Calendar.HOUR_OF_DAY);
         minute = calendar.get(Calendar.MINUTE);
         second = calendar.get(Calendar.SECOND);
     }
@@ -86,10 +86,10 @@ public class DateTime extends StoreData {
     }
 
     public DateTime(String str) {
-        year = getInt(str, "年");
-        month = getInt(str, "月");
-        day = getInt(str, "日");
-        hour = getInt(str, "时");
+        year   = getInt(str, "年");
+        month  = getInt(str, "月");
+        day    = getInt(str, "日");
+        hour   = getInt(str, "时");
         minute = getInt(str, "分");
         second = getInt(str, "秒");
     }
@@ -266,11 +266,11 @@ public class DateTime extends StoreData {
 
         borrow = subtractOf(new BorrowStru(minute, hour), dateTime.minute, 60);
         minute = borrow.lowOrder;
-        hour = borrow.highOrder;
+        hour   = borrow.highOrder;
 
         borrow = subtractOf(new BorrowStru(hour, day), dateTime.hour, 24);
-        hour = borrow.lowOrder;
-        day = borrow.highOrder;
+        hour   = borrow.lowOrder;
+        day    = borrow.highOrder;
 
         int multiple = 30;
         if (month == 1) {
@@ -282,12 +282,12 @@ public class DateTime extends StoreData {
             multiple = 31;
 
         borrow = subtractOf(new BorrowStru(day, month), dateTime.day, multiple);
-        day = borrow.lowOrder;
-        month = borrow.highOrder;
+        day    = borrow.lowOrder;
+        month  = borrow.highOrder;
 
         borrow = subtractOf(new BorrowStru(month, year), dateTime.month, 12);
-        month = borrow.lowOrder;
-        year = borrow.highOrder;
+        month  = borrow.lowOrder;
+        year   = borrow.highOrder;
 
         year -= dateTime.year;
     }
@@ -299,10 +299,10 @@ public class DateTime extends StoreData {
      */
     public void add(DateTime dateTime) {
         DateTime dt = new DateTime(dateTime);
-        dt.year = -dt.year;
-        dt.month = -dt.month;
-        dt.day = -dt.day;
-        dt.hour = -dt.hour;
+        dt.year   = -dt.year;
+        dt.month  = -dt.month;
+        dt.day    = -dt.day;
+        dt.hour   = -dt.hour;
         dt.minute = -dt.minute;
         dt.second = -dt.second;
         subtractOf(dt);
@@ -310,7 +310,7 @@ public class DateTime extends StoreData {
 
     class BorrowStru {
         BorrowStru(int lowOrder, int highOrder) {
-            this.lowOrder = lowOrder;
+            this.lowOrder  = lowOrder;
             this.highOrder = highOrder;
         }
 
@@ -393,7 +393,20 @@ public class DateTime extends StoreData {
         return strTime.toString();
     }
 
-    public StringBuffer toNoneZero0String() {
+    public String toAboutValueNoDot() {
+        StringBuilder strTime = new StringBuilder();
+
+        if (year > 0)        strTime.append(String.format("%d年", year   ));
+        else if (month > 0)  strTime.append(String.format("%d月", month  ));
+        else if (day > 0)    strTime.append(String.format("%d日", day    ));
+        else if (hour > 0)   strTime.append(String.format("%d时", hour   ));
+        else if (minute > 0) strTime.append(String.format("%d分", minute ));
+        else if (second > 0) strTime.append(String.format("%d秒", second ));
+
+        return strTime.toString();
+    }
+
+    public StringBuffer toNoneZeroString() {
         StringBuffer time = new StringBuffer();
 
         if (year > 0) time.append(String.format("%d年", year));
@@ -457,10 +470,10 @@ public class DateTime extends StoreData {
 
     @Override
     public void loadWith(DataInputStream dis) throws IOException {
-        year = dis.readShort();
-        month = dis.readByte();
-        day = dis.readByte();
-        hour = dis.readByte();
+        year   = dis.readShort();
+        month  = dis.readByte();
+        day    = dis.readByte();
+        hour   = dis.readByte();
         minute = dis.readByte();
         second = dis.readByte();
     }

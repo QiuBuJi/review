@@ -64,7 +64,7 @@ public class EditActivity extends Activity
         initViewAndListener();
 
         data = MainActivity.data;
-        picker.setMaxValue(12);
+        picker.setMaxValue(ReviewData.reviewRegions.length - 1);
         picker.setMinValue(0);
         switchJoin.setChecked(false);
 
@@ -421,6 +421,11 @@ public class EditActivity extends Activity
     public void onValueChange(NumberPicker numberPicker, int i, int value) {
         level = value;
         textViewNumber.setText(String.valueOf(level));
+
+        DateTime reviewRegion = ReviewData.reviewRegions[level];
+        String   text         = reviewRegion.toAboutValueNoDot();
+        text += "后复习";
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 
 }

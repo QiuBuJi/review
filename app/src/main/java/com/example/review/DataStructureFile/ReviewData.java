@@ -24,9 +24,9 @@ public class ReviewData extends ReviewList {
     public LinkedList<ReviewStruct> mInactivate = new LinkedList<>();
     public LinkedList<ReviewStruct> mActivate   = new LinkedList<>();
 
-    private static DateTime[] reviewRegions = new DateTime[]{
+    public static DateTime[] reviewRegions = new DateTime[]{
             new DateTime("0秒"),  // 0级
-//            new DateTime("2秒"),  // 1级，插入mActivate第三个位置-----------
+//          new DateTime("2秒"),      // 1级，插入mActivate第三个位置-----------
             new DateTime("10秒"), // 2级
             new DateTime("5分"),  // 3级
             new DateTime("15分"), // 4级
@@ -416,11 +416,11 @@ public class ReviewData extends ReviewList {
 
 
         rs.time = DateTime.getCurrentTime();//取当前时间
-        rs.time.add(reviewRegions[level]);
+        rs.time.add(reviewRegions[level]);//todo level下标越界怎么办？
         rs.setLevel(level);
 
 
-        //水平为0时，加入到第三个复习位置。
+        // 水平为0时，加入到第三个复习位置。
         // 因为，新单词不太熟悉，就多加一步复习步骤，来巩固
         if (tempLevel == 0) {
             try {

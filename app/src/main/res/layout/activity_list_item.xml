@@ -22,10 +22,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:maxLength="18"
         android:singleLine="true"
         android:text="word..."
         android:textColor="@android:color/black"
         android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@+id/item_switch_JoinReview"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/item_textView_explain"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,10 +39,13 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:maxLength="18"
         android:singleLine="true"
         android:text="explain..."
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/item_progressBar_Level_forward"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/item_textView_index"
         app:layout_constraintTop_toBottomOf="@+id/item_textView_word"
         app:layout_constraintVertical_bias="1.0" />

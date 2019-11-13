@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements
             DateTime dateTime = new DateTime(data.mInactivate.get(0).time);
             dateTime.subtractOf(DateTime.getCurrentTime());
 
-            textViewArrival.setText(dateTime.toNoneZero0String());
+            textViewArrival.setText(dateTime.toNoneZeroString());
         }
     }
 
