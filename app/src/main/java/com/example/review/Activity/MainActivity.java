@@ -32,7 +32,6 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -72,7 +71,7 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener,
+public class MainActivity extends AppCompatActivity implements
         TextWatcher,
         ServiceConnection,
         Handler.Callback {
@@ -241,7 +240,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             tvLevel.setText("☺");
             tvLastDuration.setText("---");
             tvLastDuration.setOnClickListener(null);
-            textViewArrival.setText("**:**");
 
             etInput.setHint("");
             etInput.setEnabled(true);
@@ -469,32 +467,122 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvLastDuration = findViewById(R.id.tvLastDuration);
     }
 
+    View.OnClickListener getOnClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()) {
+                    case R.id.main_imageView_sort:
+                        pickDataDialog();
+                        break;
+                    case R.id.main_textView_next:
+                        if (!data.mActivate.isEmpty()) {
+                            ReviewStruct first = data.mActivate.removeFirst();
+                            data.mActivate.addLast(first);
+
+                            refreshShowing(false);
+                        }
+                        break;
+                    case R.id.main_textView_about:
+                        startActivity(new Intent(MainActivity.this, AboutActivity.class));
+                        break;
+                    case R.id.main_imageView_play_sound:
+                        Speech.play_Baidu(etInput.getText().toString(), imageViewPlaySound);
+                        break;
+                    case R.id.main_imageView_Detail:
+                        startActivity(new Intent(MainActivity.this, ListActivity.class));
+                        break;
+                    case R.id.fragment_progressBar_progress:
+                        startActivity(new Intent(MainActivity.this, SortActivity.class));
+                        break;
+                    case R.id.main_imageButton_setting:
+                        startActivity(new Intent(MainActivity.this, SettingActivity.class));
+                        break;
+                    case R.id.main_imageButton_clear:
+                        etInput.setText("");
+                        break;
+                    case R.id.fragment_textView_tips:
+                        if (!data.mActivate.isEmpty()) {
+                            ReviewStruct rs = data.mActivate.getFirst();
+
+                            String sb = getTips(rs);
+                            Toast.makeText(MainActivity.this, sb, Toast.LENGTH_LONG).show();
+
+                            rs.resetLevel();
+                            if (rs.match.getType() == 1) {
+                                Speech.play_Baidu(rs.getMatch());
+                            }
+
+                            correct = false;
+                            canJoinLog++;
+                            addLog(rs);
+                            refreshShowing(false);
+                        }
+                        break;
+                    case R.id.main_textView_time_arrival:
+                        Intent intent = new Intent(MainActivity.this, SortActivity.class);
+                        intent.putExtra("posi", 2);
+                        startActivity(intent);
+                        break;
+                    case R.id.fragment_textView_textShow:
+                        break;
+                    case R.id.fragment_editText_input:
+                        break;
+                }
+
+            }
+        };
+    }
+
     //初始化监听器-----------------------------------------------------------------------------------
     private void initListener() {
         //显示框背景
-        textViewArrival.setOnClickListener(this);
+        textViewArrival.setOnClickListener(getOnClickListener());
         //输入框
         etInput.addTextChangedListener(this);
         //分类列表按钮
-        imageViewSort.setOnClickListener(this);
+        imageViewSort.setOnClickListener(getOnClickListener());
         //关于按钮
-        textViewAbout.setOnClickListener(this);
+        textViewAbout.setOnClickListener(getOnClickListener());
         //播放音频按钮
-        imageViewPlaySound.setOnClickListener(this);
+        imageViewPlaySound.setOnClickListener(getOnClickListener());
         //跳转页面到ActivityList
-        imageViewDetail.setOnClickListener(this);
+        imageViewDetail.setOnClickListener(getOnClickListener());
         //待复习进度条被单击
-        progressBarProgress.setOnClickListener(this);
+        progressBarProgress.setOnClickListener(getOnClickListener());
 
-        imageButtonSetting.setOnClickListener(this);
+        imageButtonSetting.setOnClickListener(getOnClickListener());
 
         etInput.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        etInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        etInput.setOnEditorActionListener(getOnEditorActionListener());
+
+        imageButtonClear.setOnClickListener(getOnClickListener());
+        tvNext.setOnClickListener(getOnClickListener());
+        tips.setOnClickListener(getOnClickListener());
+        tips.setOnLongClickListener(showTipsWindowListener());
+//        etInput.setOnClickListener(this);
+
+        //长按显示上一个复习条目
+        tvNext.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (!data.mActivate.isEmpty()) {
+                    ReviewStruct last = data.mActivate.removeLast();
+                    data.mActivate.addFirst(last);
+
+                    refreshShowing(false);
+                }
+                return true;
+            }
+        });
+    }
+
+    private TextView.OnEditorActionListener getOnEditorActionListener() {
+        return new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-
-                //回车键按下
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                //回车键按下（注意：实体键盘输入\n会导致event参数为null）
+                if (event == null ? true : event.getAction() == KeyEvent.ACTION_DOWN) {
 
                     //回车键按下以及IME_ACTION_DONE被按下的，都可以执行matchInput()
                     switch (actionId) {
@@ -507,29 +595,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 return true;
             }
-        });
-
-        imageButtonClear.setOnClickListener(this);
-        tvNext.setOnClickListener(this);
-        tips.setOnClickListener(this);
-        tips.setOnLongClickListener(showTipsWindowListener());
-//        etInput.setOnClickListener(this);
-
-        //长按显示上一个复习条目
-        tvNext.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-
-                if (!data.mActivate.isEmpty()) {
-                    ReviewStruct last = data.mActivate.removeLast();
-                    data.mActivate.addFirst(last);
-
-                    refreshShowing(false);
-                }
-
-                return true;
-            }
-        });
+        };
     }
 
     private View.OnLongClickListener showTipsWindowListener() {
@@ -633,71 +699,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String prefix;
     }
 
-    //textShow被单击后，调用的函数--------------------------------------------------------------------
-    @Override
-    public void onClick(View v) {
-
-        switch (v.getId()) {
-            case R.id.main_imageView_sort:
-                pickDataDialog();
-                break;
-            case R.id.main_textView_next:
-                if (!data.mActivate.isEmpty()) {
-                    ReviewStruct first = data.mActivate.removeFirst();
-                    data.mActivate.addLast(first);
-
-                    refreshShowing(false);
-                }
-                break;
-            case R.id.main_textView_about:
-                startActivity(new Intent(MainActivity.this, AboutActivity.class));
-                break;
-            case R.id.main_imageView_play_sound:
-                Speech.play_Baidu(etInput.getText().toString(), imageViewPlaySound);
-                break;
-            case R.id.main_imageView_Detail:
-                startActivity(new Intent(MainActivity.this, ListActivity.class));
-                break;
-            case R.id.fragment_progressBar_progress:
-                startActivity(new Intent(this, SortActivity.class));
-                break;
-            case R.id.main_imageButton_setting:
-                startActivity(new Intent(MainActivity.this, SettingActivity.class));
-                break;
-            case R.id.main_imageButton_clear:
-                etInput.setText("");
-                break;
-            case R.id.fragment_textView_tips:
-                if (!data.mActivate.isEmpty()) {
-                    ReviewStruct rs = data.mActivate.getFirst();
-
-                    String sb = getTips(rs);
-                    Toast.makeText(this, sb, Toast.LENGTH_LONG).show();
-
-                    rs.resetLevel();
-                    if (rs.match.getType() == 1) {
-                        Speech.play_Baidu(rs.getMatch());
-                    }
-
-                    correct = false;
-                    canJoinLog++;
-                    addLog(rs);
-                    refreshShowing(false);
-                }
-                break;
-            case R.id.main_textView_time_arrival:
-                Intent intent = new Intent(this, SortActivity.class);
-                intent.putExtra("posi", 2);
-                startActivity(intent);
-                break;
-            case R.id.fragment_textView_textShow:
-                break;
-            case R.id.fragment_editText_input:
-                break;
-        }
-
-    }
-
+    //取提示
     private String getTips(ReviewStruct rs) {
         StringBuilder sb = new StringBuilder();
 
@@ -717,8 +719,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return sb.toString();
     }
 
+    //选择要复习的库
     private void pickDataDialog() {
         pathBoth = getPathBoth();
+        //没有文件则不执行后续代码
+        if (pathBoth == null) return;
         final List<String> names = new LinkedList<>();
         for (PathBoth pathBoth : pathBoth) names.add(pathBoth.prefix);
 
@@ -737,6 +742,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         pathLibrary = new File(pathApp, pathBoth.library);
                         Setting.edit.putString("libName", MainActivity.this.pathBoth.get(libIndex).prefix).commit();
                         tvTitle.setText(pathBoth.prefix);
+                        textViewArrival.setText("00:00");
 
                         service.initData();
                         refreshShowing(true);
@@ -918,7 +924,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         canJoinLog = 0;
         data.updateInavalable_AddLevel(rs);
     }
-
 
     @TargetApi(Build.VERSION_CODES.N)
     private void correctProc(String inputText, ReviewStruct rs) {

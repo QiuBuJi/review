@@ -152,7 +152,7 @@
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
         android:paddingBottom="1dp"
-        android:text="00:00:00"
+        android:text="00:00"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/cl_main_container"

@@ -39,8 +39,8 @@ public class KeyboardType1 extends Keyboard {
         input.setHint("请输入");
         input.setText("");
 
-        input.setShowSoftInputOnFocus(false);
 //        input.setInputType(InputType.TYPE_NULL);
+        input.setShowSoftInputOnFocus(false);
 
         //网上查的代码，让实体键盘为全英文输入
         input.setKeyListener(new DigitsKeyListener() {
