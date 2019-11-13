@@ -46,6 +46,14 @@ public class LibraryStruct extends StoreData {
         }
     }
 
+    public void setIdAuto(LibraryList library) {
+        if (library != null) {
+            int maxId = 0;
+            for (LibraryStruct ls : library) if (ls.id > maxId) maxId = ls.id;
+            id = maxId + 1;
+        }
+    }
+
     public String getText() {
         if (refer > 0 && ReviewData.mLibraries != null) {
             for (LibraryStruct ls : ReviewData.mLibraries)

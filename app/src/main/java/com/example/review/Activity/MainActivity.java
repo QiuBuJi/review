@@ -426,6 +426,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onSaveComplete() {
                 tips.setText("");
+                Toast.makeText(MainActivity.this, "数据保存完毕！", Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -60,13 +60,13 @@ public class ListActivity extends Activity implements View.OnClickListener, Text
         setContentView(R.layout.activity_list);
 
         imageViewBackButton = findViewById(R.id.list_imageView_back_button);
-        imageViewAdd = findViewById(R.id.imageView_add);
-        imageViewImport = findViewById(R.id.imageView_import);
-        editTextSearch = findViewById(R.id.editText_search);
-        buttonDelete = findViewById(R.id.button_delete);
-        list = findViewById(R.id.list_recycler_list);
-        title = findViewById(R.id.list_textView_title);
-        floating = findViewById(R.id.list_floatingActionButton);
+        imageViewAdd        = findViewById(R.id.imageView_add);
+        imageViewImport     = findViewById(R.id.imageView_import);
+        editTextSearch      = findViewById(R.id.editText_search);
+        buttonDelete        = findViewById(R.id.button_delete);
+        list                = findViewById(R.id.list_recycler_list);
+        title               = findViewById(R.id.list_textView_title);
+        floating            = findViewById(R.id.list_floatingActionButton);
 
         data = MainActivity.data;
 
@@ -104,7 +104,7 @@ public class ListActivity extends Activity implements View.OnClickListener, Text
         floating.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                RecyclerView.LayoutManager lm        = list.getLayoutManager();
+                RecyclerView.LayoutManager lm = list.getLayoutManager();
                 assert lm != null;
                 int itemCount = lm.getItemCount() - 1;
                 list.scrollToPosition(itemCount / 2);
@@ -141,8 +141,8 @@ public class ListActivity extends Activity implements View.OnClickListener, Text
                 boolean      hasFound;
 
                 for (int i = 0; i < size; i++) {
-                    rsFirst = data.get(i);
-                    match = rsFirst.getMatch();
+                    rsFirst  = data.get(i);
+                    match    = rsFirst.getMatch();
                     hasFound = false;
 //                    if (rsFirst.match.getType() != 1) continue;
 
@@ -184,7 +184,7 @@ public class ListActivity extends Activity implements View.OnClickListener, Text
 
                         for (ReviewStruct rs : data) {
                             if ((rs.match.getText().equals(split[1]) && rs.match.getType() == num) ||
-                                (rs.show .getText().equals(split[1]) && rs.show .getType() == num)) {
+                                (rs.show.getText().equals(split[1]) && rs.show.getType() == num)) {
                                 rs.posi = index;
                                 searchList.add(rs);
                             }
@@ -266,7 +266,7 @@ public class ListActivity extends Activity implements View.OnClickListener, Text
                         millis /= 1000;
 
                         Message msg = new Message();
-                        msg.obj = String.valueOf(millis).concat("秒");
+                        msg.obj  = String.valueOf(millis).concat("秒");
                         msg.what = 1;
                         handler.sendMessage(msg);
 
@@ -474,5 +474,6 @@ public class ListActivity extends Activity implements View.OnClickListener, Text
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        data.save();//保存数据
     }
 }

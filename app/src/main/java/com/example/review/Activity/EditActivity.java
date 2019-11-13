@@ -321,8 +321,7 @@ public class EditActivity extends Activity
         }
 
         data.saveLibrary();
-        data.save();//保存数据
-        Toast.makeText(EditActivity.this, "保存成功！", Toast.LENGTH_SHORT).show();
+//        data.save();//保存数据
 
         //加入复习
         if (rsTemp.joined) data.sortAddToInactivate(rsTemp);
@@ -353,7 +352,7 @@ public class EditActivity extends Activity
             } else data.removeFromInavalable_Avalable(rs);
 
             data.saveLibrary();
-            data.save();//保存数据
+//            data.save();//保存数据
 
             finish();
         } catch (Exception e) {
