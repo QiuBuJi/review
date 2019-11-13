@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -45,8 +46,7 @@ public class KeyboardType3 extends Keyboard {
 
     public void setLightAnimation(boolean lightUp, int duration) {
         ValueAnimator valueAnim;
-        if (lightUp)
-            valueAnim = ValueAnimator.ofFloat(0f, 1f);
+        if (lightUp) valueAnim = ValueAnimator.ofFloat(0f, 1f);
         else valueAnim = ValueAnimator.ofFloat(1f, 0f);
 
         valueAnim.setDuration(duration);
@@ -62,11 +62,13 @@ public class KeyboardType3 extends Keyboard {
 
     @Override
     void init() {
-        input.setHint("");
         input.setText("");
+        input.setHint("↑↑↑在上面操作↑↑↑");
+        input.setShowSoftInputOnFocus(false);
+        input.setInputType(InputType.TYPE_NULL);
 
         inflate = LayoutInflater.from(context).inflate(R.layout.activity_text_view, container, false);
-        show = inflate.findViewById(R.id.tv_text);
+        show    = inflate.findViewById(R.id.tv_text);
         container.addView(inflate);
 
         String strMatch = rs.getMatch();
@@ -74,8 +76,8 @@ public class KeyboardType3 extends Keyboard {
         String[] split   = patternPar.split(strMatch);
         Matcher  matcher = patternPar.matcher(strMatch);
 
-        candidate = new ArrayList<>();
-        mCandidate = new ArrayList<>();
+        candidate      = new ArrayList<>();
+        mCandidate     = new ArrayList<>();
         mCandidateType = new ArrayList<>();
 
         //找出备选词语
@@ -143,15 +145,9 @@ public class KeyboardType3 extends Keyboard {
         for (String s : split) {
             mCandidateType.add(new TextCom(s));
             if (length-- == 0) break;
-            mCandidateType.add(new TextCom("  ", true));
+            mCandidateType.add(new TextCom("    ", true));
         }
-
-        input.setText("");
-        input.setHint("↑↑↑在上面操作↑↑↑");
-        input.setShowSoftInputOnFocus(false);
-        input.setInputType(InputType.TYPE_NULL);
     }
-
 
     @Override
     void adapterComplete() {
@@ -169,23 +165,29 @@ public class KeyboardType3 extends Keyboard {
         show = patternPar.matcher(show).replaceAll("");
         show = patterBitPar.matcher(show).replaceAll("");
 
-        spanBuilder.addSection(show + "\n");
+        //show有该字符串，则显示它
+        if (!show.equals("")) spanBuilder.addSection(show + "\n");
 
         for (TextCom tc : mCandidateType) {
             if (tc.isCandidate) {
+                //设置选中备选框背景，为灰色
+                if (posi == index) spanBuilder.addBackColorSection(tc.text, Color.LTGRAY).setStyle(tc.text, Typeface.BOLD);
+                else spanBuilder.addForeColorSection(tc.text, Color.BLACK).setStyle(tc.text, Typeface.BOLD);
 
-                if (posi == index)
-                    spanBuilder.addBackColorSection(tc.text, Color.LTGRAY).setStyle(tc.text, Typeface.BOLD);
-                else
-                    spanBuilder.addForeColorSection(tc.text, Color.BLACK).setStyle(tc.text, Typeface.BOLD);
+                //设置显示字符串带删除线
+                if (tc.isStrike) {
+                    //全部是空格，不显示删除线
+                    if (!tc.text.matches("\\s+")) spanBuilder.setStrikethrough(tc.text);
+                }
 
-                if (tc.isStrike) spanBuilder.setStrikethrough(tc.text);
+                //设置字符串有下划线
                 spanBuilder.setUnderline(tc.text);
                 posi++;
-            } else spanBuilder.addForeColorSection(tc.text, Color.GRAY);
+            }
+            //设置除备选词外，其他字符串的颜色为灰色
+            else spanBuilder.addForeColorSection(tc.text, Color.GRAY);
         }
         spanBuilder.showIn(this.show);
-
         this.show.setHint("格式不对！");
     }
 
@@ -222,13 +224,19 @@ public class KeyboardType3 extends Keyboard {
         }
 
         public TextCom(String text, boolean isCandidate) {
-            this.text = text;
+            this.text        = text;
             this.isCandidate = isCandidate;
         }
 
         public String  text;
         public boolean isCandidate;
         public boolean isStrike;
+
+        @NonNull
+        @Override
+        public String toString() {
+            return String.format("[%s]  备选=%b  删除=%b", text, isCandidate, isStrike);
+        }
     }
 
     @Override
@@ -274,7 +282,7 @@ public class KeyboardType3 extends Keyboard {
                     if (!tcs.isEmpty()) {
                         for (TextCom com : tcs) {
                             if (com.isCandidate) {
-                                com.text = "    ";
+                                com.text     = "    ";
                                 com.isStrike = false;
                             }
                         }
@@ -284,7 +292,7 @@ public class KeyboardType3 extends Keyboard {
                 case COM_DELETE:
                     if (!tcs.isEmpty()) {
                         TextCom textCom1 = tcs.get(index);
-                        textCom1.text = "    ";
+                        textCom1.text     = "    ";
                         textCom1.isStrike = false;
                     }
                     break;
@@ -293,8 +301,8 @@ public class KeyboardType3 extends Keyboard {
 
         } else {
             if (!tcs.isEmpty()) {
-                textCom = tcs.get(index);
-                textCom.text = keyText.text;
+                textCom          = tcs.get(index);
+                textCom.text     = keyText.text;
                 textCom.isStrike = false;
 
                 Speech.play_Baidu(keyText.text);

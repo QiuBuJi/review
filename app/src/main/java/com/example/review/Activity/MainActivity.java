@@ -32,6 +32,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -72,9 +73,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
-                                                               TextWatcher,
-                                                               ServiceConnection,
-                                                               Handler.Callback {
+        TextWatcher,
+        ServiceConnection,
+        Handler.Callback {
 
     private static final String TAG = "msg_mine";
 
@@ -87,28 +88,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static File pathInit     = new File(pathApp, "Total Word.ini");//数据所在目录
 
     //**************************************** Views ************************************************
-    TextView textViewTime;
-    TextView textViewAbout;
     TextView textViewPercent;
-    TextView tips;
+    TextView tvLastDuration;
+    TextView textViewArrival;
+    TextView textViewAbout;
+    TextView tvReviewedNum;
+    TextView textViewTime;
     TextView lastText;
+    TextView tvTitle;
+    TextView tvLevel;
+    TextView tvNext;
+    TextView tips;
 
+    ImageView imageViewPlaySound;
     ImageView imageViewDetail;
     ImageView imageViewSort;
-    ImageView imageViewPlaySound;
 
+    ImageButton imageButtonSetting;
+    ImageButton imageButtonClear;
+
+    RecyclerView recyclerViewKeyboard;
     ProgressBar  progressBarProgress;
     EditText     etInput;
-    ImageButton  imageButtonSetting;
-    ImageButton  imageButtonClear;
-    TextView     tvLevel;
-    RecyclerView recyclerViewKeyboard;
-    TextView     tvTitle;
-    TextView     tvNext;
-    TextView     tvReviewedNum;
+
+    ConstraintLayout entireBackground;
+    ConstraintLayout mainContainer;
     //***********************************************************************************************
 
-    private TextView textViewArrival;
 
     final  int HANDLER_UPDATE_SHOWING = 4;
     final  int HANDLER_START_TIMER    = 3;
@@ -117,14 +123,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     boolean       correct;
     Handler       handler = new Handler(this);
     ReviewService service;
+    ReviewStruct  lastRs;
     Keyboard      keyboard;
-    private ConstraintLayout entireBackground;
 
-    private List<PathBoth>   pathBoth;
-    private int              libIndex     = 0;
-    private int              mReviewedNum = 0;
-    private ConstraintLayout mainContainer;
-    private TextView         tvLastDuration;
+    int mReviewedNum = 0;
+    int libIndex     = 0;
+    int state        = 2;
+
+    List<PathBoth> pathBoth;
 
     @Override
     public boolean handleMessage(Message msg) {
@@ -156,9 +162,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    int          state = 2;
-    ReviewStruct lastRs;
-
     //刷新显示界面文字
     void refreshShowing(boolean isChange) {
         if (keyboard != null) keyboard.stop();
@@ -172,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //避开下标越界，有复习数据*********************************************************************
         if (!data.mActivate.isEmpty()) {
             final ReviewStruct rs = data.mActivate.getFirst();
-            tvLevel.setText(String.format(Locale.CHINA, "%d", rs.getLevel()));
+            tvLevel.setText(String.format("%d", rs.getLevel()));
             tips.setText("");
 
             //显示距离上次复习间隔了多久
@@ -233,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             //当没有复习数据时，要配置的参数************************************************************
             lastRs = null;
-            state = 2;
+            state  = 2;
             etInput.setShowSoftInputOnFocus(true);
             tvLevel.setText("☺");
             tvLastDuration.setText("---");
@@ -351,9 +354,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             PathBoth pathBoth = this.pathBoth.get(libIndex);
-            pathNexus = new File(pathApp, pathBoth.nexus);
+            pathNexus   = new File(pathApp, pathBoth.nexus);
             pathLibrary = new File(pathApp, pathBoth.library);
-            prefix = pathBoth.prefix;
+            prefix      = pathBoth.prefix;
         }
 
         //启动&绑定服务
@@ -376,7 +379,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         ReviewService.LocalBinder binder = (ReviewService.LocalBinder) iBinder;
         service = binder.getService();
-        data = service.data;
+        data    = service.data;
 
         dataPrepared();
     }
@@ -440,29 +443,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //初始化Views
     private void initViews() {
-        textViewTime = findViewById(R.id.fragment_textView_time);
-        textViewAbout = findViewById(R.id.main_textView_about);
+        textViewTime    = findViewById(R.id.fragment_textView_time);
+        textViewAbout   = findViewById(R.id.main_textView_about);
         textViewPercent = findViewById(R.id.fragment_textView_persent);
         textViewArrival = findViewById(R.id.main_textView_time_arrival);
 
-        imageViewDetail = findViewById(R.id.main_imageView_Detail);
-        imageViewSort = findViewById(R.id.main_imageView_sort);
+        imageViewDetail    = findViewById(R.id.main_imageView_Detail);
+        imageViewSort      = findViewById(R.id.main_imageView_sort);
         imageViewPlaySound = findViewById(R.id.main_imageView_play_sound);
 
-        progressBarProgress = findViewById(R.id.fragment_progressBar_progress);
-        etInput = findViewById(R.id.fragment_editText_input);
-        tips = findViewById(R.id.fragment_textView_tips);
-        lastText = findViewById(R.id.fragment_textView_lastText);
-        imageButtonSetting = findViewById(R.id.main_imageButton_setting);
-        imageButtonClear = findViewById(R.id.main_imageButton_clear);
+        progressBarProgress  = findViewById(R.id.fragment_progressBar_progress);
+        etInput              = findViewById(R.id.fragment_editText_input);
+        tips                 = findViewById(R.id.fragment_textView_tips);
+        lastText             = findViewById(R.id.fragment_textView_lastText);
+        imageButtonSetting   = findViewById(R.id.main_imageButton_setting);
+        imageButtonClear     = findViewById(R.id.main_imageButton_clear);
         recyclerViewKeyboard = findViewById(R.id.main_recycllerView_keyboard);
-        tvLevel = findViewById(R.id.main_textView_level);
-        entireBackground = findViewById(R.id.entire_background);
-        tvTitle = findViewById(R.id.main_about_textView_title);
-        tvNext = findViewById(R.id.main_textView_next);
-        tvReviewedNum = findViewById(R.id.main_textView_reviewedNum);
+        tvLevel              = findViewById(R.id.main_textView_level);
+        entireBackground     = findViewById(R.id.entire_background);
+        tvTitle              = findViewById(R.id.main_about_textView_title);
+        tvNext               = findViewById(R.id.main_textView_next);
+        tvReviewedNum        = findViewById(R.id.main_textView_reviewedNum);
 
-        mainContainer = findViewById(R.id.cl_main_container);
+        mainContainer  = findViewById(R.id.cl_main_container);
         tvLastDuration = findViewById(R.id.tvLastDuration);
     }
 
@@ -490,15 +493,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
-                //回车键按下以及IME_ACTION_DONE被按下的，都可以执行matchInput()
-                switch (actionId) {
-                    case EditorInfo.IME_ACTION_UNSPECIFIED:
-                        //回车键被按下和放开，都会触发此事件。现在要排除回车键被放开的事件
-                        if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP)
-                            return false;
-                    case EditorInfo.IME_ACTION_DONE:
-                        matchInput();
-                        break;
+                //回车键按下
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+
+                    //回车键按下以及IME_ACTION_DONE被按下的，都可以执行matchInput()
+                    switch (actionId) {
+                        case EditorInfo.IME_ACTION_UNSPECIFIED:
+                            if (event.getKeyCode() != KeyEvent.KEYCODE_ENTER) return false;
+                        case EditorInfo.IME_ACTION_DONE:
+                            matchInput();
+                            break;
+                    }
                 }
                 return true;
             }
@@ -581,7 +586,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-        mReviewedNum = 0;
+        mReviewedNum   = 0;
         isShowedScreen = true;
         refreshProgress();
 
@@ -618,9 +623,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     class PathBoth {
         private PathBoth(String nexus, String library, String prefix) {
-            this.nexus = nexus;
+            this.nexus   = nexus;
             this.library = library;
-            this.prefix = prefix;
+            this.prefix  = prefix;
         }
 
         String nexus;
@@ -728,7 +733,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         libIndex = i;
 
                         PathBoth pathBoth = MainActivity.this.pathBoth.get(i);
-                        pathNexus = new File(pathApp, pathBoth.nexus);
+                        pathNexus   = new File(pathApp, pathBoth.nexus);
                         pathLibrary = new File(pathApp, pathBoth.library);
                         Setting.edit.putString("libName", MainActivity.this.pathBoth.get(libIndex).prefix).commit();
                         tvTitle.setText(pathBoth.prefix);
@@ -885,8 +890,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             }
         }
-
-
         addLog(rs);
     }
 
@@ -895,8 +898,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 //        rs.resetLevel();//重置水平
 //        refreshShowing(false);
-        KeyboardType2 keyboardType2 = (KeyboardType2) keyboard;
-        keyboardType2.handleInterface.showDifferent(true);
+
+        if (keyboard instanceof KeyboardType2) {
+            KeyboardType2 keyboardType2 = (KeyboardType2) keyboard;
+            keyboardType2.handleInterface.showDifferent(true);
+        }
 
         //显示错误提示
         SpanUtil.create()
@@ -943,6 +949,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //***错误********************************************************************************
             canJoinLog++;
             rs.resetLevel();//重置水平
+            tvLevel.setText(String.format("%d", rs.getLevel()));
 
             ColorfulText               ct  = new ColorfulText();
             ArrayList<ElementCategory> ecs = ct.categoryString(inputText, rs.getMatch());//todo
@@ -953,7 +960,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //输入错误后，指出错误类型
             SpanUtil.SpanBuilder spanBuilder = SpanUtil.create();
             for (ElementCategory ec : ecs) {
-
                 switch (ec.category) {
                     case correct:
                         spanBuilder.addForeColorSection(ec.txt, Color.BLACK);
@@ -970,7 +976,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
             spanBuilder.showIn(etInput);
-//            etInput.setSelection(etInput.length());//全选输入框
+            etInput.setSelection(etInput.length());//全选输入框
+            new Handler(new Handler.Callback() {
+                @Override
+                public boolean handleMessage(Message message) {
+                    etInput.requestFocus();
+                    return false;
+                }
+            }).sendEmptyMessageDelayed(0, 50);
         }
     }
 

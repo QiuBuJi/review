@@ -41,9 +41,6 @@ public abstract class Keyboard implements ItemClickListener {
     final public static int              TYPE_SOUND   = 5;
     public final        ConstraintLayout container;
 
-    String[]     mPriorites    = new String[]{"n.", "vt.", "adj.", "pron.", "conj.", "adv.", "intj.", "adv.", "art.", "vi."};
-    List<String> strPriorities = Arrays.asList(mPriorites);
-
     int          span;
     int          index;
     Context      context;
@@ -74,37 +71,6 @@ public abstract class Keyboard implements ItemClickListener {
 
     void adapterComplete() {
 
-    }
-
-    public int getColor(String src) {
-        src = src.replaceAll("\\s", "");//去除空格
-        int prefixColor;
-        int i = strPriorities.indexOf(src);
-
-        switch (i) {
-            case 0:
-                prefixColor = Color.RED;
-                break;
-            case 1:
-                prefixColor = Color.GREEN;
-                break;
-            case 2:
-                prefixColor = Color.DKGRAY;
-                break;
-            case 3:
-                prefixColor = Color.BLUE;
-                break;
-            case 4:
-                prefixColor = Color.MAGENTA;
-                break;
-            case 5:
-                prefixColor = Color.CYAN;
-                break;
-            default:
-                prefixColor = Color.GRAY;
-        }
-
-        return prefixColor;
     }
 
     public static <E> void makeRandom(List<E> list) {

@@ -7,6 +7,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.method.DigitsKeyListener;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import com.example.review.R;
 import com.example.review.Util.Speech;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class KeyboardType1 extends Keyboard {
@@ -38,7 +40,19 @@ public class KeyboardType1 extends Keyboard {
         input.setText("");
 
         input.setShowSoftInputOnFocus(false);
-        input.setInputType(InputType.TYPE_NULL);
+//        input.setInputType(InputType.TYPE_NULL);
+
+        //网上查的代码，让实体键盘为全英文输入
+        input.setKeyListener(new DigitsKeyListener() {
+            @Override
+            public int getInputType() {
+                return InputType.TYPE_TEXT_VARIATION_PASSWORD;
+            }
+            @Override
+            protected char[] getAcceptedChars() {
+                return "qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890 -_~!@#$%^&*()+=\"/\\?,.<>;:'[]{}~`".toCharArray();
+            }
+        });
 
 //        if (rs.getLevel() <= 3) {
 //            input.setShowSoftInputOnFocus(false);
