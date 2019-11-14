@@ -113,6 +113,7 @@ public class ReviewStruct extends StoreData {
         }
 
         int needCorrectNum = (int) (total * corRate);
+        if (total <= 3) needCorrectNum = total;
 
         countList.corrCount   = corrCount;
         countList.errCount    = errCount;
@@ -164,8 +165,7 @@ public class ReviewStruct extends StoreData {
     public ArrayList<WordExplain> getFrame() {
         ArrayList<WordExplain> wordExplains = getMatchWordExplains();
 
-        for (WordExplain wordExplain : wordExplains)
-            wordExplain.explains.clear();
+        for (WordExplain we : wordExplains) we.explains.clear();
         return wordExplains;
     }
 

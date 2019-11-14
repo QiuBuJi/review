@@ -6,8 +6,10 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.Guideline;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,9 +35,9 @@ public class HandleInterfaceType1 {
     private final View                   windowExplain;
 
     public HandleInterfaceType1(Context context, ConstraintLayout containerView, ArrayList<WordExplain> frameInput) {
-        this.context = context;
+        this.context       = context;
         this.containerView = containerView;
-        this.frameInput = frameInput;
+        this.frameInput    = frameInput;
 
         windowExplain = LayoutInflater.from(context).inflate(R.layout.activity_window_explain, containerView, false);
         containerView.addView(windowExplain);
@@ -119,7 +121,7 @@ public class HandleInterfaceType1 {
         public TextView     explainTitle;
 
         WindowExplainHolder(View view) {
-            explainBody = view.findViewById(R.id.recycler_explain_body);
+            explainBody  = view.findViewById(R.id.recycler_explain_body);
             explainTitle = view.findViewById(R.id.tv_explain_title);
         }
     }
@@ -133,13 +135,15 @@ public class HandleInterfaceType1 {
         public final LinearLayout container;
         public final TextView     count;
         public final TextView     indicator;
+        public final Guideline    guideline;
 
         public ItemHolder(@NonNull View itemView) {
             super(itemView);
-            prefix = itemView.findViewById(R.id.tv_prefix);
+            prefix    = itemView.findViewById(R.id.tv_prefix);
             container = itemView.findViewById(R.id.ll_container);
-            count = itemView.findViewById(R.id.tv_explain_count);
+            count     = itemView.findViewById(R.id.tv_explain_count);
             indicator = itemView.findViewById(R.id.tv_indicator);
+            guideline = itemView.findViewById(R.id.guideline);
         }
     }
 
@@ -153,10 +157,24 @@ public class HandleInterfaceType1 {
             return new ItemHolder(inflate);
         }
 
+        int max = 0;
+
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
             final ItemHolder holder  = (ItemHolder) viewHolder;
             WordExplain      weInput = frameInput.get(i);
+
+            //解决前缀对齐问题
+            if (max == 0) {
+                int spec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                for (WordExplain we : frameInput) {
+                    holder.prefix.setText(we.category);
+                    holder.prefix.measure(spec, spec);
+                    int width = holder.prefix.getMeasuredWidth();
+                    if (width > max) max = width;
+                }
+            }
+            holder.guideline.setGuidelineBegin(max);
 
             //设置前缀及其颜色
             holder.prefix.setText(weInput.category);

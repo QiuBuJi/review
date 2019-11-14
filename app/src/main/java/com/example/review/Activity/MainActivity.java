@@ -859,8 +859,8 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     }, duration);
                 } else {
-                    matchError(cl);
                     tips.callOnClick();
+                    matchError(cl);
                 }
                 break;
             }

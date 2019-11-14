@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.Guideline;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -233,6 +234,7 @@ public class HandleInterfaceType2 {
         public final LinearLayout container;
         public final TextView     count;
         public final TextView     indicator;
+        public final Guideline    guideline;
 
         public ItemHolder(@NonNull View itemView) {
             super(itemView);
@@ -240,6 +242,7 @@ public class HandleInterfaceType2 {
             container = itemView.findViewById(R.id.ll_container);
             count     = itemView.findViewById(R.id.tv_explain_count);
             indicator = itemView.findViewById(R.id.tv_indicator);
+            guideline = itemView.findViewById(R.id.guideline);
         }
     }
 
@@ -260,11 +263,25 @@ public class HandleInterfaceType2 {
             return new ItemHolder(inflate);
         }
 
+        int max = 0;
+
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
             final ItemHolder holder  = (ItemHolder) viewHolder;
             WordExplain      weInput = frameInput.get(i);
             WordExplain      weRight = frameRight.get(i);
+
+            //解决前缀对齐问题
+            if (max == 0) {
+                int spec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                for (WordExplain we : frameInput) {
+                    holder.prefix.setText(we.category);
+                    holder.prefix.measure(spec, spec);
+                    int width = holder.prefix.getMeasuredWidth();
+                    if (width > max) max = width;
+                }
+            }
+            holder.guideline.setGuidelineBegin(max);
 
             //设置前缀及其颜色
             holder.prefix.setText(weInput.category);
@@ -273,36 +290,35 @@ public class HandleInterfaceType2 {
             //设置解释字符
             holder.container.removeAllViews();
             for (String explain : weInput.explains) {
-                TextView txt = (TextView) LayoutInflater.from(context).inflate(
-                        R.layout.activity_item_text, holder.container, false);
+                LayoutInflater inflater = LayoutInflater.from(context);
+                TextView       txt      = (TextView) inflater.inflate(R.layout.activity_item_text, holder.container, false);
                 txt.setText(explain);
                 holder.container.addView(txt);
 
-                if (mDifferent && !weRight.explains.contains(explain)) {
-                    txt.setTextColor(Color.RED);
-                }
+                if (mDifferent && !weRight.explains.contains(explain)) txt.setTextColor(Color.RED);
             }
 
             //设置该项内数据总量
-            holder.count.setText(weRight.explains.size() + "");
+            holder.count.setText(String.valueOf(weRight.explains.size()));
 
             //正确率超过这个阈值，切换不同文字颜色
             int countInput = 0, countRight = 0;
             for (WordExplain we : frameInput) countInput += we.explains.size();
             for (WordExplain we : frameRight) countRight += we.explains.size();
-            if (countInput >= countRight * 0.6f) holder.count.setTextColor(0xff3F51B5);
+            int value = (int) (countRight * 0.6f);
+            if (countRight <= 3) value = countRight;
+
+            if (countInput >= value) holder.count.setTextColor(0xff3F51B5);
             else holder.count.setTextColor(Color.WHITE);
+
 
             //设置闪闪动画
             if (indexOfItem == i) {
                 holder.indicator.setVisibility(View.VISIBLE);
-
                 ObjectAnimator.ofFloat(holder.indicator, "scaleX", 1f, 0f, 1f)
                               .setDuration(200)
                               .start();
-            } else {
-                holder.indicator.setVisibility(View.GONE);
-            }
+            } else holder.indicator.setVisibility(View.GONE);
         }
 
         @Override

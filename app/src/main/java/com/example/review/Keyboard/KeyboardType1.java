@@ -48,6 +48,7 @@ public class KeyboardType1 extends Keyboard {
             public int getInputType() {
                 return InputType.TYPE_TEXT_VARIATION_PASSWORD;
             }
+
             @Override
             protected char[] getAcceptedChars() {
                 return "qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890 -_~!@#$%^&*()+=\"/\\?,.<>;:'[]{}~`".toCharArray();
@@ -130,22 +131,14 @@ public class KeyboardType1 extends Keyboard {
     ArrayList<KeyText> getLayout() {
         ArrayList<KeyText> data;
         span = 10;
-        data = getRegularLayout();
-
-
-//        if (rs.getLevel() < UNDER_LEVEL) {
 //            data = getRandomLayout();
-//
-////            if (rs.getLevel() < UNDER_LEVEL - 1)
-////                data = getRandomLayout();
-////            else data = getLessLayout();
-//        } else {
-//            data = getRegularLayout();
-//        }
+
+        if (rs.getLevel() > UNDER_LEVEL) data = getLessLayout();
+        else data = getRegularLayout();
         return data;
     }
 
-    private static final int UNDER_LEVEL = 1;
+    private static final int UNDER_LEVEL = 3;
 
     ArrayList<KeyText> getRandomLayout() {
         ArrayList<KeyText> data = new ArrayList<>();
@@ -220,6 +213,11 @@ public class KeyboardType1 extends Keyboard {
     ArrayList<KeyText> getLessLayout() {
         ArrayList<KeyText> data = new ArrayList<>();
 
+        data.add(new KeyText(COM_DONE, true));
+//        data.add(new KeyText(""));
+        data.add(new KeyText(COM_EMPTY, true));
+        data.add(new KeyText(COM_DONE, true));
+
         StringBuffer someChars  = new StringBuffer();
         String       matchStr   = redundancyGone(rs.getMatch());
         char[]       matchChars = matchStr.toCharArray();
@@ -258,6 +256,7 @@ public class KeyboardType1 extends Keyboard {
             someChars.append(matchStr);
         }
 
+//        span = 4;
         //填补空洞
         more += span - (more % span);
 
@@ -287,11 +286,6 @@ public class KeyboardType1 extends Keyboard {
             char[] chars = key.toString().toCharArray();
             for (char aChar : chars) data.add(new KeyText(aChar + ""));
         }
-
-        data.add(new KeyText(COM_DONE, true));
-        data.add(new KeyText(""));
-        data.add(new KeyText(COM_EMPTY, true));
-        data.add(new KeyText(COM_DONE, true));
 
         return data;
     }
