@@ -39,26 +39,13 @@ public class KeyboardType1 extends Keyboard {
         input.setHint("请输入");
         input.setText("");
 
-//        input.setInputType(InputType.TYPE_NULL);
-        input.setShowSoftInputOnFocus(false);
-
-        //网上查的代码，让实体键盘为全英文输入
-        input.setKeyListener(new DigitsKeyListener() {
-            @Override
-            public int getInputType() {
-                return InputType.TYPE_TEXT_VARIATION_PASSWORD;
-            }
-
-            @Override
-            protected char[] getAcceptedChars() {
-                return "qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM1234567890 -_~!@#$%^&*()+=\"/\\?,.<>;:'[]{}~`".toCharArray();
-            }
-        });
+        //让实体键盘为全英文输入
+        input.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+//        input.setShowSoftInputOnFocus(false);
 
 //        if (rs.getLevel() <= 3) {
 //            input.setShowSoftInputOnFocus(false);
 //            input.setInputType(InputType.TYPE_NULL);
-//
 //        } else {
 //            input.setShowSoftInputOnFocus(true);
 //            input.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -133,8 +120,9 @@ public class KeyboardType1 extends Keyboard {
         span = 10;
 //            data = getRandomLayout();
 
-        if (rs.getLevel() > UNDER_LEVEL) data = getLessLayout();
-        else data = getRegularLayout();
+        data = getRegularLayout();
+//        if (rs.getLevel() > UNDER_LEVEL) data = getLessLayout();
+//        else data = getRegularLayout();
         return data;
     }
 

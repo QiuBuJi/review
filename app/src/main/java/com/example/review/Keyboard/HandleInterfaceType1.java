@@ -47,7 +47,7 @@ public class HandleInterfaceType1 {
 
         //解决退出后再进入时不显示内容的问题
         ViewGroup.LayoutParams lp = windowExplainHolder.explainBody.getLayoutParams();
-        lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
         windowExplainHolder.explainBody.setLayoutParams(lp);
 
         LinearLayoutManager layout = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -157,7 +157,7 @@ public class HandleInterfaceType1 {
             return new ItemHolder(inflate);
         }
 
-        int max = 0;
+        int max = 0, maxPostfixLen = 0;
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
@@ -172,9 +172,19 @@ public class HandleInterfaceType1 {
                     holder.prefix.measure(spec, spec);
                     int width = holder.prefix.getMeasuredWidth();
                     if (width > max) max = width;
+
+                    StringBuffer sb = new StringBuffer();
+                    for (String explain : we.explains) sb.append(explain);
+
+                    holder.prefix.setText(sb);
+                    holder.prefix.measure(spec, spec);
+                    width = holder.prefix.getMeasuredWidth();
+
+                    if (width > maxPostfixLen) maxPostfixLen = width;
                 }
             }
-            holder.guideline.setGuidelineBegin(max);
+            int marging = ((containerView.getWidth() - (maxPostfixLen + max)) / 2) + (max / 2);
+            holder.guideline.setGuidelineBegin(marging);
 
             //设置前缀及其颜色
             holder.prefix.setText(weInput.category);

@@ -210,6 +210,7 @@ public class ReviewStruct extends StoreData {
                 if (index == -1) we.category = "*.";
                 else {
                     we.category = line.substring(0, index);
+                    if (we.category.equals("")) we.category = "*.";
                     line        = line.substring(index);
                 }
 

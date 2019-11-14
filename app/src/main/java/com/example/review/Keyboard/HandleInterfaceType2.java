@@ -210,7 +210,6 @@ public class HandleInterfaceType2 {
         adapter.notifyDataSetChanged();
     }
 
-
     /**
      * @link activity_window_explain.xml
      */
@@ -305,11 +304,18 @@ public class HandleInterfaceType2 {
             int countInput = 0, countRight = 0;
             for (WordExplain we : frameInput) countInput += we.explains.size();
             for (WordExplain we : frameRight) countRight += we.explains.size();
-            int value = (int) (countRight * 0.6f);
-            if (countRight <= 3) value = countRight;
+            int threshold = (int) (countRight * 0.6f);
+            if (countRight <= 3) threshold = countRight;
 
-            if (countInput >= value) holder.count.setTextColor(0xff3F51B5);
+            //大于阈值时，显示全蓝色，提示可以按回车了
+            if (countInput >= threshold) holder.count.setTextColor(0xff3F51B5);
             else holder.count.setTextColor(Color.WHITE);
+
+            //后缀填满后，不显示；
+            countInput = weInput.explains.size();
+            countRight = weRight.explains.size();
+            if (countInput == countRight) holder.count.setVisibility(View.GONE);
+            else holder.count.setVisibility(View.VISIBLE);
 
 
             //设置闪闪动画

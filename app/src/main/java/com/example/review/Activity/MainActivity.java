@@ -28,11 +28,13 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -103,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements
     ImageView imageViewDetail;
     ImageView imageViewSort;
 
-    ImageButton imageButtonSetting;
+    ImageButton  imageButtonSetting;
     RecyclerView recyclerViewKeyboard;
     ProgressBar  progressBarProgress;
     EditText     etInput;
@@ -172,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements
         //避开下标越界，有复习数据*********************************************************************
         if (!data.mActivate.isEmpty()) {
             final ReviewStruct rs = data.mActivate.getFirst();
-            tvLevel.setText(String.format("%d", rs.getLevel()));
+            tvLevel.setText(String.valueOf(rs.getLevel()));
             tips.setText("");
 
             //显示距离上次复习间隔了多久
@@ -193,7 +195,6 @@ public class MainActivity extends AppCompatActivity implements
             tvLastDuration.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     //跳转页面，到编辑窗口
                     ListActivity.currentClickedRs = rs;
                     MainActivity.this.startActivity(new Intent(MainActivity.this, EditActivity.class));
@@ -573,21 +574,17 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
+    int k = 0;
+
     private TextView.OnEditorActionListener getOnEditorActionListener() {
         return new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                //回车键按下（注意：实体键盘输入\n会导致event参数为null）
-                if (event == null ? true : event.getAction() == KeyEvent.ACTION_DOWN) {
 
-                    //回车键按下以及IME_ACTION_DONE被按下的，都可以执行matchInput()
-                    switch (actionId) {
-                        case EditorInfo.IME_ACTION_UNSPECIFIED:
-                            if (event.getKeyCode() != KeyEvent.KEYCODE_ENTER) return false;
-                        case EditorInfo.IME_ACTION_DONE:
-                            matchInput();
-                            break;
-                    }
+                switch (actionId) {
+                    case EditorInfo.IME_ACTION_DONE:
+                    case EditorInfo.IME_ACTION_UNSPECIFIED:
+                        matchInput();
                 }
                 return true;
             }
@@ -990,14 +987,16 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        char ch     = (char) event.getUnicodeChar();
-        int  action = event.getAction();
+        char ch      = (char) event.getUnicodeChar();
+        int  action  = event.getAction();
+        int  keyCode = event.getKeyCode();
 
         //键盘按键被按下
         if (action == KeyEvent.ACTION_DOWN) {
-            int keyCode = event.getKeyCode();
 
             switch (keyCode) {
+                case KeyEvent.KEYCODE_ENTER:
+                    break;
                 case KeyEvent.KEYCODE_BACK:
                     break;
                 case KeyEvent.KEYCODE_FORWARD_DEL:
@@ -1014,12 +1013,22 @@ public class MainActivity extends AppCompatActivity implements
                         return super.dispatchKeyEvent(event);
                     }
             }
-
             if (MyAdapter.isShowNum) {
                 boolean b = keyboard.keyDown(keyCode, ch, -1);
                 if (b) return true;
             }
+
+            //按任意键，显示索引字母
+            if (!MyAdapter.isShowNum && keyboard instanceof KeyboardType2) {
+                MyAdapter.isShowNum = true;
+                keyboard.adapter.notifyDataSetChanged();
+                return super.dispatchKeyEvent(event);
+            }
         }
+
+        //解决软键盘按回车键后，输入框失去焦点问题
+        if (action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_ENTER) return false;
+
         return super.dispatchKeyEvent(event);
     }
 

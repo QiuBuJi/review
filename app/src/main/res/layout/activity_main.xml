@@ -133,17 +133,6 @@
         app:layout_constraintTop_toBottomOf="@+id/cl_main_container" />
 
     <TextView
-        android:id="@+id/fragment_textView_tips"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:background="@drawable/bg_ripple_effect_click1"
-        android:hint="tips..."
-        android:textColor="@android:color/black"
-        app:layout_constraintEnd_toEndOf="@+id/main_textView_time_arrival"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_editText_input" />
-
-    <TextView
         android:id="@+id/fragment_textView_lastText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -238,17 +227,28 @@
         app:layout_constraintStart_toStartOf="@+id/cl_main_container"
         app:layout_constraintTop_toTopOf="@+id/cl_main_container" />
 
+    <TextView
+        android:id="@+id/fragment_textView_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bg_ripple_effect_click1"
+        android:hint="tips..."
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/cl_main_container"
+        app:layout_constraintEnd_toEndOf="@+id/cl_main_container" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/main_recycllerView_keyboard"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_textView_tips"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_editText_input" />
 
 </android.support.constraint.ConstraintLayout>
