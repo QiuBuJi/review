@@ -23,18 +23,12 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextWatcher;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -164,10 +158,8 @@ public class MainActivity extends AppCompatActivity implements
     //刷新显示界面文字
     void refreshShowing(boolean isChange) {
         if (keyboard != null) keyboard.stop();
-
-        //屏幕没有显示，则不启动
+        //软件界面没有显示，则不启动
         if (!isShowedScreen) return;
-
         //初始化显示界面
         mainContainer.setBackgroundResource(R.drawable.bg_text_show);
 
@@ -506,15 +498,13 @@ public class MainActivity extends AppCompatActivity implements
                             String sb = getTips(rs);
                             Toast.makeText(MainActivity.this, sb, Toast.LENGTH_LONG).show();
 
-                            rs.resetLevel();
-                            if (rs.match.getType() == 1) {
-                                Speech.play_Baidu(rs.getMatch());
-                            }
+                            rs.resetLevel();//重置水平
+                            if (rs.match.getType() == 1) Speech.play_Baidu(rs.getMatch());//播放单词发音
+                            tvLevel.setText(String.format("%d", rs.getLevel()));
 
                             correct = false;
                             canJoinLog++;
                             addLog(rs);
-                            refreshShowing(false);
                         }
                         break;
                     case R.id.main_textView_time_arrival:
@@ -527,7 +517,6 @@ public class MainActivity extends AppCompatActivity implements
                     case R.id.fragment_editText_input:
                         break;
                 }
-
             }
         };
     }
@@ -841,48 +830,15 @@ public class MainActivity extends AppCompatActivity implements
             case 2: {
                 KeyboardType2 keyboardType2 = (KeyboardType2) keyboard;
                 correct = rs.matching(keyboardType2.frameInput, cl);
-                if (correct) {
-                    matchCorrect(rs);
-                    mReviewedNum++;
-
-                    //下面监听器，等颜色动画播放完毕，然后显示下一条数据在textShow中
-                    final int duration = 200;
-                    keyboardType2.handleInterface.setLightAnimation(false, duration);
-
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            handler.sendEmptyMessage(HANDLER_UPDATE_SHOWING);
-                        }
-                    }, duration);
-                } else {
-                    tips.callOnClick();
-                    matchError(cl);
-                }
+                if (correct) correctAction(rs);
+                else errorAction(cl);
                 break;
             }
             case 3: {
                 KeyboardType3 keyboardType3 = (KeyboardType3) keyboard;
                 correct = rs.matchingType3(keyboardType3.mCandidateType, keyboardType3.mCandidate, cl);
-                if (correct) {
-                    matchCorrect(rs);
-                    mReviewedNum++;
-
-
-                    //下面监听器，等颜色动画播放完毕，然后显示下一条数据在textShow中
-                    final int duration = 200;
-                    keyboardType3.setLightAnimation(false, duration);
-
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            handler.sendEmptyMessage(HANDLER_UPDATE_SHOWING);
-                        }
-                    }, duration);
-                } else {
-                    matchError(cl);
-                    tips.callOnClick();
-                }
+                if (correct) correctAction(rs);
+                else errorAction(cl);
                 break;
             }
             case 4: {
@@ -892,11 +848,26 @@ public class MainActivity extends AppCompatActivity implements
         addLog(rs);
     }
 
-    private void matchError(CountList cl) {
-        canJoinLog++;
+    private void correctAction(ReviewStruct rs) {
+        canJoinLog = 0;
+        data.updateInavalable_AddLevel(rs);
+        mReviewedNum++;
 
-//        rs.resetLevel();//重置水平
-//        refreshShowing(false);
+        //下面监听器，等颜色动画播放完毕，然后显示下一条数据在textShow中
+        final int duration = 200;
+        keyboard.setLightAnimation(false, duration);
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.sendEmptyMessage(HANDLER_UPDATE_SHOWING);
+            }
+        }, duration);
+    }
+
+    private void errorAction(CountList cl) {
+        canJoinLog++;
+        tips.callOnClick();
 
         if (keyboard instanceof KeyboardType2) {
             KeyboardType2 keyboardType2 = (KeyboardType2) keyboard;
@@ -911,11 +882,6 @@ public class MainActivity extends AppCompatActivity implements
                 .addForeColorSection(cl.errCount + "", Color.BLACK)
                 .addForeColorSection("个", Color.GRAY)
                 .showIn(tips);
-    }
-
-    private void matchCorrect(ReviewStruct rs) {
-        canJoinLog = 0;
-        data.updateInavalable_AddLevel(rs);
     }
 
     @TargetApi(Build.VERSION_CODES.N)
@@ -945,15 +911,11 @@ public class MainActivity extends AppCompatActivity implements
 
         } else {
             //***错误********************************************************************************
-            canJoinLog++;
-            rs.resetLevel();//重置水平
-            tvLevel.setText(String.format("%d", rs.getLevel()));
+            tips.callOnClick();
 
             ColorfulText               ct  = new ColorfulText();
             ArrayList<ElementCategory> ecs = ct.categoryString(inputText, rs.getMatch());//todo
-
             tips.setText(Html.fromHtml(ct.txt, 1));//显示缺少的字符
-            Speech.play_Baidu(rs.getMatch());//播放单词发音
 
             //输入错误后，指出错误类型
             SpanUtil.SpanBuilder spanBuilder = SpanUtil.create();
@@ -974,14 +936,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
             spanBuilder.showIn(etInput);
-            etInput.setSelection(etInput.length());//全选输入框
-            new Handler(new Handler.Callback() {
-                @Override
-                public boolean handleMessage(Message message) {
-                    etInput.requestFocus();
-                    return false;
-                }
-            }).sendEmptyMessageDelayed(0, 50);
         }
     }
 
@@ -1026,6 +980,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
 
+
         //解决软键盘按回车键后，输入框失去焦点问题
         if (action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_ENTER) return false;
 
@@ -1045,7 +1000,8 @@ public class MainActivity extends AppCompatActivity implements
         rs.logs.add(dateTime.toBytes());
     }
 
-    int start_ = 0;
+    int     start_  = 0;
+    boolean trigger = false;
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -1054,7 +1010,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
     }
 
     //用于不重复
@@ -1064,20 +1019,17 @@ public class MainActivity extends AppCompatActivity implements
     public void afterTextChanged(Editable s) {
         etInput.setTextColor(Color.BLACK);
         String text = etInput.getText().toString();
+        String str  = lastText.getText().toString();
 
         if (text.equals("")) {
             if (state1 == 2) return;
             state1 = 2;
-            SpannableStringBuilder ssb = new SpannableStringBuilder("上个单词: " + lastText.getText().toString());
-
-            ssb.setSpan(new AbsoluteSizeSpan(28),
-                        0, 6,
-                        Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-            ssb.setSpan(new ForegroundColorSpan(Color.GRAY),
-                        0, 6,
-                        Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-            lastText.setText(ssb);
-
+            String section = "上个单词: ";
+            SpanUtil.create()
+                    .addAbsSizeSection(section, 28)
+                    .setForeColor(section, Color.GRAY)
+                    .addForeColorSection(str, Color.BLACK)
+                    .showIn(lastText);
         } else {
             lastText.setText(text);
             lastText.setTextColor(Color.BLACK);

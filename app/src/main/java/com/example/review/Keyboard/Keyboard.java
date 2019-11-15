@@ -53,17 +53,19 @@ public abstract class Keyboard implements ItemClickListener {
     ReviewStruct rs;
 
     public Keyboard(Context context, RecyclerView keyboardView, ConstraintLayout container, EditText input, ReviewStruct reviewStruct) {
-        this.context = context;
+        this.context      = context;
         this.keyboardView = keyboardView;
-        this.input = input;
-        this.rs = reviewStruct;
-        this.container = container;
+        this.input        = input;
+        this.rs           = reviewStruct;
+        this.container    = container;
 
         container.removeAllViews();
         init();
     }
 
     abstract void init();
+
+    abstract public void setLightAnimation(boolean lightUp, int duration);
 
     public abstract void refresh();
 

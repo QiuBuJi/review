@@ -253,7 +253,7 @@ public class ReviewStruct extends StoreData {
     }
 
     public void resetLevel() {
-        setLevel(0);
+        setLevel(-1);
     }
 
     @Override

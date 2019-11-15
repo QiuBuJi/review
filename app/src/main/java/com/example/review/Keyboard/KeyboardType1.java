@@ -57,6 +57,11 @@ public class KeyboardType1 extends Keyboard {
     }
 
     @Override
+    public void setLightAnimation(boolean lightUp, int duration) {
+
+    }
+
+    @Override
     public void refresh() {
         String text = rs.getShow();
         int    type = rs.show.getType();

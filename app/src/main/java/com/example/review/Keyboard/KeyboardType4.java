@@ -25,6 +25,11 @@ public class KeyboardType4 extends Keyboard {
     }
 
     @Override
+    public void setLightAnimation(boolean lightUp, int duration) {
+
+    }
+
+    @Override
     public void refresh() {
 
 

@@ -408,35 +408,30 @@ public class ReviewData extends ReviewList {
     public void updateInavalable_AddLevel(ReviewStruct rs) {
         dataChangeCount++;
 
-        mActivate.remove(rs);
         int level = rs.getLevel();
+        mActivate.remove(rs);
         level++;//增加水平
-        if (level < 0) level = 0;
-        int tempLevel = level;
-
-
-        rs.time = DateTime.getCurrentTime();//取当前时间
-        rs.time.add(reviewRegions[level]);//todo level下标越界怎么办？
         rs.setLevel(level);
 
-
-        // 水平为0时，加入到第三个复习位置。
-        // 因为，新单词不太熟悉，就多加一步复习步骤，来巩固
-        if (tempLevel == 0) {
+        //低于1级别的计划，快速再次复习加深印象
+        if (level <= 0) {
             try {
-                mActivate.add(3, rs);
+                mActivate.add(2, rs);
             } catch (Exception e) {
                 mActivate.addLast(rs);
             }
-        } else {
-            //正常复习
-            try {
-                sortAddToInactivate(rs);
-            } catch (IllegalArgumentException e) {//todo 如果水平为13，则复习完成，取消复习计划。
-                removeFromInavalable_Avalable(rs);
-            }
+            return;
         }
 
+        rs.time = DateTime.getCurrentTime();//取当前时间
+        rs.time.add(reviewRegions[level]);//todo level下标越界怎么办？
+
+        //正常复习
+        try {
+            sortAddToInactivate(rs);
+        } catch (IllegalArgumentException e) {//todo 如果水平为13，则复习完成，取消复习计划。
+            removeFromInavalable_Avalable(rs);
+        }
     }
 
     /**

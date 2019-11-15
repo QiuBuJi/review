@@ -66,6 +66,7 @@ public class AdapterList extends RecyclerView.Adapter {
         }
         holder.word.setText(rs.getMatch());
         holder.explain.setText(rs.getShow());
+        holder.progress.setMax(ReviewData.reviewRegions.length - 1);
         holder.progress.setProgress(rs.getLevel());
         holder.levelNumber.setText(String.format(Locale.CHINA, "%d", rs.getLevel()));
 

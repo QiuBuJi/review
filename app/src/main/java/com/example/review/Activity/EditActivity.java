@@ -323,14 +323,10 @@ public class EditActivity extends Activity
             data.addLibrary(0, rs.match, rs.show);
             data.add(0, rs);//数据添加到顶部
         }
-
         data.setLibrarySaveMark();
-//        data.saveLibrary();
-//        data.save();//保存数据
 
         //加入复习
         if (rsTemp.joined) data.sortAddToInactivate(rsTemp);
-
         finish();
     }
 
@@ -357,9 +353,6 @@ public class EditActivity extends Activity
             } else data.removeFromInavalable_Avalable(rs);
 
             data.setLibrarySaveMark();
-//            data.saveLibrary();
-//            data.save();//保存数据
-
             finish();
         } catch (Exception e) {
             e.printStackTrace();

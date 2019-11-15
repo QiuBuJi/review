@@ -75,6 +75,11 @@ public class KeyboardType2 extends Keyboard {
         handleInterface.setLightAnimation(true, 200);
     }
 
+    @Override
+    public void setLightAnimation(boolean lightUp, int duration) {
+        handleInterface.setLightAnimation(lightUp, duration);
+    }
+
     void showWord() {
         SpanUtil.SpanBuilder spanBuilder = SpanUtil.create();
         spanBuilder.addForeColorSection("--- ", Color.LTGRAY)
