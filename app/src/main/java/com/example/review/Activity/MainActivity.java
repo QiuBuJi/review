@@ -24,6 +24,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -68,7 +69,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements
-        TextWatcher,
         ServiceConnection,
         Handler.Callback {
 
@@ -77,9 +77,9 @@ public class MainActivity extends AppCompatActivity implements
     static public ReviewData data = new ReviewData();
 
     public static File externalRoot = Environment.getExternalStorageDirectory();//外部存储夹根目录
-    public static File pathApp      = new File(externalRoot, "Review");//软件根目录
-    public static File pathNexus    = new File(pathApp, "nexus.lib");//数据所在目录
-    public static File pathLibrary  = new File(pathApp, "library.lib");//数据所在目录
+    public static File pathApp      = new File(externalRoot, "Review");   //软件根目录
+    public static File pathNexus    = new File(pathApp, "nexus.lib");     //数据所在目录
+    public static File pathLibrary  = new File(pathApp, "library.lib");   //数据所在目录
     public static File pathInit     = new File(pathApp, "Total Word.ini");//数据所在目录
 
     //**************************************** Views ************************************************
@@ -124,7 +124,9 @@ public class MainActivity extends AppCompatActivity implements
     int state        = 2;
 
     List<PathBoth> pathBoth;
+    int            clearInput = 0;
 
+    //***********************************************************************************************
     @Override
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
@@ -278,7 +280,6 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-
     /**
      * Feature Log
      * <p>
@@ -322,7 +323,6 @@ public class MainActivity extends AppCompatActivity implements
      * 2019年6月1*日 半天，选择库内容，比如单词库
      * 2019年6月23日 2hour 单词未发音，点击文字显示单词文字。
      */
-
 
     //主窗口被创建-----------------------------------------------------------------------------------
     @Override
@@ -492,20 +492,7 @@ public class MainActivity extends AppCompatActivity implements
                         startActivity(new Intent(MainActivity.this, SettingActivity.class));
                         break;
                     case R.id.fragment_textView_tips:
-                        if (!data.mActivate.isEmpty()) {
-                            ReviewStruct rs = data.mActivate.getFirst();
-
-                            String sb = getTips(rs);
-                            Toast.makeText(MainActivity.this, sb, Toast.LENGTH_LONG).show();
-
-                            rs.resetLevel();//重置水平
-                            if (rs.match.getType() == 1) Speech.play_Baidu(rs.getMatch());//播放单词发音
-                            tvLevel.setText(String.format("%d", rs.getLevel()));
-
-                            correct = false;
-                            canJoinLog++;
-                            addLog(rs);
-                        }
+                        tips();
                         break;
                     case R.id.main_textView_time_arrival:
                         Intent intent = new Intent(MainActivity.this, SortActivity.class);
@@ -521,12 +508,30 @@ public class MainActivity extends AppCompatActivity implements
         };
     }
 
+    private void tips() {
+        if (!data.mActivate.isEmpty()) {
+            ReviewStruct rs = data.mActivate.getFirst();
+
+            String sb = getTips(rs);
+            Toast.makeText(MainActivity.this, sb, Toast.LENGTH_LONG).show();
+
+            rs.resetLevel();//重置水平
+            if (rs.match.getType() == 1) Speech.play_Baidu(rs.getMatch());//播放单词发音
+            tvLevel.setText(String.format("%d", rs.getLevel()));
+
+            correct = false;
+            canJoinLog++;
+            addLog(rs);
+            clearInput = 1;
+        }
+    }
+
     //初始化监听器-----------------------------------------------------------------------------------
     private void initListener() {
         //显示框背景
         textViewArrival.setOnClickListener(getOnClickListener());
         //输入框
-        etInput.addTextChangedListener(this);
+        etInput.addTextChangedListener(getWatcher());
         //分类列表按钮
         imageViewSort.setOnClickListener(getOnClickListener());
         //关于按钮
@@ -563,7 +568,49 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    int k = 0;
+    //输入框输入监听器
+    private TextWatcher getWatcher() {
+        return new TextWatcher() {
+            int start_ = 0;
+            int state1 = 1;//用于不重复
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                start_ = start;
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //输入错误后，下次输入则要清空除位置1以后的内容
+                if (clearInput == 2) {
+                    clearInput = 0;
+                    etInput.getText().delete(1, etInput.length());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                etInput.setTextColor(Color.BLACK);
+                String text = etInput.getText().toString();
+                String str  = lastText.getText().toString();
+
+                if (text.equals("")) {
+                    if (state1 == 2) return;
+                    state1 = 2;
+                    String section = "上个单词: ";
+                    SpanUtil.create()
+                            .addAbsSizeSection(section, 28)
+                            .setForeColor(section, Color.GRAY)
+                            .addForeColorSection(str, Color.BLACK)
+                            .showIn(lastText);
+                } else {
+                    lastText.setText(text);
+                    lastText.setTextColor(Color.BLACK);
+                    state1 = 1;
+                }
+            }
+        };
+    }
 
     private TextView.OnEditorActionListener getOnEditorActionListener() {
         return new TextView.OnEditorActionListener() {
@@ -779,8 +826,6 @@ public class MainActivity extends AppCompatActivity implements
         return paths;
     }
 
-    //todo below is detail ↓↓↓
-
     /* new设想，2019年7月18日
      *
      *      word: compare,you,@0123(引用该单词的ID，4字节)
@@ -793,7 +838,7 @@ public class MainActivity extends AppCompatActivity implements
      *        id: 666(该id由系统自动分配，4字节)
      *      type: 单词、解释、填空
      *      hello world!
-     *
+     *  todo above is detail ↑↑↑
      * */
 
     //输入匹配---------------------------------------------------------------------------------------
@@ -806,22 +851,13 @@ public class MainActivity extends AppCompatActivity implements
             return;
         }
 
-        etInput.setText(inputText);//清楚文字残留颜色
+//        etInput.setText(inputText);//清楚文字残留颜色
         ReviewStruct rs   = data.mActivate.getFirst();
         CountList    cl   = new CountList();
         int          type = rs.match.getType();
 
         switch (type) {
             case 1: {
-                //如果输入为空，就显示listen...
-                if (inputText.isEmpty()) {
-                    tips.setText("");
-                    etInput.setHint("听发音...");
-//                    Speech.play_Baidu(rs.getMatch());
-                    tips.callOnClick();
-                    return;
-                }
-
                 correct = rs.matching(inputText);
                 rs.viewCount++;
                 correctProc(inputText, rs);
@@ -908,7 +944,6 @@ public class MainActivity extends AppCompatActivity implements
             }, duration);
 
             mReviewedNum++;
-
         } else {
             //***错误********************************************************************************
             tips.callOnClick();
@@ -948,36 +983,45 @@ public class MainActivity extends AppCompatActivity implements
         //键盘按键被按下
         if (action == KeyEvent.ACTION_DOWN) {
 
+            //左右键赋予功能：上一条、下一条
             switch (keyCode) {
-                case KeyEvent.KEYCODE_ENTER:
-                    break;
-                case KeyEvent.KEYCODE_BACK:
-                    break;
-                case KeyEvent.KEYCODE_FORWARD_DEL:
-                    etInput.setText("");
-                    break;
-                case KeyEvent.KEYCODE_DEL:
-
-                    break;
-                case KeyEvent.KEYCODE_S:
-                    //显示代替字符
-                    if (event.isAltPressed()) {
-                        MyAdapter.isShowNum = !MyAdapter.isShowNum;
-                        keyboard.adapter.notifyDataSetChanged();
-                        return super.dispatchKeyEvent(event);
+                case KeyEvent.KEYCODE_DPAD_LEFT:
+                    if (keyboard instanceof KeyboardType2) {
+                        tvNext.performLongClick();
+                        return true;
                     }
+                    clearInput = 0;//左右箭头点击后，则下次输入不清空内容
+                case KeyEvent.KEYCODE_DPAD_RIGHT:
+                    if (keyboard instanceof KeyboardType2) {
+                        tvNext.performClick();
+                        return true;
+                    }
+                    clearInput = 0;//左右箭头点击后，则下次输入不清空内容
+                case KeyEvent.KEYCODE_DEL:
+                    if (event.isShiftPressed()) etInput.setText("");
+                    break;
             }
-            if (MyAdapter.isShowNum) {
-                boolean b = keyboard.keyDown(keyCode, ch, -1);
-                if (b) return true;
+
+            //显示代替字符
+            if (keyCode == KeyEvent.KEYCODE_S && event.isAltPressed()) {
+                MyAdapter.isShowNum = !MyAdapter.isShowNum;
+                keyboard.adapter.notifyDataSetChanged();
+                return super.dispatchKeyEvent(event);
             }
+
+            //MyAdapter.isShowNum为真，则显示键盘索引字符
+            if (MyAdapter.isShowNum && keyboard.keyDown(keyCode, ch, -1)) return true;
 
             //按任意键，显示索引字母
-            if (!MyAdapter.isShowNum && keyboard instanceof KeyboardType2) {
+            boolean isInsOfType2  = keyboard instanceof KeyboardType2;
+            boolean isVisibleChar = ch > 32 && ch < 128;//限制为可见的ASCII码
+            if (!MyAdapter.isShowNum && isInsOfType2 && isVisibleChar) {
                 MyAdapter.isShowNum = true;
                 keyboard.adapter.notifyDataSetChanged();
                 return super.dispatchKeyEvent(event);
             }
+        } else if (action == KeyEvent.ACTION_UP) {
+            if (clearInput == 1) clearInput = 2;
         }
 
 
@@ -998,42 +1042,5 @@ public class MainActivity extends AppCompatActivity implements
             dateTime.setSecond(-second);
         }
         rs.logs.add(dateTime.toBytes());
-    }
-
-    int     start_  = 0;
-    boolean trigger = false;
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        start_ = start;
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-    }
-
-    //用于不重复
-    int state1 = 1;
-
-    @Override
-    public void afterTextChanged(Editable s) {
-        etInput.setTextColor(Color.BLACK);
-        String text = etInput.getText().toString();
-        String str  = lastText.getText().toString();
-
-        if (text.equals("")) {
-            if (state1 == 2) return;
-            state1 = 2;
-            String section = "上个单词: ";
-            SpanUtil.create()
-                    .addAbsSizeSection(section, 28)
-                    .setForeColor(section, Color.GRAY)
-                    .addForeColorSection(str, Color.BLACK)
-                    .showIn(lastText);
-        } else {
-            lastText.setText(text);
-            lastText.setTextColor(Color.BLACK);
-            state1 = 1;
-        }
     }
 }

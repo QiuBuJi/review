@@ -1,4 +1,4 @@
-package com.example.review;
+package com.example.review.Activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.review.Activity.MainActivity;
+import com.example.review.R;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-public class FilePicker extends AppCompatActivity {
+public class FilePickerActivity extends AppCompatActivity {
 
     ArrayList<String>  suffixs = new ArrayList<>(Arrays.asList("jpg", "png"));
     LinkedList<String> data    = new LinkedList<>();
@@ -70,7 +70,7 @@ public class FilePicker extends AppCompatActivity {
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            View view     = LayoutInflater.from(FilePicker.this).inflate(R.layout.activity_file_picker_item, viewGroup, false);
+            View view     = LayoutInflater.from(FilePickerActivity.this).inflate(R.layout.activity_file_picker_item, viewGroup, false);
 
             return new MyHolder(view);
         }

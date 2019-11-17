@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.example.review.DataStructureFile.DateTime;
 import com.example.review.DataStructureFile.ReviewData;
-import com.example.review.FilePicker;
 import com.example.review.New.LibraryList;
 import com.example.review.New.LibraryStruct;
 import com.example.review.New.ReviewStruct;
@@ -246,7 +245,7 @@ public class EditActivity extends Activity
                                 startActivityForResult(new Intent(EditActivity.this, LibraryActivity.class), requestCode);
                                 break;
                             case 1:
-                                startActivityForResult(new Intent(EditActivity.this, FilePicker.class), requestCode);
+                                startActivityForResult(new Intent(EditActivity.this, FilePickerActivity.class), requestCode);
                                 break;
                         }
                     }

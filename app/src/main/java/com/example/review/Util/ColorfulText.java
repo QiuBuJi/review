@@ -44,7 +44,7 @@ public class ColorfulText {
 
                     //添加匹配了的字符串
                     endIndex = cds.indexMatch + Math.abs(cds.seris);
-                    str = inputText.substring(cds.indexMatch, endIndex);
+                    str      = inputText.substring(cds.indexMatch, endIndex);
                     i += str.length() - 1;
 
                     if (cds.seris > 0)
@@ -69,19 +69,11 @@ public class ColorfulText {
 
         //matchedSeris中，有数据未被匹配。
         if (matchedSeris.size() > 0) {
-
             StringBuilder sb = new StringBuilder();
-            sb.append(" ");
-            int count = 0;
-            for (CharDataSimple cds : matchedSeris) {
-                if (count == 0)
-                    sb.append(cds.c).append(" ");
-                else
-                    sb.append(", ").append(cds.c).append(" ");
-                count++;
-            }
 
-            str = "缺失: {" + sb.toString() + "} " + "<font color='#C3C3C3'>" + matchedSeris.size() + "个</font>";
+            for (CharDataSimple cds : matchedSeris) sb.append(cds.c);
+
+            str = "缺失: {" + sb.toString() + "} <font color='#C3C3C3'>" + matchedSeris.size() + "个</font>";
             txt = str;
         }
 
@@ -109,9 +101,9 @@ public class ColorfulText {
     //----------------------------------------------------------------------------------------------
     class CharDataSimple {
         public CharDataSimple(char c, int indexCorrect, int indexMatch) {
-            this.c = c;
+            this.c            = c;
             this.indexCorrect = indexCorrect;
-            this.indexMatch = indexMatch;
+            this.indexMatch   = indexMatch;
         }
 
         char c;

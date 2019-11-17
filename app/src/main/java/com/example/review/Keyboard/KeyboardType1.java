@@ -82,7 +82,6 @@ public class KeyboardType1 extends Keyboard {
                 }
                 break;
             case TYPE_SOUND:
-
                 //播放音频
                 mp = new MediaPlayer();
                 try {
@@ -104,14 +103,12 @@ public class KeyboardType1 extends Keyboard {
             default:
                 break;
         }
-
     }
 
     @Override
     public void stop() {
         super.stop();
-        if (mp != null)
-            mp.stop();
+        if (mp != null) mp.stop();
     }
 
     @Override
@@ -198,7 +195,6 @@ public class KeyboardType1 extends Keyboard {
             if (conti) continue;
             data.add(new KeyText(chAdd + ""));
         }
-
 
         return data;
     }

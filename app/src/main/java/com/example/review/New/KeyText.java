@@ -1,5 +1,6 @@
 package com.example.review.New;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 
 public class KeyText {
@@ -13,24 +14,35 @@ public class KeyText {
     public View view = null;
 
     public KeyText(String text, boolean isCom) {
-        this.text = text;
+        this.text  = text;
         this.isCom = isCom;
     }
 
     public KeyText(String text, boolean isCom, int keyCode) {
-        this.text = text;
-        this.isCom = isCom;
+        this.text    = text;
+        this.isCom   = isCom;
         this.keyCode = keyCode;
     }
 
     public KeyText(String text, boolean isCom, int keyCode, char key) {
-        this.text = text;
-        this.isCom = isCom;
+        this.text    = text;
+        this.isCom   = isCom;
         this.keyCode = keyCode;
-        this.key = key;
+        this.key     = key;
     }
 
     public KeyText(String text) {
         this.text = text;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("  isCom = " + isCom);
+        sb.append("  text = " + text);
+        sb.append("  key = " + key);
+        sb.append("  keyCode = " + String.valueOf(keyCode));
+        return sb.toString();
     }
 }

@@ -171,7 +171,7 @@ public class KeyboardType2 extends Keyboard {
             key++;
         }
 
-        data.add(new KeyText("播放", true, KeyEvent.KEYCODE_DPAD_LEFT));
+        data.add(new KeyText("播放", true, KeyEvent.KEYCODE_SPACE));
         return data;
     }
 
@@ -182,15 +182,15 @@ public class KeyboardType2 extends Keyboard {
     }
 
     public boolean keyDown(int keyCode, char key, int posi) {
-
         KeyText keyText = null;
-        if (posi >= 0) {
-            keyText = strData.get(posi);
-        } else {
 
+        if (posi >= 0) keyText = strData.get(posi);
+        else {
             for (KeyText kt : strData) {
                 if (kt.keyCode == keyCode || kt.key == key) {
                     keyText = kt;
+
+                    //模拟单击
                     if (kt.view != null) {
                         kt.view.performClick();
                         kt.view.setPressed(true);
@@ -237,6 +237,7 @@ public class KeyboardType2 extends Keyboard {
                     break;
                 case "播放":
                     Speech.play_Baidu(rs.getShow());
+                    handleInterface.windowExplainHolder.explainTitle.performClick();
                     break;
             }
         } else {

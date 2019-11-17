@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme">
 
         <!--文件挑选窗口-->
-        <activity android:name=".FilePicker"></activity>
+        <activity android:name=".Activity.FilePickerActivity"></activity>
 
         <!--库选窗口-->
         <activity
