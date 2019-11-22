@@ -127,7 +127,7 @@ public class KeyboardType2 extends Keyboard {
         ArrayList<WordExplain> wesAdded = new ArrayList<>();
 
         //把数据解释取出来
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             int           ramdomNum = random.nextInt(size);
             LibraryStruct ls        = libTemp.get(ramdomNum);
 
@@ -144,6 +144,7 @@ public class KeyboardType2 extends Keyboard {
         //去重复
         removeRedundancy(wordsNative);
         removeRedundancy(wordsAdded);
+        wordsAdded.removeAll(wordsNative);
 
         int nativeSize = wordsNative.size();
         int num        = nativeSize / 6;
@@ -156,7 +157,9 @@ public class KeyboardType2 extends Keyboard {
         size -= num * 6;
 
         //去掉多余的数据
-        for (int i = 0; i < size; i++) wordsAdded.removeFirst();
+        for (int i = 0; i < size; i++) {
+            if (!wordsAdded.isEmpty()) wordsAdded.removeFirst();
+        }
         wordsAdded.addAll(wordsNative);
         makeRandom(wordsAdded);
         sortByCharLen(wordsAdded);
