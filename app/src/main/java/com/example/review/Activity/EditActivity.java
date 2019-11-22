@@ -56,6 +56,7 @@ public class EditActivity extends Activity
     Button   btUp;
     Button   btDown;
     TextView tvPeriod;
+    private ImageView imgAlter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,6 +176,7 @@ public class EditActivity extends Activity
         btDown     = findViewById(R.id.edit_button_down);
         swGenerate = findViewById(R.id.edit_switch_generate_reverse);
         tvPeriod   = findViewById(R.id.tvPeriod);
+        imgAlter   = findViewById(R.id.edit_img_alter);
 
 
         //设置监听器
@@ -188,7 +190,8 @@ public class EditActivity extends Activity
 //        editTextWord.setOnClickListener(this);
 //        editTextExplain.setOnClickListener(this);
         btUp.setOnClickListener(this);
-        btDown.setOnClickListener(this);
+        btDown.setOnClickListener(this::onClick);
+        imgAlter.setOnClickListener(this::onClick);
     }
 
     String[] items = {"1 纯单词", "2 单词解释", "3 填空式", "4 图片", "5 声音"};
@@ -231,6 +234,11 @@ public class EditActivity extends Activity
             case R.id.edit_button_down:
                 requestCode = REQUEST_CODE_EXPLAIN;
                 dialogShow();
+                break;
+            case R.id.edit_img_alter:
+                CharSequence text = textViewTypeWord.getText();
+                textViewTypeWord.setText(textViewTypeExplain.getText());
+                textViewTypeExplain.setText(text);
                 break;
         }
     }
@@ -420,11 +428,11 @@ public class EditActivity extends Activity
 
         DateTime reviewRegion = ReviewData.reviewRegions[level];
         String   text         = reviewRegion.toAboutValueNoDot();
-        String   textB          = "后复习";
+        String   textB        = "后复习";
         SpanUtil.create()
                 .addForeColorSection(text, Color.BLACK)
                 .addForeColorSection(textB, Color.LTGRAY)
-                .setAbsSize(textB,24)
+                .setAbsSize(textB, 24)
                 .showIn(tvPeriod);
     }
 
