@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/moveData_et_ServiceBuild"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="创建服务"
+        app:layout_constraintBottom_toBottomOf="@+id/moveData_et_ServicePort"
+        app:layout_constraintStart_toEndOf="@+id/moveData_et_ServicePort" />
+
+    <Button
+        android:id="@+id/moveData_et_ClientSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="上传数据"
+        app:layout_constraintBottom_toBottomOf="@+id/moveData_et_clientPort"
+        app:layout_constraintStart_toEndOf="@+id/moveData_et_clientPort" />
+
+    <Button
+        android:id="@+id/moveData_et_ClientReceive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="接收数据"
+        app:layout_constraintBottom_toBottomOf="@+id/moveData_et_ClientIp"
+        app:layout_constraintStart_toStartOf="@+id/moveData_et_ClientSend" />
+
+    <EditText
+        android:id="@+id/moveData_et_ClientIp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="输入IP地址"
+        android:inputType="textPersonName"
+        android:text="192.168.31.2"
+        app:layout_constraintStart_toStartOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <EditText
+        android:id="@+id/moveData_et_clientPort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="输入端口号"
+        android:inputType="number"
+        android:text="65532"
+        app:layout_constraintStart_toStartOf="@+id/moveData_et_ClientIp"
+        app:layout_constraintTop_toBottomOf="@+id/moveData_et_ClientIp" />
+
+    <EditText
+        android:id="@+id/moveData_et_ServicePort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="输入端口号"
+        android:inputType="number"
+        android:text="65532"
+        app:layout_constraintStart_toStartOf="@+id/moveData_et_ServiceIp"
+        app:layout_constraintTop_toBottomOf="@+id/moveData_et_ServiceIp" />
+
+    <EditText
+        android:id="@+id/moveData_et_ServiceIp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="输入IP地址"
+        android:inputType="textPersonName"
+        android:text="10.0.2.2"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="连接："
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toTopOf="@+id/guideline2"
+        app:layout_constraintVertical_bias="0.32" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="服务："
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.044"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/moveData_tv_tittle"
+        app:layout_constraintVertical_bias="0.32" />
+
+    <TextView
+        android:id="@+id/moveData_tv_tittle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        style="@style/style_actionbar_ground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/moveData_imageView_back_button"
+            style="@style/style_actionbar_back"
+            android:src="@mipmap/back_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/moveData_textView_title"
+            style="@style/style_actionbar_title"
+            android:layout_marginStart="8dp"
+            android:text="网络"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/moveData_imageView_back_button"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+</android.support.constraint.ConstraintLayout>
+

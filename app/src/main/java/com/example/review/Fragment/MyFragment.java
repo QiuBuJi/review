@@ -17,6 +17,7 @@ import com.example.review.New.ReviewList;
 import com.example.review.R;
 
 import java.io.File;
+import java.io.IOException;
 
 public class MyFragment extends Fragment {
 
@@ -38,11 +39,19 @@ public class MyFragment extends Fragment {
         reviewSet = new ReviewList();
 
         long millis = System.currentTimeMillis();
-        librarySet.read(new File(MainActivity.pathApp, "library.lib"));
+        try {
+            librarySet.read(new File(MainActivity.pathApp, "library.lib"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         long millis1 = System.currentTimeMillis();
         millis = millis1 - millis;
 
-        reviewSet.read(new File(MainActivity.pathApp, "nexus.lib"));
+        try {
+            reviewSet.read(new File(MainActivity.pathApp, "nexus.lib"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         long millis2 = System.currentTimeMillis();
         millis1 = millis2 - millis1;
 

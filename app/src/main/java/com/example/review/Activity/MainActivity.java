@@ -1,5 +1,6 @@
 package com.example.review.Activity;
 
+import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -17,6 +18,7 @@ import android.os.IBinder;
 import android.os.Message;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -48,6 +50,7 @@ import com.example.review.Keyboard.Keyboard;
 import com.example.review.Keyboard.KeyboardType1;
 import com.example.review.Keyboard.KeyboardType2;
 import com.example.review.Keyboard.KeyboardType3;
+import com.example.review.MoveDataActivity;
 import com.example.review.New.CountList;
 import com.example.review.New.KeyText;
 import com.example.review.New.ReviewStruct;
@@ -60,6 +63,9 @@ import com.example.review.Util.Speech;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -116,7 +122,6 @@ public class MainActivity extends AppCompatActivity implements
     boolean       correct;
     Handler       handler = new Handler(this);
     ReviewService service;
-    ReviewStruct  lastRs;
     Keyboard      keyboard;
 
     int mReviewedNum = 0;
@@ -136,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements
             }
             break;
             case HANDLER_UPDATE_SHOWING:
-                refreshShowing(false);
+                refreshShowing(true);
                 break;
             case 5:
                 break;
@@ -156,6 +161,8 @@ public class MainActivity extends AppCompatActivity implements
             textViewArrival.setText(dateTime.toNoneZeroString());
         }
     }
+
+    ReviewStruct lastRs;
 
     //刷新显示界面文字
     void refreshShowing(boolean isChange) {
@@ -186,13 +193,10 @@ public class MainActivity extends AppCompatActivity implements
                     .addUnderlineSection(text)
                     .showIn(tvLastDuration);
 
-            tvLastDuration.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //跳转页面，到编辑窗口
-                    ListActivity.currentClickedRs = rs;
-                    MainActivity.this.startActivity(new Intent(MainActivity.this, EditActivity.class));
-                }
+            //跳转页面，到编辑窗口
+            tvLastDuration.setOnClickListener(view -> {
+                ListActivity.currentClickedRs = rs;
+                MainActivity.this.startActivity(new Intent(MainActivity.this, EditActivity.class));
             });
 
             //不让重复刷新
@@ -227,8 +231,9 @@ public class MainActivity extends AppCompatActivity implements
             state = 1;
         } else {
             //当没有复习数据时，要配置的参数************************************************************
+            state = 2;
             lastRs = null;
-            state  = 2;
+            if (keyboard != null) keyboard.clear();
             etInput.setShowSoftInputOnFocus(true);
             tvLevel.setText("☺");
             tvLastDuration.setText("---");
@@ -257,13 +262,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private Keyboard.OnKeyDownListener getOnKeyDownListener() {
-        return new Keyboard.OnKeyDownListener() {
-            @Override
-            public void onKeyDown(KeyText keyText) {
-                if (keyText.isCom &&
-                    keyText.text.equals(Keyboard.COM_DONE)) {
-                    matchInput();
-                }
+        return keyText -> {
+            if (keyText.isCom &&
+                keyText.text.equals(Keyboard.COM_DONE)) {
+                matchInput();
             }
         };
     }
@@ -363,7 +365,6 @@ public class MainActivity extends AppCompatActivity implements
         initVariable();
 
         tvTitle.setText(prefix);
-
     }
 
     @Override
@@ -460,50 +461,48 @@ public class MainActivity extends AppCompatActivity implements
         tvLastDuration = findViewById(R.id.tvLastDuration);
     }
 
+    //被单击监听器
     View.OnClickListener getOnClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()) {
-                    case R.id.main_imageView_sort:
-                        pickDataDialog();
-                        break;
-                    case R.id.main_textView_next:
-                        if (!data.mActivate.isEmpty()) {
-                            ReviewStruct first = data.mActivate.removeFirst();
-                            data.mActivate.addLast(first);
+        return (View view) -> {
+            switch (view.getId()) {
+                case R.id.main_imageView_sort:
+                    pickDataDialog();
+                    break;
+                case R.id.main_textView_next:
+                    if (!data.mActivate.isEmpty()) {
+                        ReviewStruct first = data.mActivate.removeFirst();
+                        data.mActivate.addLast(first);
 
-                            refreshShowing(false);
-                        }
-                        break;
-                    case R.id.main_textView_about:
-                        startActivity(new Intent(MainActivity.this, AboutActivity.class));
-                        break;
-                    case R.id.main_imageView_play_sound:
-                        Speech.play_Baidu(etInput.getText().toString(), imageViewPlaySound);
-                        break;
-                    case R.id.main_imageView_Detail:
-                        startActivity(new Intent(MainActivity.this, ListActivity.class));
-                        break;
-                    case R.id.fragment_progressBar_progress:
-                        startActivity(new Intent(MainActivity.this, SortActivity.class));
-                        break;
-                    case R.id.main_imageButton_setting:
-                        startActivity(new Intent(MainActivity.this, SettingActivity.class));
-                        break;
-                    case R.id.fragment_textView_tips:
-                        tips();
-                        break;
-                    case R.id.main_textView_time_arrival:
-                        Intent intent = new Intent(MainActivity.this, SortActivity.class);
-                        intent.putExtra("posi", 2);
-                        startActivity(intent);
-                        break;
-                    case R.id.fragment_textView_textShow:
-                        break;
-                    case R.id.fragment_editText_input:
-                        break;
-                }
+                        refreshShowing(true);
+                    }
+                    break;
+                case R.id.main_textView_about:
+                    startActivity(new Intent(MainActivity.this, AboutActivity.class));
+                    break;
+                case R.id.main_imageView_play_sound:
+                    Speech.play_Baidu(etInput.getText().toString(), imageViewPlaySound);
+                    break;
+                case R.id.main_imageView_Detail:
+                    startActivity(new Intent(MainActivity.this, ListActivity.class));
+                    break;
+                case R.id.fragment_progressBar_progress:
+                    startActivity(new Intent(MainActivity.this, SortActivity.class));
+                    break;
+                case R.id.main_imageButton_setting:
+                    startActivity(new Intent(MainActivity.this, SettingActivity.class));
+                    break;
+                case R.id.fragment_textView_tips:
+                    tips();
+                    break;
+                case R.id.main_textView_time_arrival:
+                    Intent intent = new Intent(MainActivity.this, SortActivity.class);
+                    intent.putExtra("posi", 2);
+                    startActivity(intent);
+                    break;
+                case R.id.fragment_textView_textShow:
+                    break;
+                case R.id.fragment_editText_input:
+                    break;
             }
         };
     }
@@ -542,30 +541,62 @@ public class MainActivity extends AppCompatActivity implements
         imageViewDetail.setOnClickListener(getOnClickListener());
         //待复习进度条被单击
         progressBarProgress.setOnClickListener(getOnClickListener());
-
+        //设置界面
         imageButtonSetting.setOnClickListener(getOnClickListener());
-
+        //输入框的一些行为
         etInput.setImeOptions(EditorInfo.IME_ACTION_DONE);
         etInput.setOnEditorActionListener(getOnEditorActionListener());
-
+        //下一个被单击
         tvNext.setOnClickListener(getOnClickListener());
+        //Toast显示提示内容
         tips.setOnClickListener(getOnClickListener());
-        tips.setOnLongClickListener(showTipsWindowListener());
-//        etInput.setOnClickListener(this);
-
+        //居中显示提示内容
+        tips.setOnLongClickListener(getLongClickListener());
         //长按显示上一个复习条目
-        tvNext.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                if (!data.mActivate.isEmpty()) {
-                    ReviewStruct last = data.mActivate.removeLast();
-                    data.mActivate.addFirst(last);
+        tvNext.setOnLongClickListener(getLongClickListener());
+        //长按进入复习库配置
+        imageViewSort.setOnLongClickListener(getLongClickListener());
+    }
 
-                    refreshShowing(false);
-                }
-                return true;
+    private View.OnLongClickListener getLongClickListener() {
+        return view -> {
+            switch (view.getId()) {
+                case R.id.main_imageView_sort:
+                    startActivityForResult(new Intent(MainActivity.this, MoveDataActivity.class), 1);
+                    break;
+                case R.id.fragment_textView_tips:
+                    if (!data.mActivate.isEmpty()) {
+                        ReviewStruct rs       = data.mActivate.getFirst();
+                        Point        size     = new Point();
+                        View         inflate  = View.inflate(MainActivity.this, R.layout.activity_popup_window, null);
+                        TextView     showText = inflate.findViewById(R.id.popupWindow_textView_txt);
+
+                        getWindowManager().getDefaultDisplay().getSize(size);
+                        PopupWindow popupWindow = new PopupWindow(inflate, -2, -2);
+
+                        showText.setText(getTips(rs));
+                        popupWindow.setOutsideTouchable(true);
+                        popupWindow.showAtLocation(MainActivity.this.entireBackground, Gravity.CENTER, 0, 0);
+
+                        rs.resetLevel();
+                        if (rs.match.getType() == 1) Speech.play_Baidu(rs.getMatch());
+
+                        correct = false;
+                        canJoinLog++;
+                        addLog(rs);
+                        refreshShowing(false);
+                    }
+                    break;
+                case R.id.main_textView_next:
+                    if (!data.mActivate.isEmpty()) {
+                        ReviewStruct last = data.mActivate.removeLast();
+                        data.mActivate.addFirst(last);
+                        refreshShowing(true);
+                    }
+                    break;
             }
-        });
+            return true;
+        };
     }
 
     //输入框输入监听器
@@ -627,36 +658,6 @@ public class MainActivity extends AppCompatActivity implements
         };
     }
 
-    private View.OnLongClickListener showTipsWindowListener() {
-        return new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                if (!data.mActivate.isEmpty()) {
-                    ReviewStruct rs       = data.mActivate.getFirst();
-                    Point        size     = new Point();
-                    View         inflate  = View.inflate(MainActivity.this, R.layout.activity_popup_window, null);
-                    TextView     showText = inflate.findViewById(R.id.popupWindow_textView_txt);
-
-                    getWindowManager().getDefaultDisplay().getSize(size);
-                    PopupWindow popupWindow = new PopupWindow(inflate, -2, -2);
-
-                    showText.setText(getTips(rs));
-                    popupWindow.setOutsideTouchable(true);
-                    popupWindow.showAtLocation(MainActivity.this.entireBackground, Gravity.CENTER, 0, 0);
-
-                    rs.resetLevel();
-                    if (rs.match.getType() == 1) Speech.play_Baidu(rs.getMatch());
-
-                    correct = false;
-                    canJoinLog++;
-                    addLog(rs);
-                    refreshShowing(false);
-                }
-                return true;
-            }
-        };
-    }
-
     //初始化变量-------------------------------------------------------------------------------------
     void initVariable() {
         Speech.initVoice(this);
@@ -694,13 +695,10 @@ public class MainActivity extends AppCompatActivity implements
 
         //延迟刷新界面，不延迟则界面刷新不了
         if (keyboard != null) {
-            new Handler(new Handler.Callback() {
-                @Override
-                public boolean handleMessage(@NonNull Message message) {
-                    keyboard.refresh();
-                    return false;
-                }
-            }).sendMessageDelayed(new Message(), 20);
+            new Handler(message -> {
+                keyboard.refresh();
+                return false;
+            }).sendEmptyMessageDelayed(0, 20);
         }
 
         NotificationManager notifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -753,6 +751,7 @@ public class MainActivity extends AppCompatActivity implements
         pathBoth = getPathBoth();
         //没有文件则不执行后续代码
         if (pathBoth == null) return;
+
         final List<String> names = new LinkedList<>();
         for (PathBoth pathBoth : pathBoth) names.add(pathBoth.prefix);
 
@@ -761,32 +760,27 @@ public class MainActivity extends AppCompatActivity implements
 
         new AlertDialog.Builder(this)
                 .setTitle("选择：")
-                .setItems(strings, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        libIndex = i;
+                .setItems(strings, (dialogInterface, i) -> {
+                    libIndex = i;
 
-                        PathBoth pathBoth = MainActivity.this.pathBoth.get(i);
-                        pathNexus   = new File(pathApp, pathBoth.nexus);
-                        pathLibrary = new File(pathApp, pathBoth.library);
-                        Setting.edit.putString("libName", MainActivity.this.pathBoth.get(libIndex).prefix).commit();
-                        tvTitle.setText(pathBoth.prefix);
-                        textViewArrival.setText("00:00");
+                    PathBoth pathBoth = MainActivity.this.pathBoth.get(i);
+                    pathNexus   = new File(pathApp, pathBoth.nexus);
+                    pathLibrary = new File(pathApp, pathBoth.library);
+                    Setting.edit.putString("libName", MainActivity.this.pathBoth.get(libIndex).prefix).commit();
+                    tvTitle.setText(pathBoth.prefix);
+                    textViewArrival.setText("00:00");
 
+                    try {
                         service.initData();
-                        refreshShowing(true);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                })
-                .show();
+                    refreshShowing(true);
+                }).show();
     }
 
     List<PathBoth> getPathBoth() {
-        String[] list = pathApp.list(new FilenameFilter() {
-            @Override
-            public boolean accept(File file, String str) {
-                return str.endsWith("nexus") || str.endsWith("library");
-            }
-        });
+        String[] list = pathApp.list((file, str) -> str.endsWith("nexus") || str.endsWith("library"));
         if (list == null) return null;
 
         final List<PathBoth> paths = new LinkedList<>();
@@ -824,6 +818,41 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         return paths;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == 1) {
+
+            ArrayList<String> paths = data.getStringArrayListExtra("paths");
+            if (paths != null) {
+                String prefix = "";
+                String postfix;
+
+                for (String path : paths) {
+                    String[] split = path.split("/");
+                    split = split[split.length - 1].split("\\.");
+
+                    if (split.length == 2) {
+                        prefix  = split[0];
+                        postfix = split[1];
+                        if (postfix.equals("nexus")) pathNexus = new File(pathApp, String.format("%s.%s", prefix, postfix));
+                        else pathLibrary = new File(pathApp, String.format("%s.%s", prefix, postfix));
+                    }
+                }
+
+                tvTitle.setText(prefix);
+                textViewArrival.setText("00:00");
+
+                try {
+                    service.initData();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                refreshShowing(true);
+            }
+        }
     }
 
     /* new设想，2019年7月18日
@@ -890,15 +919,8 @@ public class MainActivity extends AppCompatActivity implements
         mReviewedNum++;
 
         //下面监听器，等颜色动画播放完毕，然后显示下一条数据在textShow中
-        final int duration = 200;
         keyboard.setLightAnimation(false, duration);
-
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.sendEmptyMessage(HANDLER_UPDATE_SHOWING);
-            }
-        }, duration);
+        toNextItem(duration);
     }
 
     private void errorAction(CountList cl) {
@@ -920,6 +942,19 @@ public class MainActivity extends AppCompatActivity implements
                 .showIn(tips);
     }
 
+
+    final int duration = 200;
+
+    void toNextItem(int milliDelay) {
+        //延时后，再进入下一条复习计划
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.sendEmptyMessage(HANDLER_UPDATE_SHOWING);
+            }
+        }, milliDelay);
+    }
+
     @TargetApi(Build.VERSION_CODES.N)
     private void correctProc(String inputText, ReviewStruct rs) {
         //***正确************************************************************************************
@@ -929,19 +964,11 @@ public class MainActivity extends AppCompatActivity implements
 
             //下面监听器，等颜色动画播放完毕，然后显示下一条数据在textShow中
             KeyboardType1 keyboardType1 = (KeyboardType1) keyboard;
-            int           duration      = 200;
             keyboardType1.handleInterfaceType1.setLightAnimation(false, duration);
 
             //渐变显示绿色动画，表示输入正确
             TextColorAnimator.ofArgb(etInput, Color.BLACK, Color.GREEN, Color.TRANSPARENT).setDuration(duration).start();
-
-            //延时后，再进入下一条复习计划
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    handler.sendEmptyMessage(HANDLER_UPDATE_SHOWING);
-                }
-            }, duration);
+            toNextItem(duration);
 
             mReviewedNum++;
         } else {
@@ -998,7 +1025,11 @@ public class MainActivity extends AppCompatActivity implements
                     }
                     clearInput = 0;//左右箭头点击后，则下次输入不清空内容
                 case KeyEvent.KEYCODE_DEL:
-                    if (event.isShiftPressed()) etInput.setText("");
+                    if (event.isShiftPressed()) {
+                        if (keyboard instanceof KeyboardType1) etInput.setText("");
+                        else if (keyboard instanceof KeyboardType2)
+                            return keyboard.keyDown(KeyEvent.KEYCODE_FORWARD_DEL, '\n', -1);
+                    }
                     break;
             }
 

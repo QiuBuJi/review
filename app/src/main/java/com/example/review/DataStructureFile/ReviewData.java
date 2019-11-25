@@ -114,7 +114,7 @@ public class ReviewData extends ReviewList {
         void onSaveComplete();
     }
 
-    public void read() {
+    public void read() throws IOException {
         if (fileNexus == null || fileLibrary == null) return;
         readDataFrom(fileNexus);
         library.read(fileLibrary);
@@ -146,7 +146,7 @@ public class ReviewData extends ReviewList {
      *
      * @param path 文件路径
      */
-    public void readDataFrom(File path) {
+    public void readDataFrom(File path) throws IOException {
         clear();//清空原有数据
         super.read(path);
     }

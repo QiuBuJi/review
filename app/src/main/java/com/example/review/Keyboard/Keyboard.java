@@ -186,4 +186,10 @@ public abstract class Keyboard implements ItemClickListener {
 
     public void stop() {
     }
+
+    public void clear() {
+        container.removeAllViews();
+        strData.clear();
+        adapter.notifyDataSetChanged();
+    }
 }

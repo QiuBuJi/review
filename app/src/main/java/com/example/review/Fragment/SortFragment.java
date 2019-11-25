@@ -23,7 +23,6 @@ import com.example.review.Activity.EditActivity;
 import com.example.review.Activity.ListActivity;
 import com.example.review.DataStructureFile.DateTime;
 import com.example.review.DataStructureFile.ReviewData;
-import com.example.review.DataStructureFile.TimeFieldEnum;
 import com.example.review.Activity.MainActivity;
 import com.example.review.New.ReviewStruct;
 import com.example.review.R;
@@ -55,7 +54,6 @@ public class SortFragment extends Fragment {
         this.mIsActivity = activity;
     }
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -83,7 +81,6 @@ public class SortFragment extends Fragment {
         return view;
     }
 
-
     //设置要显示的时间区域
     public void selectPartToShow(int part) {
         displayField = part;
@@ -101,7 +98,6 @@ public class SortFragment extends Fragment {
             temp = dateTime;
         }
     }
-
 
     int      oldPosi = -1;
     View     oldView;
@@ -251,33 +247,33 @@ public class SortFragment extends Fragment {
             try {
                 sb.append(item.time.getYear()).append("年");
                 if (SortActivity.fragment.displayField == DateTime.YEAR) {
-                    addExtraText(item.time, TimeFieldEnum.MONTH, sb, "（本年）");
+                    addExtraText(item.time, DateTime.TimeFieldEnum.MONTH, sb, "（本年）");
                     throw new Exception();
                 }
                 sb.append(item.time.getMonth() + 1).append("月");
                 if (SortActivity.fragment.displayField == DateTime.MONTH) {
-                    addExtraText(item.time, TimeFieldEnum.DAY, sb, "（本月）");
+                    addExtraText(item.time, DateTime.TimeFieldEnum.DAY, sb, "（本月）");
                     throw new Exception();
                 }
                 sb.append(item.time.getDay()).append("日");
                 if (SortActivity.fragment.displayField == DateTime.DAY) {
                     DateTime time = new DateTime(item.time);
-                    boolean  b    = addExtraText(time, TimeFieldEnum.HOUR, sb, "（今天）");
+                    boolean  b    = addExtraText(time, DateTime.TimeFieldEnum.HOUR, sb, "（今天）");
 
                     if (!b) {
                         time.setDay(time.getDay() - 1);
-                        addExtraText(time, TimeFieldEnum.HOUR, sb, "（明天）");
+                        addExtraText(time, DateTime.TimeFieldEnum.HOUR, sb, "（明天）");
                     }
                     throw new Exception();
                 }
                 sb.append("   ").append(item.time.getHour()).append("时");
                 if (SortActivity.fragment.displayField == DateTime.HOUR) {
-                    addExtraText(new DateTime(item.time), TimeFieldEnum.MINUTE, sb, "（本小时）");
+                    addExtraText(new DateTime(item.time), DateTime.TimeFieldEnum.MINUTE, sb, "（本小时）");
                     throw new Exception();
                 }
                 sb.append(item.time.getMinute()).append("分");
                 if (SortActivity.fragment.displayField == DateTime.MINUTE) {
-                    addExtraText(new DateTime(item.time), TimeFieldEnum.SECOND, sb, "（本分钟）");
+                    addExtraText(new DateTime(item.time), DateTime.TimeFieldEnum.SECOND, sb, "（本分钟）");
                     throw new Exception();
                 }
                 sb.append(item.time.getSecond()).append("秒");
@@ -293,7 +289,7 @@ public class SortFragment extends Fragment {
             }
         }
 
-        boolean addExtraText(DateTime time, TimeFieldEnum part, StringBuilder sb, String str) {
+        boolean addExtraText(DateTime time, DateTime.TimeFieldEnum part, StringBuilder sb, String str) {
             DateTime currTime = DateTime.getCurrentTime();
             currTime.setZeroSegment(part);
             DateTime dateTime = new DateTime(time);

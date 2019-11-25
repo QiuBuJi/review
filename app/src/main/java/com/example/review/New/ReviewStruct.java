@@ -50,7 +50,7 @@ public class ReviewStruct extends StoreData {
         this.level = level;
     }
 
-    public ReviewStruct(byte[] rawBytes) {
+    public ReviewStruct(byte[] rawBytes) throws IOException {
         loadWith(rawBytes);
     }
 
@@ -113,7 +113,7 @@ public class ReviewStruct extends StoreData {
         }
 
         int needCorrectNum = (int) (total * corRate);
-        if (total <= 3) needCorrectNum = total;
+        if (total <= 2) needCorrectNum = total;
 
         countList.corrCount   = corrCount;
         countList.errCount    = errCount;

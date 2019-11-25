@@ -39,16 +39,13 @@ public abstract class ArrayStoreList<E> extends ArrayList<E> implements SaveData
      * @param rawBytes 字节流
      */
     @Override
-    public void loadWith(byte[] rawBytes) {
+    public void loadWith(byte[] rawBytes) throws IOException {
         ByteArrayInputStream in  = new ByteArrayInputStream(rawBytes);
         DataInputStream      dis = new DataInputStream(in);
-        try {
-            loadWith(dis);
-            dis.close();
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        loadWith(dis);
+        dis.close();
+        in.close();
     }
 
     /**
@@ -83,20 +80,15 @@ public abstract class ArrayStoreList<E> extends ArrayList<E> implements SaveData
      *
      * @param path 路径
      */
-    public void read(File path) {
+    public void read(File path) throws IOException {
         clear();
 
-        try {
-            FileInputStream in     = new FileInputStream(path);
-            int             length = (int) path.length();
-            byte[]          bytes  = new byte[length];
-            in.read(bytes);
-            loadWith(bytes);
-            in.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        FileInputStream in     = new FileInputStream(path);
+        int             length = (int) path.length();
+        byte[]          bytes  = new byte[length];
+        in.read(bytes);
+        loadWith(bytes);
+        in.close();
+
     }
 }

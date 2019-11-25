@@ -41,10 +41,14 @@ public class ReviewService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        initData();
+        try {
+            initData();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void initData() {
+    public void initData() throws IOException {
         data.stopTimer();
         data.setDefaultPath(MainActivity.pathLibrary, MainActivity.pathNexus);
 //        long millis = System.currentTimeMillis();

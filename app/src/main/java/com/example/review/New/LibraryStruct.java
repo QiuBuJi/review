@@ -35,7 +35,11 @@ public class LibraryStruct extends StoreData {
     }
 
     public LibraryStruct(byte[] rawBytes) {
-        loadWith(rawBytes);
+        try {
+            loadWith(rawBytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setIdAuto(int value) {

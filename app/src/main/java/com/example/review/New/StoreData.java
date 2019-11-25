@@ -34,16 +34,13 @@ public abstract class StoreData implements SaveDataInterface {
      *
      * @param rawBytes 字节流
      */
-    public void loadWith(byte[] rawBytes) {
+    public void loadWith(byte[] rawBytes) throws IOException {
         ByteArrayInputStream in  = new ByteArrayInputStream(rawBytes);
         DataInputStream      dis = new DataInputStream(in);
-        try {
-            loadWith(dis);
-            dis.close();
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        loadWith(dis);
+        dis.close();
+        in.close();
     }
 
     /**

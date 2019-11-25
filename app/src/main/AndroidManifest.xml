@@ -10,47 +10,35 @@
         android:roundIcon="@mipmap/review_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <!--文件挑选窗口-->
-        <activity android:name=".Activity.FilePickerActivity"></activity>
-
-        <!--库选窗口-->
+        <activity
+            android:name=".MoveDataActivity"
+            android:label="@string/title_activity_move_data"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <!-- 文件挑选窗口 -->
+        <activity android:name=".Activity.FilePickerActivity" /> <!-- 库选窗口 -->
         <activity
             android:name=".Activity.LibraryActivity"
             android:windowSoftInputMode="stateHidden|stateUnchanged" />
-
-        <activity android:name=".Activity.PagerActivity" />
-
-        <!--设置窗口-->
+        <activity android:name=".Activity.PagerActivity" /> <!-- 设置窗口 -->
         <activity android:name=".Activity.SettingActivity" />
-
-        <activity android:name=".Activity.SortActivity" />
-
-        <!--关于窗口-->
-        <activity android:name=".Activity.AboutActivity" />
-
-        <!--编辑窗口-->
+        <activity android:name=".Activity.SortActivity" /> <!-- 关于窗口 -->
+        <activity android:name=".Activity.AboutActivity" /> <!-- 编辑窗口 -->
         <activity
             android:name=".Activity.EditActivity"
-            android:windowSoftInputMode="stateHidden|stateUnchanged" />
-
-        <!--列表窗口-->
+            android:windowSoftInputMode="stateHidden|stateUnchanged" /> <!-- 列表窗口 -->
         <activity
             android:name=".Activity.ListActivity"
-            android:windowSoftInputMode="stateHidden|stateUnchanged" />
-
-        <!--主窗口-->
+            android:windowSoftInputMode="stateHidden|stateUnchanged" /> <!-- 主窗口 -->
         <activity
             android:name=".Activity.MainActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="stateHidden|stateUnchanged|adjustUnspecified">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!--服务-->
+        </activity> <!-- 服务 -->
         <receiver
             android:name=".MyReceiver"
             android:enabled="true"
@@ -58,14 +46,12 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-        </receiver>
-
-        <!--系统消息接收者-->
+        </receiver> <!-- 系统消息接收者 -->
         <service
             android:name=".ReviewService"
             android:enabled="true" />
-
     </application>
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />

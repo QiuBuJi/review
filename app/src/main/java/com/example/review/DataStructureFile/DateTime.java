@@ -33,7 +33,11 @@ public class DateTime extends StoreData {
     }
 
     public DateTime(byte[] rawBytes) {
-        loadWith(rawBytes);
+        try {
+            loadWith(rawBytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public DateTime(int years, int months, int days, int hours, int minuts, int seconds) {
@@ -94,7 +98,6 @@ public class DateTime extends StoreData {
         minute = getInt(str, "分");
         second = getInt(str, "秒");
     }
-
 
     public int getYear() {
         return year;
@@ -353,15 +356,13 @@ public class DateTime extends StoreData {
         return val;
     }
 
-
-    @NonNull
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
 
         buffer.append(fillZero(year, 4)).append("年")
               .append(fillZero(month + 1, 2)).append("月")
-              .append(fillZero(day, 2)).append("日 ")
+              .append(fillZero(day + 1, 2)).append("日 ")
               .append(fillZero(hour, 2)).append("时")
               .append(fillZero(minute, 2)).append("分")
               .append(fillZero(Math.abs(second), 2)).append('秒')
@@ -374,7 +375,7 @@ public class DateTime extends StoreData {
 
         if (year > 0) time.append(String.format("%d年", year));
         if (month >= 0) time.append(String.format("%d月", month + 1));
-        if (day > 0) time.append(String.format("%d日", day));
+        if (day > 0) time.append(String.format("%d日", day + 1));
         if (hour > 0) time.append(String.format("%d时", hour));
         if (minute > 0) time.append(String.format("%d分", minute));
         if (second > 0) time.append(String.format("%d秒", second));
@@ -394,13 +395,13 @@ public class DateTime extends StoreData {
 
         } else if (month > 0) {
             rate = (int) ((day / 31f) * 10);
-            strTime.append(month);
+            strTime.append(month + 1);
             if (rate > value) strTime.append('.').append(rate);
             strTime.append("月");
 
         } else if (day > 0) {
             rate = (int) ((hour / 24f) * 10);
-            strTime.append(day);
+            strTime.append(day + 1);
             if (rate > value) strTime.append('.').append(rate);
             strTime.append("日");
 
@@ -425,8 +426,8 @@ public class DateTime extends StoreData {
         StringBuilder strTime = new StringBuilder();
 
         if (year > 0) strTime.append(String.format("%d年", year));
-        else if (month > 0) strTime.append(String.format("%d月", month));
-        else if (day > 0) strTime.append(String.format("%d日", day));
+        else if (month > 0) strTime.append(String.format("%d月", month + 1));
+        else if (day > 0) strTime.append(String.format("%d日", day + 1));
         else if (hour > 0) strTime.append(String.format("%d时", hour));
         else if (minute > 0) strTime.append(String.format("%d分", minute));
         else if (second > 0) strTime.append(String.format("%d秒", second));
@@ -442,7 +443,7 @@ public class DateTime extends StoreData {
         if (day > 0) time.append(String.format("%d日 ", day));
         if (hour > 0) time.append(String.format("%s:", fillZero(hour, 2)));
 
-        time.append(String.format("%s:%s", fillZero(minute, 2), fillZero(second + 1, 2)));
+        time.append(String.format("%s:%s", fillZero(minute, 2), fillZero(second, 2)));
         return time;
     }
 
@@ -483,7 +484,6 @@ public class DateTime extends StoreData {
         return fillChar(value, width, '0');
     }
 
-
     static public int MAX_BYTES = 7;
 
     @Override
@@ -506,4 +506,12 @@ public class DateTime extends StoreData {
         second = dis.readByte();
     }
 
+    public enum TimeFieldEnum {
+        YEAR,
+        MONTH,
+        DAY,
+        HOUR,
+        MINUTE,
+        SECOND
+    }
 }

@@ -8,11 +8,11 @@ public interface SaveDataInterface {
 
     void toBytes(DataOutputStream dos) throws IOException;
 
-    void loadWith(byte[] rawBytes);
+    void loadWith(byte[] rawBytes) throws IOException;
 
     void loadWith(DataInputStream dis) throws IOException;
 
     void save(File path);
 
-    void read(File path);
+    void read(File path) throws IOException;
 }
