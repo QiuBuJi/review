@@ -1,11 +1,9 @@
 package com.example.review.Activity;
 
-import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
@@ -17,7 +15,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -26,7 +23,6 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -50,22 +46,18 @@ import com.example.review.Keyboard.Keyboard;
 import com.example.review.Keyboard.KeyboardType1;
 import com.example.review.Keyboard.KeyboardType2;
 import com.example.review.Keyboard.KeyboardType3;
-import com.example.review.MoveDataActivity;
 import com.example.review.New.CountList;
-import com.example.review.New.KeyText;
 import com.example.review.New.ReviewStruct;
 import com.example.review.R;
 import com.example.review.ReviewService;
 import com.example.review.Setting;
+import com.example.review.SortLib;
 import com.example.review.Util.ColorfulText;
 import com.example.review.Util.SpanUtil;
 import com.example.review.Util.Speech;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -80,7 +72,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String TAG = "msg_mine";
 
-    static public ReviewData data = new ReviewData();
+    static public ReviewData data  = new ReviewData();
+    static public SortLib    sorts = new SortLib();
 
     public static File externalRoot = Environment.getExternalStorageDirectory();//外部存储夹根目录
     public static File pathApp      = new File(externalRoot, "Review");   //软件根目录
@@ -106,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements
     ImageView imageViewSort;
 
     ImageButton  imageButtonSetting;
+    ImageButton  editSorts;
     RecyclerView recyclerViewKeyboard;
     ProgressBar  progressBarProgress;
     EditText     etInput;
@@ -120,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements
     static int canJoinLog             = 0;
 
     boolean       correct;
-    Handler       handler = new Handler(this);
+    Handler       handler = new Handler(this::handleMessage);
     ReviewService service;
     Keyboard      keyboard;
 
@@ -231,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements
             state = 1;
         } else {
             //当没有复习数据时，要配置的参数************************************************************
-            state = 2;
+            state  = 2;
             lastRs = null;
             if (keyboard != null) keyboard.clear();
             etInput.setShowSoftInputOnFocus(true);
@@ -372,6 +366,7 @@ public class MainActivity extends AppCompatActivity implements
         ReviewService.LocalBinder binder = (ReviewService.LocalBinder) iBinder;
         service = binder.getService();
         data    = service.data;
+        sorts   = service.sortLib;
 
         dataPrepared();
     }
@@ -459,6 +454,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mainContainer  = findViewById(R.id.cl_main_container);
         tvLastDuration = findViewById(R.id.tvLastDuration);
+        editSorts      = findViewById(R.id.main_imageButton_editSorts);
     }
 
     //被单击监听器
@@ -502,6 +498,9 @@ public class MainActivity extends AppCompatActivity implements
                 case R.id.fragment_textView_textShow:
                     break;
                 case R.id.fragment_editText_input:
+                    break;
+                case R.id.main_imageButton_editSorts:
+                    startActivity(new Intent(this, EditSortsActivity.class));
                     break;
             }
         };
@@ -556,6 +555,8 @@ public class MainActivity extends AppCompatActivity implements
         tvNext.setOnLongClickListener(getLongClickListener());
         //长按进入复习库配置
         imageViewSort.setOnLongClickListener(getLongClickListener());
+
+        editSorts.setOnClickListener(getOnClickListener());
     }
 
     private View.OnLongClickListener getLongClickListener() {

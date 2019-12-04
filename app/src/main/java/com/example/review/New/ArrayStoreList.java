@@ -89,6 +89,5 @@ public abstract class ArrayStoreList<E> extends ArrayList<E> implements SaveData
         in.read(bytes);
         loadWith(bytes);
         in.close();
-
     }
 }

@@ -18,6 +18,7 @@ import com.example.review.Activity.MainActivity;
 import com.example.review.DataStructureFile.DateTime;
 import com.example.review.DataStructureFile.ReviewData;
 
+import java.io.File;
 import java.io.IOException;
 
 public class ReviewService extends Service {
@@ -25,10 +26,11 @@ public class ReviewService extends Service {
     String  TAG    = "msg";
     boolean notify = false;
     private boolean notify_region;
+    public SortLib  sortLib;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        notify = Setting.getBoolean("通知提醒");
+        notify        = Setting.getBoolean("通知提醒");
         notify_region = Setting.getBoolean("夜间不通知");
         return super.onStartCommand(intent, flags, startId);
     }
@@ -55,6 +57,8 @@ public class ReviewService extends Service {
         data.read();
 //        millis = System.currentTimeMillis() - millis;
 //        Toast.makeText(this, "read data cost millis:" + millis, Toast.LENGTH_SHORT).show();
+        sortLib = new SortLib(new File(MainActivity.pathApp, "sorts.txt"));
+
 
         data.retrieveInavalable();
         data.updateToAvalableAuto(1000);

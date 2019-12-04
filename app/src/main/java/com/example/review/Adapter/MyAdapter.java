@@ -99,11 +99,8 @@ public class MyAdapter extends RecyclerView.Adapter {
         }
 
         //键盘按键被单击事件处理
-        holder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (clickListener != null) clickListener.onItemClick(view, data, position);
-            }
+        holder.view.setOnClickListener(view -> {
+            if (clickListener != null) clickListener.onItemClick(view, data, position);
         });
 
         if (item.text.equals("")) holder.view.setVisibility(View.INVISIBLE);

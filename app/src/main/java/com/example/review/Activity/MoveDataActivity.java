@@ -1,4 +1,4 @@
-package com.example.review;
+package com.example.review.Activity;
 
 import android.content.Intent;
 import android.net.wifi.WifiInfo;
@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.review.Activity.MainActivity;
+import com.example.review.R;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

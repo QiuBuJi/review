@@ -30,6 +30,11 @@ public class HandleInterfaceType2 {
     public ArrayList<WordExplain> frameInput;
     public ArrayList<WordExplain> frameRight;
     public WindowExplainHolder    windowExplainHolder;
+
+    public int getIndexOfItem() {
+        return indexOfItem;
+    }
+
     int  indexOfItem = 0;
     View windowExplain;
 

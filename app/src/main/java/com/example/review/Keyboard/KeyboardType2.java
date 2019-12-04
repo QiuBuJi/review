@@ -141,6 +141,11 @@ public class KeyboardType2 extends Keyboard {
         for (WordExplain we : wesNative) wordsNative.addAll(we.explains);
         for (WordExplain we : wesAdded) wordsAdded.addAll(we.explains);
 
+        //添加类型集合的数据
+        String       category = frameRight.get(handleInterface.getIndexOfItem()).category.replace(".", "");
+        List<String> element  = MainActivity.sorts.getElementInSort(category);
+        wordsAdded.addAll(element);
+
         //去重复
         removeRedundancy(wordsNative);
         removeRedundancy(wordsAdded);
@@ -214,9 +219,11 @@ public class KeyboardType2 extends Keyboard {
                     break;
                 case COM_UP:
                     handleInterface.moveUp();
+                    refreshLayout();
                     break;
                 case COM_DOWN:
                     handleInterface.moveDown();
+                    refreshLayout();
                     break;
                 case COM_EMPTY:
                     handleInterface.emptying();

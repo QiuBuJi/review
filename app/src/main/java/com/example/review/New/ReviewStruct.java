@@ -17,9 +17,9 @@ public class ReviewStruct extends StoreData {
     public LibraryStruct show;
     public LibraryStruct match;
 
-    int previousID = 0;
-    int classType  = 0;
-    int level;
+    private int previousID = 0;
+    private int classType  = 0;
+    private int level;
 
     public int      posi;
     public int      viewCount;
@@ -29,6 +29,11 @@ public class ReviewStruct extends StoreData {
     public DateTime time = new DateTime(0, 0, 0, 0, 0, 0);
 
     public LinkedList<byte[]> logs = new LinkedList<>();
+
+    public String sort = "";
+
+    //**********************************************************************************************
+
 
     public ReviewStruct() {
     }
@@ -211,7 +216,7 @@ public class ReviewStruct extends StoreData {
                 else {
                     we.category = line.substring(0, index);
                     if (we.category.equals("")) we.category = "*.";
-                    line        = line.substring(index);
+                    line = line.substring(index);
                 }
 
                 //把词语分离出来

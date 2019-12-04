@@ -10,11 +10,11 @@
         android:roundIcon="@mipmap/review_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Activity.EditSortsActivity"></activity>
         <activity
-            android:name=".MoveDataActivity"
+            android:name=".Activity.MoveDataActivity"
             android:label="@string/title_activity_move_data"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <!-- 文件挑选窗口 -->
+            android:theme="@style/AppTheme.NoActionBar" /> <!-- 文件挑选窗口 -->
         <activity android:name=".Activity.FilePickerActivity" /> <!-- 库选窗口 -->
         <activity
             android:name=".Activity.LibraryActivity"
@@ -51,7 +51,6 @@
             android:name=".ReviewService"
             android:enabled="true" />
     </application>
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />

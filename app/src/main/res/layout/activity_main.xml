@@ -7,6 +7,85 @@
     android:layout_height="match_parent">
 
 
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        style="@style/style_actionbar_ground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/main_imageButton_setting"
+            android:layout_width="25dp"
+            android:layout_height="23dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/bg_ripple_effect_click_gray_white"
+            android:src="?attr/actionModeSelectAllDrawable"
+            app:layout_constraintBottom_toBottomOf="@+id/main_imageView_sort"
+            app:layout_constraintEnd_toStartOf="@+id/main_imageView_sort"
+            app:layout_constraintTop_toTopOf="@+id/main_imageView_sort"
+            tools:src="?attr/actionModeSelectAllDrawable" />
+
+        <ImageButton
+            android:id="@+id/main_imageButton_editSorts"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/bg_ripple_effect_click_gray_white"
+            android:src="?attr/actionModeCopyDrawable"
+            app:layout_constraintBottom_toBottomOf="@+id/main_imageView_sort"
+            app:layout_constraintEnd_toStartOf="@+id/main_imageButton_setting"
+            app:layout_constraintTop_toTopOf="@+id/main_imageView_sort"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <ImageView
+            android:id="@+id/main_imageView_sort"
+            android:layout_width="19dp"
+            android:layout_height="23dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/bg_ripple_effect_click_gray_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/main_imageView_Detail"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@mipmap/recent_icon" />
+
+        <ImageView
+            android:id="@+id/main_imageView_Detail"
+            android:layout_width="20dp"
+            android:layout_height="26dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/bg_ripple_effect_click_gray_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/main_textView_about"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.538"
+            app:srcCompat="@mipmap/list_icon" />
+
+        <TextView
+            android:id="@+id/main_textView_about"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/bg_ripple_effect_click_gray_white"
+            android:text="关于"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/main_about_textView_title"
+            style="@style/style_actionbar_title"
+            android:layout_marginStart="8dp"
+            android:text="复习"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
     <EditText
         android:id="@+id/fragment_editText_input"
         android:layout_width="0dp"
@@ -49,6 +128,17 @@
         android:progressDrawable="@drawable/layer_list_progress_green"
         app:layout_constraintStart_toStartOf="@+id/cl_main_container"
         app:layout_constraintTop_toBottomOf="@+id/cl_main_container" />
+
+    <TextView
+        android:id="@+id/fragment_textView_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/bg_ripple_effect_click1"
+        android:hint="tips..."
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@+id/main_recycllerView_keyboard"
+        app:layout_constraintEnd_toEndOf="@+id/main_textView_next" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cl_main_container"
@@ -148,18 +238,6 @@
         app:layout_constraintTop_toTopOf="@+id/cl_main_container" />
 
     <TextView
-        android:id="@+id/fragment_textView_tips"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/bg_ripple_effect_click1"
-        android:hint="tips..."
-        android:textColor="@android:color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/cl_main_container"
-        app:layout_constraintEnd_toEndOf="@+id/cl_main_container" />
-
-    <TextView
         android:id="@+id/main_textView_level"
         android:layout_width="22dp"
         android:layout_height="22dp"
@@ -174,78 +252,11 @@
         app:layout_constraintStart_toStartOf="@+id/cl_main_container"
         app:layout_constraintTop_toTopOf="@+id/cl_main_container" />
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        style="@style/style_actionbar_ground"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageButton
-            android:id="@+id/main_imageButton_setting"
-            android:layout_width="25dp"
-            android:layout_height="23dp"
-            android:layout_marginEnd="24dp"
-            android:background="@drawable/bg_ripple_effect_click_gray_white"
-            android:src="?attr/actionModeSelectAllDrawable"
-            app:layout_constraintBottom_toBottomOf="@+id/main_imageView_sort"
-            app:layout_constraintEnd_toStartOf="@+id/main_imageView_sort"
-            app:layout_constraintTop_toTopOf="@+id/main_imageView_sort"
-            tools:src="?attr/actionModeSelectAllDrawable" />
-
-        <ImageView
-            android:id="@+id/main_imageView_sort"
-            android:layout_width="19dp"
-            android:layout_height="23dp"
-            android:layout_marginEnd="24dp"
-            android:background="@drawable/bg_ripple_effect_click_gray_white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/main_imageView_Detail"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@mipmap/recent_icon" />
-
-        <ImageView
-            android:id="@+id/main_imageView_Detail"
-            android:layout_width="20dp"
-            android:layout_height="26dp"
-            android:layout_marginEnd="24dp"
-            android:background="@drawable/bg_ripple_effect_click_gray_white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/main_textView_about"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.538"
-            app:srcCompat="@mipmap/list_icon" />
-
-        <TextView
-            android:id="@+id/main_textView_about"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:background="@drawable/bg_ripple_effect_click_gray_white"
-            android:text="关于"
-            android:textColor="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/main_about_textView_title"
-            style="@style/style_actionbar_title"
-            android:layout_marginStart="8dp"
-            android:text="复习"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </android.support.constraint.ConstraintLayout>
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/main_recycllerView_keyboard"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="32dp"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
