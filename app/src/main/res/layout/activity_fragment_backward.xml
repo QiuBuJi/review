@@ -7,14 +7,14 @@
 
 
     <TextView
-        android:id="@+id/fragment_textView_tips"
+        android:id="@+id/main_textView_tips"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:hint="tips..."
         android:textColor="@android:color/black"
-        app:layout_constraintEnd_toEndOf="@+id/fragment_editText_input"
+        app:layout_constraintEnd_toEndOf="@+id/main_editText_input"
         app:layout_constraintTop_toBottomOf="@+id/fragment_textView_colorIndicate" />
 
     <TextView
@@ -49,7 +49,7 @@
         app:layout_constraintTop_toTopOf="@+id/fragment_textView_showBack" />
 
     <EditText
-        android:id="@+id/fragment_editText_input"
+        android:id="@+id/main_editText_input"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -64,7 +64,7 @@
         android:theme="@style/Base.Animation.AppCompat.Dialog"
         app:layout_constraintEnd_toStartOf="@+id/main_imageView_play_sound"
         app:layout_constraintStart_toStartOf="@+id/fragment_textView_showBack"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_progressBar_progress" />
+        app:layout_constraintTop_toBottomOf="@+id/main_progressBar_progress" />
 
     <TextView
         android:id="@+id/fragment_textView_colorIndicate"
@@ -72,11 +72,11 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textSize="10sp"
-        app:layout_constraintStart_toStartOf="@+id/fragment_editText_input"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_editText_input" />
+        app:layout_constraintStart_toStartOf="@+id/main_editText_input"
+        app:layout_constraintTop_toBottomOf="@+id/main_editText_input" />
 
     <TextView
-        android:id="@+id/fragment_textView_lastText"
+        android:id="@+id/main_textView_lastText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -86,7 +86,7 @@
         android:text="..."
         android:textAlignment="viewEnd"
         app:layout_constraintEnd_toEndOf="@+id/fragment_textView_showBack"
-        app:layout_constraintStart_toEndOf="@+id/fragment_progressBar_progress"
+        app:layout_constraintStart_toEndOf="@+id/main_progressBar_progress"
         app:layout_constraintTop_toBottomOf="@+id/fragment_textView_showBack" />
 
     <ImageView
@@ -96,9 +96,9 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:src="@mipmap/sound"
-        app:layout_constraintBottom_toBottomOf="@+id/fragment_editText_input"
+        app:layout_constraintBottom_toBottomOf="@+id/main_editText_input"
         app:layout_constraintEnd_toEndOf="@+id/fragment_textView_showBack"
-        app:layout_constraintTop_toTopOf="@+id/fragment_editText_input"
+        app:layout_constraintTop_toTopOf="@+id/main_editText_input"
         app:layout_constraintVertical_bias="0.59000003"
         app:srcCompat="@android:drawable/ic_lock_silent_mode_off" />
 
@@ -131,7 +131,7 @@
         app:layout_constraintEnd_toEndOf="@+id/fragment_textView_showBack" />
 
     <ProgressBar
-        android:id="@+id/fragment_progressBar_progress"
+        android:id="@+id/main_progressBar_progress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="139dp"
         android:layout_height="19dp"
@@ -143,14 +143,14 @@
         app:layout_constraintTop_toBottomOf="@+id/fragment_textView_showBack" />
 
     <TextView
-        android:id="@+id/fragment_textView_persent"
+        android:id="@+id/main_textView_persent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="0/0"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/fragment_progressBar_progress"
-        app:layout_constraintEnd_toEndOf="@+id/fragment_progressBar_progress"
-        app:layout_constraintStart_toStartOf="@+id/fragment_progressBar_progress"
-        app:layout_constraintTop_toTopOf="@+id/fragment_progressBar_progress" />
+        app:layout_constraintBottom_toBottomOf="@+id/main_progressBar_progress"
+        app:layout_constraintEnd_toEndOf="@+id/main_progressBar_progress"
+        app:layout_constraintStart_toStartOf="@+id/main_progressBar_progress"
+        app:layout_constraintTop_toTopOf="@+id/main_progressBar_progress" />
 </android.support.constraint.ConstraintLayout>
