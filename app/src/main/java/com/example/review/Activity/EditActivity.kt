@@ -42,7 +42,7 @@ class EditActivity : Activity(), OnClickListener, OnCheckedChangeListener, OnVal
     lateinit var tvPeriod: TextView
     lateinit var imgAlter: ImageView
 
-    override fun onCreate(savedInstanceState: Bundle) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 

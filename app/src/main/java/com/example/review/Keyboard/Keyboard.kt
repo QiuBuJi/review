@@ -56,7 +56,7 @@ abstract class Keyboard(var context: Context, var keyboardView: RecyclerView, va
         adapterComplete()
         keyboardView.adapter = adapter
         keyboardView.layoutManager = GridLayoutManager(context, span)
-        //        main.recyclerViewKeyboard.setLayoutManager(new StaggeredGridLayoutManager(span, StaggeredGridLayoutManager.VERTICAL));
+        //main.recyclerViewKeyboard.setLayoutManager(new StaggeredGridLayoutManager(span, StaggeredGridLayoutManager.VERTICAL));
     }
 
     interface OnKeyDownListener {
@@ -81,6 +81,7 @@ abstract class Keyboard(var context: Context, var keyboardView: RecyclerView, va
     }
 
     open fun stop() {}
+
     fun clear() {
         container.removeAllViews()
         strData.clear()

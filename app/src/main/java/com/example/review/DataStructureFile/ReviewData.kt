@@ -23,7 +23,6 @@ class ReviewData : ReviewList {
     private var timer: Timer? = null
 
     val library = LibraryList()
-        get
 
     private val UPDATE_TO_AVALABLE = 0
     private val DATA_SAVE = 1
@@ -78,7 +77,7 @@ class ReviewData : ReviewList {
     fun read() {
         if (fileNexus == null || fileLibrary == null) return
 
-        readDataFrom(fileNexus!!)
+        read(fileNexus!!)
         library.read(fileLibrary!!)
         val sizeNexus = size * 2
         val sizeLibrary = library.size
@@ -96,17 +95,6 @@ class ReviewData : ReviewList {
         handler.sendEmptyMessage(DATA_SAVE)
         super.save(path)
         handler.sendEmptyMessage(DATA_SAVE_COMPLETE)
-    }
-
-    /**
-     * 从外部存储器上，读取数据到内部。
-     *
-     * @param path 文件路径
-     */
-    @Throws(IOException::class)
-    fun readDataFrom(path: File) {
-        clear() //清空原有数据
-        super.read(path)
     }
 
     fun loadDataOf(path: File) {
@@ -411,7 +399,7 @@ class ReviewData : ReviewList {
     companion object {
         var reviewRegions = arrayOf(
                 DateTime("0秒"),  // 0级
-//          new DateTime("2秒"),      // 1级，插入mActivate第三个位置-----------
+//              DateTime("2秒"),      // 1级，插入mActivate第三个位置-----------
                 DateTime("10秒"),  // 2级
                 DateTime("5分"),  // 3级
                 DateTime("15分"),  // 4级

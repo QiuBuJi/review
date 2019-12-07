@@ -12,11 +12,7 @@ import kotlin.collections.ArrayList
 
 class ReviewStruct : StoreData {
     lateinit var show: LibraryStruct
-        get
-        set
     lateinit var match: LibraryStruct
-        get
-        set
 
     private var previousID = 0
     private var classType = 0
@@ -53,7 +49,6 @@ class ReviewStruct : StoreData {
     constructor(rawBytes: ByteArray) {
         loadWith(rawBytes)
     }
-
 
     //完成率，到这个阈值后判断为正确
     internal var corRate = 0.6f

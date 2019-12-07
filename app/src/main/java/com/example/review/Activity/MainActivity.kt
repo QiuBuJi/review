@@ -371,7 +371,7 @@ class MainActivity : AppCompatActivity(), ServiceConnection, Callback {
 
     //被单击监听器
     private val onClickListener: OnClickListener
-        get() = OnClickListener { view: View ->
+        get() = OnClickListener { view ->
             when (view.id) {
                 R.id.main_imageView_sort -> pickDataDialog()
                 R.id.main_textView_next -> if (data.mActivate.isNotEmpty()) {
@@ -394,9 +394,10 @@ class MainActivity : AppCompatActivity(), ServiceConnection, Callback {
                 }
                 R.id.main_editText_input -> {
                 }
-                R.id.main_imageButton_editSorts -> startActivity(Intent(this, EditSortsActivity::class.java))
+                R.id.main_imageButton_editSorts -> startActivity(Intent(this@MainActivity, EditSortsActivity::class.java))
             }
         }
+
 
     private fun tips() {
         if (data.mActivate.isNotEmpty()) {

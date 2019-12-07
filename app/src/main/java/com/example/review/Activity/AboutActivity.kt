@@ -5,6 +5,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView.LayoutParams
 import android.view.View.OnClickListener
+import android.view.ViewGroup
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
@@ -12,19 +13,20 @@ import android.widget.TextView
 import com.example.review.R
 
 class AboutActivity : Activity() {
-    lateinit var textViewTitle: TextView
-    lateinit var imageViewBackButton: ImageView
+    lateinit var tvTitle: TextView
+    lateinit var ivBackButton: ImageView
     lateinit var imageView: ImageView
     private var count = 0
-    override fun onCreate(savedInstanceState: Bundle) {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
 
-        textViewTitle = findViewById(R.id.main_about_textView_title)
-        imageViewBackButton = findViewById(R.id.about_imageView_back_button)
+        tvTitle = findViewById(R.id.main_about_textView_title)
+        ivBackButton = findViewById(R.id.about_imageView_back_button)
         imageView = findViewById(R.id.imageView)
 
-        imageViewBackButton.setOnClickListener(OnClickListener { finish() })
+        ivBackButton.setOnClickListener(OnClickListener { finish() })
         imageView.setOnClickListener(OnClickListener {
             //单击动画
             val scaleX = ObjectAnimator.ofFloat(imageView, "scaleX", 1f, 0.5f, 1f, 0.5f, 1f)
@@ -37,14 +39,15 @@ class AboutActivity : Activity() {
             scaleX.start()
             scaleY.start()
             count++
+
             if (count == 12) {
-                val layoutParams: LayoutParams = imageView.getLayoutParams() as LayoutParams
+                val layoutParams: ViewGroup.LayoutParams = imageView.layoutParams
                 layoutParams.width = (imageView.getWidth() * 1.6f).toInt()
                 layoutParams.height = (imageView.getHeight() * 1.6f).toInt()
                 imageView.requestLayout()
-            } else if (count > 6) {
-                imageView.setImageResource(R.mipmap.master)
-            }
+            } else if (count > 6) imageView.setImageResource(R.mipmap.master)
         })
     }
+
+
 }

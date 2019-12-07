@@ -35,11 +35,11 @@ import java.util.*
 import java.util.regex.Pattern
 
 class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
-    lateinit var imageViewBackButton: ImageView
-    lateinit var imageViewAdd: ImageView
-    lateinit var imageViewImport: ImageView
-    lateinit var editTextSearch: EditText
-    lateinit var buttonDelete: Button
+    lateinit var ivBackButton: ImageView
+    lateinit var ivAdd: ImageView
+    lateinit var ivImport: ImageView
+    lateinit var etSearch: EditText
+    lateinit var btDelete: Button
     lateinit var title: TextView
     lateinit var floating: FloatingActionButton
 
@@ -54,43 +54,45 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list)
 
-        imageViewBackButton = findViewById(R.id.list_imageView_back_button)
-        imageViewAdd = findViewById(R.id.imageView_add)
-        imageViewImport = findViewById(R.id.imageView_import)
-        editTextSearch = findViewById(R.id.editText_search)
-        buttonDelete = findViewById(R.id.button_delete)
+        ivBackButton = findViewById(R.id.list_imageView_back_button)
+        ivAdd = findViewById(R.id.imageView_add)
+        ivImport = findViewById(R.id.imageView_import)
+        etSearch = findViewById(R.id.editText_search)
+        btDelete = findViewById(R.id.button_delete)
         list = findViewById(R.id.list_recycler_list)
         title = findViewById(R.id.list_textView_title)
         floating = findViewById(R.id.list_floatingActionButton)
 
         data = MainActivity.data
+
         //初始化RecyclerView
         adapter = AdapterList(this, data)
-        list.setLayoutManager(LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false))
+        list.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         list.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        list.setVerticalScrollBarEnabled(true)
-        list.setAdapter(adapter)
+        list.isVerticalScrollBarEnabled = true
+        list.adapter = adapter
+
         //返回按钮
-        imageViewBackButton.setOnClickListener(this)
+        ivBackButton.setOnClickListener(this)
         //添加按钮
-        imageViewAdd.setOnClickListener(this)
+        ivAdd.setOnClickListener(this)
         //导入按钮，导入电脑数据
-        imageViewImport.setOnClickListener(this)
+        ivImport.setOnClickListener(this)
         //删除按钮被单击
-        buttonDelete.setOnClickListener(this)
+        btDelete.setOnClickListener(this)
         //设置输入法，搜索图标
-        editTextSearch.setImeOptions(EditorInfo.IME_ACTION_SEARCH)
+        etSearch.imeOptions = EditorInfo.IME_ACTION_SEARCH
         //设置IME搜索图标被按下的事件
-        editTextSearch.setOnEditorActionListener(this) //*** onEditorAction ***
+        etSearch.setOnEditorActionListener(this) //*** onEditorAction ***
         //悬浮按钮，点击事件
         floating.setOnClickListener(this)
         //列表滑动事件
-        list.setOnFlingListener(object : OnFlingListener() {
+        list.onFlingListener = object : OnFlingListener() {
             override fun onFling(i: Int, i1: Int): Boolean {
                 mUpDown = i1
                 return false
             }
-        })
+        }
         //悬浮按钮，长按事件
         floating.setOnLongClickListener {
             val lm = list.getLayoutManager()!!
@@ -106,14 +108,16 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
         })
     }
 
-    //***************************** onEditorAction ***
+    //***************************** onEditorAction *****************************
     override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent): Boolean {
-        val txt = editTextSearch.text.toString()
+        val txt = etSearch.text.toString()
+
         //输入:回车搜索（被按下）、IME_ACTION_SEARCH 任意一个后，搜索内容
         if (actionId == EditorInfo.IME_ACTION_SEARCH ||
             event.action == KeyEvent.ACTION_DOWN &&
             actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
             searchList = ReviewData()
+
             if (txt == "") {
                 val size = data.size
                 var match: String
@@ -121,15 +125,16 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
                 var rsFirst: ReviewStruct
                 var rsLast: ReviewStruct
                 var hasFound: Boolean
+
                 for (i in 0 until size) {
                     rsFirst = data[i]
                     match = rsFirst.match.text
                     hasFound = false
-                    //                    if (rsFirst.match.getType() != 1) continue;
+                    //if (rsFirst.match.getType() != 1) continue;
                     for (k in i + 1 until size) {
                         rsLast = data[k]
                         match1 = rsLast.match.text
-                        //                        if (rsLast.match.getType() != 1) continue;
+                        //if (rsLast.match.getType() != 1) continue;
                         if (match == match1) {
                             hasFound = true
                             searchList!!.add(rsLast)
@@ -143,6 +148,7 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
                 //匹配格式
                 if (compile.matcher(txt).matches()) {
                     val split = Pattern.compile(":").split(txt)
+
                     //查找：类型未指定
                     if (split[0] == "") {
                         for (rs in data) {
@@ -238,15 +244,16 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
 
     override fun onStart() {
         super.onStart()
-        switch_state = false
+        switchState = false
         adapter.notifyDataSetChanged()
         checked = false
     }
 
     override fun onBackPressed() {
         if (checked) {
-            switch_state = false
-            buttonDelete.visibility = View.GONE //隐藏删除按钮
+            switchState = false
+            btDelete.visibility = View.GONE //隐藏删除按钮
+
             //把dt数据中的checked复位false，这样recyclerView就不会显示灰色背景了
             for (dt in data) dt.selected = false
             adapter.notifyDataSetChanged()
@@ -255,7 +262,7 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
             if (searchList != null) {
                 adapter = AdapterList(this@ListActivity, data)
                 list.adapter = adapter
-                editTextSearch.setText("")
+                etSearch.setText("")
                 searchList = null
                 adapter.notifyDataSetChanged()
             } else finish()
@@ -280,6 +287,7 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
                 val scrollState = list.scrollState
                 val lm = list.layoutManager!!
                 val itemCount = lm.itemCount - 1
+
                 //在滑动的情况下
                 if (scrollState > 0) {
                     if (mUpDown < 0) //上滑
@@ -298,7 +306,7 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
                             i++
                         }
                     } else { //上滑
-//向上寻找未加入复习的
+                        //向上寻找未加入复习的
                         var i = adapter.posi
                         while (i >= 0) {
                             val ele = data[i]
@@ -317,17 +325,19 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
 
     private fun buttonDelete(count: Int) {
         var count = count
-        val txt = buttonDelete.text.toString()
+        val txt = btDelete.text.toString()
         if (txt == "退出") {
             onBackPressed()
             data.save()
             return
         }
+
         //搜索状态下，删除条目
         if (searchList != null) {
             var index = 0
             while (index < searchList!!.size) {
                 val rs = searchList!![index]
+
                 //checked为true，则删除该条项目
                 if (rs.selected) {
                     data.removeFromInavailable_Available(rs)
@@ -337,6 +347,7 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
                         val reviewStruct = searchList!![i]
                         reviewStruct.posi--
                     }
+
                     //通知adapter它的posi位置上的数据被删除了
                     searchList!!.removeAt(index)
                     adapter.notifyItemRemoved(index)
@@ -349,11 +360,13 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
             var index = 0
             while (index < data.size) {
                 val rs = data[index]
+
                 //checked为true，则删除该条项目
                 if (rs.selected) {
                     data.removeFromInavailable_Available(rs)
                     data.removeAt(index)
                     data.removeLibraryItem(index * 2)
+
                     //通知adapter它的posi位置上的数据被删除了
                     adapter.notifyItemRemoved(index)
                     index-- //删除了1像数据，它的位置不变。这里自减1，下次加一就和原来一样了
@@ -365,12 +378,14 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
         val sizeData = data.size * 2
         val sizeLibrary = data.library.size
         check(sizeData == sizeLibrary) { "数据不一致" }
+
         //显示删除了多少条目
         Toast.makeText(this@ListActivity, "一共删除" + count + "项", Toast.LENGTH_SHORT).show()
         val handler = Handler(Callback {
             onBackPressed()
             false
         })
+
         //延时启动handler
         var ms = 500
         if (count == 0) ms = 0
@@ -379,6 +394,7 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
                 handler.sendEmptyMessage(0)
             }
         }, ms.toLong())
+
         //如果数据有更改，保存数据
         data.save()
         data.saveLibrary()
@@ -391,14 +407,15 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
 
     companion object {
         var checked = false
-        var switch_state = false
+        var switchState = false
         var currentClickedRs: ReviewStruct? = null
     }
 
     class AdapterList(private val context: Context, private val data: ReviewData) : RecyclerView.Adapter<AdapterList.Holder>() {
         private var background: Drawable? = null
-        private val parent: ListActivity
+        private val parent: ListActivity = context as ListActivity
         var posi = 0
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
             val view = LayoutInflater.from(context).inflate(R.layout.activity_list_item, parent, false)
             background = view.background
@@ -411,12 +428,9 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
 
             //填充条目内的数据
             holder.index.text = String.format(Locale.CHINA, "%d.", position + 1)
-            if (rs.joined) {
-                holder.index.setTextColor(-0x27e4a0)
-                //            holder.index.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-            } else { //            holder.index.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
-                holder.index.setTextColor(-0x8b8b8c)
-            }
+            holder.index.setTextColor(if (rs.joined) -0x27e4a0 else -0x8b8b8c)
+//          holder.index.setTypeface(Typeface.defaultFromStyle(if (rs.joined)Typeface.BOLD else Typeface.NORMAL));
+
             holder.word.text = rs.match.text
             holder.explain.text = rs.show.text
             holder.progress.max = ReviewData.reviewRegions.size - 1
@@ -434,20 +448,20 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
                 if (second < 0) count++
             }
             holder.errorProgress.max = size
-            //        holder.errorProgress.setProgress(size);
-//        SpanUtil.create()
-//                .addForeColorSection(size + "  ", Color.BLACK)
-//                .addForeColorSection(count + "％", Color.WHITE)
-//                .showIn(holder.errorNum);
+            //holder.errorProgress.setProgress(size);
+            //SpanUtil.create()
+            //        .addForeColorSection(size + "  ", Color.BLACK)
+            //        .addForeColorSection(count + "％", Color.WHITE)
+            //        .showIn(holder.errorNum);
             holder.errorProgress.progress = count
             holder.errorNum.text = String.format(Locale.CHINA, "%d : %d", count, size)
 
             //加入复习总开关
-            if (ListActivity.switch_state) {
-                holder.switch_.setOnCheckedChangeListener(null)
-                holder.switch_.isChecked = rs.joined
-                holder.switch_.visibility = View.VISIBLE
-                holder.switch_.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (switchState) {
+                holder.switch.setOnCheckedChangeListener(null)
+                holder.switch.isChecked = rs.joined
+                holder.switch.visibility = View.VISIBLE
+                holder.switch.setOnCheckedChangeListener { buttonView, isChecked ->
                     rs.joined = isChecked
                     val mInactivate = parent.data.mInactivate
 
@@ -466,7 +480,7 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
                                             notifyDataSetChanged()
                                         }
                                         .setNegativeButton("取消") { dialogInterface, i ->
-                                            holder.switch_.isChecked = false
+                                            holder.switch.isChecked = false
                                             rs.joined = false
                                         }
                                         .show()
@@ -476,12 +490,12 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
                         parent.data.removeFromInavailable_Available(rs)
                     }
                 }
-            } else holder.switch_.visibility = View.GONE
+            } else holder.switch.visibility = View.GONE
 
             //选择&没被选择，的背景区别
-            if (rs.selected) {
-                holder.view.setBackgroundColor(Color.LTGRAY)
-            } else holder.view.background = background
+            if (rs.selected) holder.view.setBackgroundColor(Color.LTGRAY)
+            else holder.view.background = background
+
             //条目被长按
             holder.view.setOnLongClickListener(LongClick(rs, position))
             //条目被单击
@@ -492,49 +506,50 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
 
         override fun getItemCount(): Int = data.size
 
-        internal inner class LongClick(var reviewStruct: ReviewStruct, private val position: Int) : View.OnLongClickListener {
+        internal inner class LongClick(private var reviewStruct: ReviewStruct, private val position: Int) : View.OnLongClickListener {
             override fun onLongClick(view: View): Boolean { //长按，进入选择状态
                 if (checked) {
                     if (reviewStruct.selected) {
                         for (rs in data) rs.selected = true
-                        ListActivity.switch_state = false
-                        parent.buttonDelete.text = "删除"
-                        parent.buttonDelete.setBackgroundColor(Color.RED)
+                        ListActivity.switchState = false
+                        parent.btDelete.text = "删除"
+                        parent.btDelete.setBackgroundColor(Color.RED)
                     } else {
                         for (rs in data) rs.selected = false
-                        ListActivity.switch_state = true
-                        parent.buttonDelete.text = "退出"
-                        parent.buttonDelete.setBackgroundColor(Color.GREEN)
+                        ListActivity.switchState = true
+                        parent.btDelete.text = "退出"
+                        parent.btDelete.setBackgroundColor(Color.GREEN)
                     }
                     notifyDataSetChanged()
                 } else {
-                    parent.buttonDelete.text = "删除"
-                    parent.buttonDelete.setBackgroundColor(Color.RED)
+                    parent.btDelete.text = "删除"
+                    parent.btDelete.setBackgroundColor(Color.RED)
                     checked = true
                     reviewStruct.selected = true //设置该条被选择
                     notifyItemChanged(position)
-                    parent.buttonDelete.visibility = View.VISIBLE //显示删除按钮
+                    parent.btDelete.visibility = View.VISIBLE //显示删除按钮
                 }
                 return false
             }
 
         }
 
-        internal inner class Click(var reviewStruct: ReviewStruct, private val position: Int) : OnClickListener {
+        internal inner class Click(private var reviewStruct: ReviewStruct, private val position: Int) : OnClickListener {
             override fun onClick(view: View) { //选择按钮被打开
                 if (checked) {
-                    parent.buttonDelete.text = "删除"
-                    parent.buttonDelete.setBackgroundColor(Color.RED)
-                    if (ListActivity.switch_state) {
-                        ListActivity.switch_state = false
+                    parent.btDelete.text = "删除"
+                    parent.btDelete.setBackgroundColor(Color.RED)
+                    if (switchState) {
+                        switchState = false
                         notifyDataSetChanged()
                     }
                     //删除模式，背景的切换
                     reviewStruct.selected = !reviewStruct.selected
                     notifyItemChanged(position)
+
                 } else { //删除按钮没有打开
-//跳转页面，到编辑窗口
-                    ListActivity.currentClickedRs = reviewStruct
+                    //跳转页面，到编辑窗口
+                    currentClickedRs = reviewStruct
                     context.startActivity(Intent(context, EditActivity::class.java))
                 }
             }
@@ -542,35 +557,18 @@ class ListActivity : Activity(), OnClickListener, OnEditorActionListener {
         }
 
         inner class Holder(var view: View) : RecyclerView.ViewHolder(view) {
-            var ivLockUp: ImageView
-            var ivLockDown: ImageView
-            var errorNum: TextView
-            var errorProgress: ProgressBar
-            var index: TextView
-            var word: TextView
-            var explain: TextView
-            var progress: ProgressBar
-            var levelNumber: TextView
-            var switch_: Switch
-            var playSound: ImageView
-
-            init {
-                index = view.findViewById(R.id.item_textView_index)
-                word = view.findViewById(R.id.item_textView_word)
-                explain = view.findViewById(R.id.item_textView_explain)
-                progress = view.findViewById(R.id.item_progressBar_Level_forward)
-                levelNumber = view.findViewById(R.id.item_textView_level_number_up)
-                switch_ = view.findViewById(R.id.item_switch_JoinReview)
-                playSound = view.findViewById(R.id.item_imageView_play_sound)
-                errorProgress = view.findViewById(R.id.item_progressBar_error)
-                errorNum = view.findViewById(R.id.item_textView_error_num)
-                ivLockUp = view.findViewById(R.id.ivLockUp)
-                ivLockDown = view.findViewById(R.id.ivLockDown)
-            }
+            var ivLockUp: ImageView = view.findViewById(R.id.ivLockUp)
+            var ivLockDown: ImageView = view.findViewById(R.id.ivLockDown)
+            var errorNum: TextView = view.findViewById(R.id.item_textView_error_num)
+            var errorProgress: ProgressBar = view.findViewById(R.id.item_progressBar_error)
+            var index: TextView = view.findViewById(R.id.item_textView_index)
+            var word: TextView = view.findViewById(R.id.item_textView_word)
+            var explain: TextView = view.findViewById(R.id.item_textView_explain)
+            var progress: ProgressBar = view.findViewById(R.id.item_progressBar_Level_forward)
+            var levelNumber: TextView = view.findViewById(R.id.item_textView_level_number_up)
+            var switch: Switch = view.findViewById(R.id.item_switch_JoinReview)
+            var playSound: ImageView = view.findViewById(R.id.item_imageView_play_sound)
         }
 
-        init {
-            parent = context as ListActivity
-        }
     }
 }

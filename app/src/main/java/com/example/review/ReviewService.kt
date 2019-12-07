@@ -24,12 +24,12 @@ class ReviewService : Service() {
     var data = ReviewData()
     internal var TAG = "msg"
     internal var notify = false
-    private var notify_region = false
+    private var notifyRegion = false
     var sortLib = SortLib()
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         notify = Setting.getBoolean("通知提醒")
-        notify_region = Setting.getBoolean("夜间不通知")
+        notifyRegion = Setting.getBoolean("夜间不通知")
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -40,8 +40,9 @@ class ReviewService : Service() {
         try {
             initData()
         } catch (e: IOException) {
-            val msg = e.message ?: "(null appear!)"
-            Toast.makeText(this, msg.substring(msg.indexOf('(') + 1, msg.indexOf(')')), Toast.LENGTH_LONG).show()
+            data.clear()
+            val msg = e.toString()
+            Toast.makeText(this, "出现异常！ 错误信息：$msg", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -49,25 +50,25 @@ class ReviewService : Service() {
     fun initData() {
         data.stopTimer()
         data.setDefaultPath(MainActivity.pathLibrary, MainActivity.pathNexus)
-        //        long millis = System.currentTimeMillis();
+//      long millis = System.currentTimeMillis();
         data.read()
-        //        millis = System.currentTimeMillis() - millis;
-//        Toast.makeText(this, "read data cost millis:" + millis, Toast.LENGTH_SHORT).show();
+//      millis = System.currentTimeMillis() - millis;
+//      Toast.makeText(this, "read data cost millis:" + millis, Toast.LENGTH_SHORT).show();
         sortLib.read(File(MainActivity.pathApp, "sorts.txt"))
         data.retrieveInvaluable()
         data.mInactivate
         data.mActivate
         data.updateToAvailableAuto(1000)
-        data.setOnAvailableComplete(avalablecomplete())
+        data.setOnAvailableComplete(availableComplete())
     }
     // notifyHaveReveiw();//下一条的时间差，未满8分钟，但现有数据已经达到12条，则通知复习//首条的时间-当前时间，得到差值
     //下一条距离现在的时间差，如果大于8分钟，则通知该复习了
 
     //取首条数据的时间
-    private fun avalablecomplete() = object : AvailableComplete {
+    private fun availableComplete() = object : AvailableComplete {
         override fun onAvalablecomplete() {
             var isNotify = false
-            if (notify_region) {
+            if (notifyRegion) {
                 val currentTime: DateTime = DateTime.getCurrentTime()
                 val hour = currentTime.hour
                 if (hour < 8 || hour > 23) {
@@ -81,7 +82,7 @@ class ReviewService : Service() {
 
             //下一条距离现在的时间差，如果大于8分钟，则通知该复习了
             if (timeGap.biggerThan(DateTime("8分"))) {
-                notifyHaveReveiw()
+                notifyHaveReview()
             } else { //下一条的时间差，未满8分钟，但现有数据已经达到12条，则通知复习
                 if (data.mActivate.size > 12) {
                     //notifyHaveReveiw();
@@ -97,7 +98,7 @@ class ReviewService : Service() {
     }
 
     //设置通知信息
-    fun notifyHaveReveiw() { //界面没有关闭之前，不能启动通知
+    fun notifyHaveReview() { //界面没有关闭之前，不能启动通知
         val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         val topActivity = activityManager.getRunningTasks(2)[0].topActivity
 
