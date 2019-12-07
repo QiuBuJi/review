@@ -224,7 +224,7 @@ class ReviewData : ReviewList {
             //导入以前的复习时间
             if (rs.joined && rs.time > dateTime) {
                 try {
-//                    rs.time = DateTime(rs.logs.last)
+//                    rs.time = DateTime(rs.logs.last)//todo 忘记是解决什么问题了
                     sortAddToInactivate(rs)//从小到大的时间排序
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -313,12 +313,13 @@ class ReviewData : ReviewList {
     /**
      * mAvalable更新到mInactivate中
      */
-    fun updateInavalable_AddLevel(rs: ReviewStruct) {
+    fun updateInavailable_AddLevel(rs: ReviewStruct) {
         dataChangeCount++
         var level = rs.level
         mActivate.remove(rs)
         level++ //增加水平
         rs.level = level
+
         //低于1级别的计划，快速再次复习加深印象
         if (level <= 0) {
             try {
@@ -328,8 +329,10 @@ class ReviewData : ReviewList {
             }
             return
         }
+
         rs.time = DateTime.getCurrentTime() //取当前时间
         rs.time.add(reviewRegions[level]) //todo level下标越界怎么办？
+
         //正常复习
         try {
             sortAddToInactivate(rs)

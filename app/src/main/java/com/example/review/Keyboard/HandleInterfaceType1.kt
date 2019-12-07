@@ -7,13 +7,11 @@ import android.support.constraint.ConstraintLayout
 import android.support.constraint.Guideline
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.LayoutParams
 import android.support.v7.widget.RecyclerView.ViewHolder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
-import android.widget.Adapter
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.review.DataStructureFile.WordExplain
@@ -24,13 +22,15 @@ class HandleInterfaceType1(var context: Context, var containerView: ConstraintLa
     var adapter: MyAdapter
     var windowExplainHolder: WindowExplainHolder
     private val windowExplain: View
+
     fun refresh() {
         adapter.notifyDataSetChanged()
     }
 
     fun setLightAnimation(lightUp: Boolean, duration: Int) {
-        val valueAnim: ValueAnimator
-        valueAnim = if (lightUp) ValueAnimator.ofFloat(0f, 1f) else ValueAnimator.ofFloat(1f, 0f)
+        val valueAnim: ValueAnimator = if (lightUp) ValueAnimator.ofFloat(0f, 1f)
+        else ValueAnimator.ofFloat(1f, 0f)
+
         valueAnim.duration = duration.toLong()
         valueAnim.addUpdateListener { valueAnimator ->
             val value = valueAnimator.animatedValue as Float
@@ -39,8 +39,9 @@ class HandleInterfaceType1(var context: Context, var containerView: ConstraintLa
         valueAnim.start()
     }
 
-    internal var mPriorites = arrayOf("n.", "vt.", "adj.", "pron.", "conj.", "adv.", "intj.", "adv.", "art.", "vi.")
-    internal var strPriorities = Arrays.asList(*mPriorites)
+    private var mPriories = arrayOf("n.", "vt.", "adj.", "pron.", "conj.", "adv.", "intj.", "adv.", "art.", "vi.")
+    private var strPriorities = listOf(*mPriories)
+
     //取颜色，不同前缀有不同的对应的颜色
     fun getColor(src: String): Int {
         var src = src
@@ -63,32 +64,19 @@ class HandleInterfaceType1(var context: Context, var containerView: ConstraintLa
      * @link activity_window_explain.xml
      */
     inner class WindowExplainHolder internal constructor(view: View) {
-        var explainBody: RecyclerView
-        var explainTitle: TextView
-
-        init {
-            explainBody = view.findViewById(R.id.recycler_explain_body)
-            explainTitle = view.findViewById(R.id.tv_explain_title)
-        }
+        var explainBody: RecyclerView = view.findViewById(R.id.recycler_explain_body)
+        var explainTitle: TextView = view.findViewById(R.id.tv_explain_title)
     }
 
     /**
      * @link activity_item_show.xml
      */
     inner class ItemHolder(itemView: View) : ViewHolder(itemView) {
-        val prefix: TextView
-        val container: LinearLayout
-        val count: TextView
-        val indicator: TextView
-        val guideline: Guideline
-
-        init {
-            prefix = itemView.findViewById(R.id.tv_prefix)
-            container = itemView.findViewById(R.id.ll_container)
-            count = itemView.findViewById(R.id.tv_explain_count)
-            indicator = itemView.findViewById(R.id.tv_indicator)
-            guideline = itemView.findViewById(R.id.guideline)
-        }
+        val prefix: TextView = itemView.findViewById(R.id.tv_prefix)
+        val container: LinearLayout = itemView.findViewById(R.id.ll_container)
+        val count: TextView = itemView.findViewById(R.id.tv_explain_count)
+        val indicator: TextView = itemView.findViewById(R.id.tv_indicator)
+        val guideline: Guideline = itemView.findViewById(R.id.guideline)
     }
 
     inner class MyAdapter : RecyclerView.Adapter<ItemHolder>() {
@@ -100,9 +88,9 @@ class HandleInterfaceType1(var context: Context, var containerView: ConstraintLa
 
         var max = 0
         var maxPostfixLen = 0
-        override fun onBindViewHolder(viewHolder: ItemHolder, i: Int) {
-            val holder = viewHolder as ItemHolder
+        override fun onBindViewHolder(holder: ItemHolder, i: Int) {
             val weInput = frameInput[i]
+
             //解决前缀对齐问题
             if (max == 0) {
                 val spec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
@@ -121,10 +109,12 @@ class HandleInterfaceType1(var context: Context, var containerView: ConstraintLa
             }
             val marging = (containerView.width - (maxPostfixLen + max)) / 2 + max / 2
             holder.guideline.setGuidelineBegin(marging)
+
             //设置前缀及其颜色
             holder.prefix.text = weInput.category
             holder.prefix.setTextColor(getColor(weInput.category))
             holder.indicator.visibility = View.GONE
+
             //设置解释字符
             holder.container.removeAllViews()
             for (explain in weInput.explains) {
@@ -134,6 +124,7 @@ class HandleInterfaceType1(var context: Context, var containerView: ConstraintLa
                 txt.setBackgroundColor(-0xff37ad)
                 holder.container.addView(txt)
             }
+
             //设置该项内数据总量
             holder.count.text = weInput.explains.size.toString() + ""
             holder.count.visibility = View.GONE
@@ -154,6 +145,7 @@ class HandleInterfaceType1(var context: Context, var containerView: ConstraintLa
         windowExplainHolder.explainBody.layoutParams = lp
         val layout = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         windowExplainHolder.explainBody.layoutManager = layout
+
         adapter = MyAdapter()
         windowExplainHolder.explainBody.setAdapter(adapter)
     }

@@ -233,6 +233,10 @@ class DateTime : StoreData {
         return temp
     }
 
+    operator fun minus(divisor: DateTime): DateTime {
+        return subtract(divisor)
+    }
+
     /**
      * 取两个数据之差，保存于本数据中
      *

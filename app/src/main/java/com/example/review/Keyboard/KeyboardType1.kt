@@ -9,7 +9,6 @@ import android.text.InputType
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
-import com.example.review.Adapter.MyAdapter
 import com.example.review.DataStructureFile.WordExplain
 import com.example.review.New.KeyText
 import com.example.review.New.ReviewStruct
@@ -41,7 +40,10 @@ class KeyboardType1(context: Context, keyboardView: RecyclerView, container: Con
         handleInterfaceType1.setLightAnimation(true, 200)
     }
 
-    override fun setLightAnimation(lightUp: Boolean, duration: Int) {}
+    override fun setLightAnimation(lightUp: Boolean, duration: Int) {
+        handleInterfaceType1.setLightAnimation(lightUp, duration)
+    }
+
     override fun refresh() {
         val text = rs.show.text
         val type = rs.show.type

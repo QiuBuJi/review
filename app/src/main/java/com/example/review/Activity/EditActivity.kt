@@ -281,7 +281,7 @@ class EditActivity : Activity(), OnClickListener, OnCheckedChangeListener, OnVal
             if (rs!!.joined) {
                 if (isChange) {
                     rs!!.level = rs!!.level - 1
-                    data.updateInavalable_AddLevel(rs!!)
+                    data.updateInavailable_AddLevel(rs!!)
                 } else data.sortAddToInactivate(rs!!)
             } else data.removeFromInavailable_Available(rs!!)
             data.setLibrarySaveMark()
