@@ -53,6 +53,8 @@ class ReviewData : ReviewList {
     fun save() { //在数据有变动时，才会执行保存程序
         if (dataChangeCount == 0) return
         dataChangeCount = 0
+        if (size == 0) return//没数据，不保存
+
         Thread(Runnable {
             saveDataTo(fileNexus!!)
             if (librarySaveMark) {

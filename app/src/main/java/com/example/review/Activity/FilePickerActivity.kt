@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView.ViewHolder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Adapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.review.R
@@ -21,10 +20,10 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class FilePickerActivity : AppCompatActivity() {
-    internal var suffixs = ArrayList(Arrays.asList("jpg", "png"))
+    internal var suffixs = ArrayList(listOf("jpg", "png"))
     internal var data = LinkedList<String>()
     internal var files = LinkedList<File>()
-    lateinit internal var filePicker: RecyclerView
+    private lateinit var filePicker: RecyclerView
     private lateinit var adapter: MyAdapter
     internal var filter: FilenameFilter? = null
 
@@ -34,13 +33,13 @@ class FilePickerActivity : AppCompatActivity() {
         filePicker = findViewById(R.id.filePicker_recyclerView_picker)
 
         filter = MyFilenameFilter()
-        val file: File = MainActivity.Companion.externalRoot
+        val file: File = MainActivity.externalRoot
         val list = file.list(filter)
         files.add(file)
-        data.addAll(Arrays.asList(*list))
+        data.addAll(list)
         adapter = MyAdapter()
-        filePicker.setAdapter(adapter)
-        filePicker.setLayoutManager(GridLayoutManager(this, 6))
+        filePicker.adapter = adapter
+        filePicker.layoutManager = GridLayoutManager(this, 6)
     }
 
     override fun onBackPressed() {
@@ -48,7 +47,7 @@ class FilePickerActivity : AppCompatActivity() {
             files.removeLast()
             val list = files.last.list(filter)
             data.clear()
-            data.addAll(Arrays.asList(*list))
+            data.addAll(listOf(*list))
             adapter.notifyDataSetChanged()
         } catch (e: Exception) {
             super.onBackPressed()
@@ -65,20 +64,22 @@ class FilePickerActivity : AppCompatActivity() {
             val last = files.last
             val text = data[posi]
             val file = File(last, text)
+
             if (file.isDirectory) {
                 holder.image.setImageResource(R.mipmap.folder_icon)
             } else {
                 val options = Options()
-                //                options.inJustDecodeBounds = true;
+//                options.inJustDecodeBounds = true;
 //                BitmapFactory.decodeFile(file.getPath(), options);
                 options.inJustDecodeBounds = false
                 options.inSampleSize = 46
-                //                options.inSampleSize = options.outWidth / 200;
+//                options.inSampleSize = options.outWidth / 200;
                 options.inScaled = true
-                //
+
                 val bitmap = BitmapFactory.decodeFile(file.path, options)
                 holder.image.setImageBitmap(bitmap)
             }
+
             holder.item.text = text
             holder.view.setOnClickListener {
                 if (!file.isDirectory) {
@@ -90,7 +91,7 @@ class FilePickerActivity : AppCompatActivity() {
                     files.add(file)
                     val list = file.list(filter)
                     data.clear()
-                    data.addAll(Arrays.asList(*list))
+                    data.addAll(listOf(*list))
                     adapter.notifyDataSetChanged()
                 }
             }
@@ -104,6 +105,7 @@ class FilePickerActivity : AppCompatActivity() {
             val path = File(file, str)
             if (path.isDirectory && !path.isHidden) return true
             var index = str.lastIndexOf('.')
+
             if (index != -1) {
                 val suffix = str.substring(++index)
                 return suffixs.contains(suffix)
@@ -113,12 +115,7 @@ class FilePickerActivity : AppCompatActivity() {
     }
 
     internal inner class MyHolder(var view: View) : ViewHolder(view) {
-        var image: ImageView
-        var item: TextView
-
-        init {
-            item = view.findViewById(R.id.filePicker_textView_item)
-            image = view.findViewById(R.id.filePicker_imageView_image)
-        }
+        var image: ImageView = view.findViewById(R.id.filePicker_imageView_image)
+        var item: TextView = view.findViewById(R.id.filePicker_textView_item)
     }
 }

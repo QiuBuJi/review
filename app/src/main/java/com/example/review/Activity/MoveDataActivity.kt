@@ -9,7 +9,6 @@ import android.os.Handler.Callback
 import android.os.Message
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.View
 import android.view.View.OnClickListener
 import android.widget.*
 import com.example.review.R
@@ -20,97 +19,120 @@ import java.net.Socket
 import java.net.SocketAddress
 
 class MoveDataActivity : AppCompatActivity() {
-    internal var serviceId: EditText? = null
-    internal var servicePort: EditText? = null
-    internal var serviceBuild: Button? = null
-    internal var clientId: EditText? = null
-    internal var clientPort: EditText? = null
-    internal var clientSend: Button? = null
-    internal var port = 0
+    private lateinit var serviceId: EditText
+    private lateinit var servicePort: EditText
+    private lateinit var serviceBuild: Button
+    private lateinit var clientId: EditText
+    private lateinit var clientPort: EditText
+    private lateinit var clientSend: Button
+    private var port = 0
     private val TAG = "msg_mine"
-    internal var handler = Handler(Callback { message ->
+    private var handler = Handler(Callback { message ->
         when (message.what) {
-            HANDLER_SET_PORT_ENABLE -> if (message.arg1 == 0) {
-                servicePort!!.isEnabled = false
-                serviceBuild!!.isEnabled = false
-                clientId!!.isEnabled = false
-                clientPort!!.isEnabled = false
-                clientSend!!.isEnabled = false
-                clientReceive!!.isEnabled = false
-            } else {
-                servicePort!!.isEnabled = true
-                serviceBuild!!.isEnabled = true
-                clientId!!.isEnabled = true
-                clientPort!!.isEnabled = true
-                clientSend!!.isEnabled = true
-                clientReceive!!.isEnabled = true
-            }
-            HANDLER_TOAST -> if (message.obj != null) {
-                Toast.makeText(this@MoveDataActivity, message.obj as String, Toast.LENGTH_SHORT).show()
-            } else {
-                if (message.arg1 == 1) Toast.makeText(this@MoveDataActivity, "接收异常!", Toast.LENGTH_SHORT).show() else Toast.makeText(this@MoveDataActivity, "发送异常!", Toast.LENGTH_SHORT).show()
+            HANDLER_SET_PORT_ENABLE -> setViewsEnabled(message.arg1 != 0)
+            HANDLER_TOAST -> {
+                val value = Toast.LENGTH_LONG
+                if (message.obj != null)
+                    Toast.makeText(this@MoveDataActivity, message.obj as String, value).show()
+                else {
+                    if (message.arg1 == 1) Toast.makeText(this@MoveDataActivity, "接收异常!", value).show()
+                    else Toast.makeText(this@MoveDataActivity, "发送异常!", value).show()
+                }
             }
         }
         false
     })
-    private var tittle: TextView? = null
+    private lateinit var tittle: TextView
+    private lateinit var clientReceive: Button
+    private lateinit var backButton: ImageView
     private var address: String? = null
-    private var clientReceive: Button? = null
     private val order = "give me some data"
-    private var backButton: ImageView? = null
+
+    //设置一些特定的View的enable属性
+    private fun setViewsEnabled(isEnable: Boolean = true) {
+        servicePort.isEnabled = isEnable
+        serviceBuild.isEnabled = isEnable
+        clientId.isEnabled = isEnable
+        clientPort.isEnabled = isEnable
+        clientSend.isEnabled = isEnable
+        clientReceive.isEnabled = isEnable
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_move_data)
+
         initViews()
-        clientSend!!.setOnClickListener(clientSend())
-        serviceBuild!!.setOnClickListener(serviceBuild())
-        clientReceive!!.setOnClickListener(clientReceive())
+
+        clientSend.setOnClickListener(clientSend())
+        serviceBuild.setOnClickListener(serviceBuild())
+        clientReceive.setOnClickListener(clientReceive())
+        backButton.setOnClickListener { finish() }
+
         val localIpAddress = localIpAddress
-        serviceId!!.setText(localIpAddress)
-        serviceId!!.isEnabled = false
-        val name = String.format("同步到局域网的另一端？\n\n>> %s\n>> %s", MainActivity.Companion.pathNexus.getName(), MainActivity.Companion.pathLibrary.getName())
-        tittle!!.text = name
-        backButton!!.setOnClickListener { view: View? -> finish() }
+        serviceId.setText(localIpAddress)
+        serviceId.isEnabled = false
+        tittle.text = String.format("同步到局域网的另一端？\n\n>> %s\n>> %s", MainActivity.pathNexus.name, MainActivity.pathLibrary.name)
     }
 
+    /**
+     * 接收服务端的数据
+     * */
     private fun clientReceive(): OnClickListener {
-        return OnClickListener { view: View? ->
-            val strAddress = clientId!!.text.toString()
-            val port = clientPort!!.text.toString().toInt()
+        return OnClickListener {
+            val strAddress = clientId.text.toString()
+            val port = clientPort.text.toString().toInt()
             val socket = Socket()
             val address: SocketAddress = InetSocketAddress(strAddress, port)
+
             Thread(Runnable {
                 try {
                     socket.connect(address, 1000)
-                    val `in` = socket.getInputStream()
-                    val out = socket.getOutputStream()
+                    val input = socket.getInputStream()
+                    val output = socket.getOutputStream()
                     val baos = ByteArrayOutputStream()
-                    out.write(order.toByteArray())
+
+                    output.write(order.toByteArray())
                     socket.shutdownOutput()
+
                     val bytes = ByteArray(1024 * 1024)
                     var length: Int
-                    while (`in`.read(bytes).also { length = it } != -1) baos.write(bytes, 0, length)
+                    while (input.read(bytes).also { length = it } != -1) baos.write(bytes, 0, length)
+
                     val buffer = baos.toByteArray()
                     val paths = ArrayList<String>()
                     dataProcess(paths, buffer)
+
                     val msg = Message()
                     msg.what = HANDLER_TOAST
                     msg.obj = "success"
                     handler.sendMessage(msg)
-                    `in`.close()
-                    out.close()
+
+                    if (paths.isNotEmpty()) {
+                        val data = Intent()
+                        data.putStringArrayListExtra("paths", paths)
+                        setResult(1, data)
+                        finish()
+                    }
+
+                    input.close()
+                    output.close()
                     socket.close()
                 } catch (e: IOException) {
-                    e.printStackTrace()
+                    val msg = Message()
+                    msg.what = HANDLER_TOAST
+                    msg.obj = "出现异常！\n$e"
+                    handler.sendMessage(msg)
                 }
             }).start()
         }
     }
 
     private fun serviceBuild(): OnClickListener {
-        return OnClickListener { view: View? ->
+        return OnClickListener {
             //从界面读取数据
-            port = servicePort!!.text.toString().toInt()
+            port = servicePort.text.toString().toInt()
+
             Thread(Runnable {
                 var msg: Message
                 try { //发送Handler消息
@@ -119,6 +141,7 @@ class MoveDataActivity : AppCompatActivity() {
                     msg.arg1 = 0
                     handler.sendMessage(msg)
                     val paths = service()
+
                     if (paths.size > 0) {
                         val data = Intent()
                         data.putStringArrayListExtra("paths", paths)
@@ -144,48 +167,52 @@ class MoveDataActivity : AppCompatActivity() {
     @Throws(IOException::class)
     private fun service(): ArrayList<String> {
         val paths = ArrayList<String>()
-        //创建ServerSocket服务
-        val serverSocket = ServerSocket(port)
-        //等待连接
-        val socket = serverSocket.accept()
-        //连接成功，取输入流
-        val `in` = socket.getInputStream()
-        //读取全部数据
-        val baos = ByteArrayOutputStream()
+        val serverSocket = ServerSocket(port)//创建ServerSocket服务
+        val socket = serverSocket.accept()//等待连接
+        val input = socket.getInputStream()//连接成功，取输入流
+        val baos = ByteArrayOutputStream()//读取全部数据
         val temp = ByteArray(1024 * 1024)
         var index: Int
+
         //分段读取数据
-        while (`in`.read(temp).also { index = it } != -1) baos.write(temp, 0, index)
+        while (input.read(temp).also { index = it } != -1) baos.write(temp, 0, index)
         var data = baos.toByteArray()
+
         if (data.size <= order.length) {
             val out = socket.getOutputStream()
-            val pathNexus: File = MainActivity.Companion.pathNexus
+            val pathNexus: File = MainActivity.pathNexus
             var fis = FileInputStream(pathNexus)
             var length = pathNexus.length()
             var buffer = ByteArray(length.toInt())
+
             fis.read(buffer)
             fis.close()
             baos.reset()
+
             val dos = DataOutputStream(baos)
             dataStream(dos, pathNexus.name.toByteArray())
             dataStream(dos, buffer)
-            val pathLibrary: File = MainActivity.Companion.pathLibrary
+
+            val pathLibrary: File = MainActivity.pathLibrary
             fis = FileInputStream(pathLibrary)
             length = pathLibrary.length()
             buffer = ByteArray(length.toInt())
             fis.read(buffer)
             fis.close()
+
             dataStream(dos, pathLibrary.name.toByteArray())
             dataStream(dos, buffer)
             data = baos.toByteArray()
             dos.close()
             out.write(data)
             socket.shutdownOutput()
+
             //关闭连接、流
             out.close()
-            `in`.close()
+            input.close()
             socket.close()
             serverSocket.close()
+
         } else { //关闭连接、流
             socket.close()
             serverSocket.close()
@@ -199,19 +226,20 @@ class MoveDataActivity : AppCompatActivity() {
         val bais = ByteArrayInputStream(data)
         val dis = DataInputStream(bais)
         var buffer: ByteArray
+
         for (i in 0..1) {
             buffer = dataStream(dis) //读取文件名
             val name = String(buffer)
             buffer = dataStream(dis) //读取数据
+
             //保存文件的路径
-            val path = File(MainActivity.Companion.pathApp, name) //todo
+            val path = File(MainActivity.pathApp, name) //todo
             paths.add(path.path)
+
             if (path.exists()) { //备份文件路径
-                val pathBackup = File(MainActivity.Companion.pathApp, "$name.backup")
-                //备份文件存在，则删除它
-                if (pathBackup.exists()) pathBackup.delete()
-                //把旧文件备份
-                path.renameTo(pathBackup)
+                val pathBackup = File(MainActivity.pathApp, "$name.backup")
+                if (pathBackup.exists()) pathBackup.delete()//备份文件存在，则删除它
+                path.renameTo(pathBackup)//把旧文件备份
             }
             val out = FileOutputStream(path)
             out.write(buffer)
@@ -220,44 +248,49 @@ class MoveDataActivity : AppCompatActivity() {
     }
 
     private fun clientSend(): OnClickListener {
-        return OnClickListener { view: View? -> Thread(Runnable { client() }).start() }
+        return OnClickListener { Thread(Runnable { client() }).start() }
     }
 
     private fun client() { //从界面读取数据
-        port = Integer.valueOf(clientPort!!.text.toString())
-        address = clientId!!.text.toString()
-        //        port    = Integer.valueOf(servicePort.getText().toString());
+        port = Integer.valueOf(clientPort.text.toString())
+        address = clientId.text.toString()
+//        port    = Integer.valueOf(servicePort.getText().toString());
 //        address = serviceId.getText().toString();
-        val nameNex: String = MainActivity.Companion.pathNexus.getName()
-        val nameLib: String = MainActivity.Companion.pathLibrary.getName()
-        val bytesNex = ByteArray(MainActivity.Companion.pathNexus.length() as Int)
-        val bytesLib = ByteArray(MainActivity.Companion.pathLibrary.length() as Int)
+        val nameNex: String = MainActivity.pathNexus.name
+        val nameLib: String = MainActivity.pathLibrary.name
+        val bytesNex = ByteArray(MainActivity.pathNexus.length().toInt())
+        val bytesLib = ByteArray(MainActivity.pathLibrary.length().toInt())
         var fis: FileInputStream
         try {
-            fis = FileInputStream(MainActivity.Companion.pathNexus)
+            fis = FileInputStream(MainActivity.pathNexus)
             fis.read(bytesNex)
-            fis = FileInputStream(MainActivity.Companion.pathLibrary)
+            fis = FileInputStream(MainActivity.pathLibrary)
             fis.read(bytesLib)
         } catch (e: IOException) {
             e.printStackTrace()
         }
+
         try { //包装类
             val baos = ByteArrayOutputStream()
             val dos = DataOutputStream(baos)
+
             //数据通过dos汇集到baos中
             dataStream(dos, nameNex.toByteArray())
             dataStream(dos, bytesNex)
             dataStream(dos, nameLib.toByteArray())
             dataStream(dos, bytesLib)
+
             val buf = baos.toByteArray()
             val bais = ByteArrayInputStream(buf)
             val socket = Socket(address, port) //客户端socket
             val out = socket.getOutputStream() //取输出流
+
             //分段发送数据
             var index: Int
             val temp = ByteArray(1024 * 1024)
             while (bais.read(temp).also { index = it } != -1) out.write(temp, 0, index)
             socket.shutdownOutput()
+
             //关闭流
             dos.close()
             out.close()
@@ -299,11 +332,12 @@ class MoveDataActivity : AppCompatActivity() {
         backButton = findViewById(R.id.moveData_imageView_back_button)
     }
 
-    internal val localIpAddress: String
-        internal get() {
+    private val localIpAddress: String
+        get() {
             val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
             var ipAddress = 0
             val wifiState = wifiManager.wifiState
+
             if (wifiState == WifiManager.WIFI_STATE_ENABLED) {
                 val connectionInfo = wifiManager.connectionInfo
                 ipAddress = connectionInfo.ipAddress
@@ -311,7 +345,7 @@ class MoveDataActivity : AppCompatActivity() {
             return int2ip(ipAddress)
         }
 
-    internal fun int2ip(ipInt: Int): String {
+    private fun int2ip(ipInt: Int): String {
         val sb = StringBuilder()
         sb.append(ipInt and 0xFF).append(".")
         sb.append(ipInt shr 8 and 0xFF).append(".")
