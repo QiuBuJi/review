@@ -1,9 +1,11 @@
 package com.example.review.Activity
 
+import android.Manifest.permission
 import android.annotation.TargetApi
 import android.app.AlertDialog.Builder
 import android.app.NotificationManager
 import android.content.*
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Point
 import android.os.*
@@ -16,6 +18,7 @@ import android.text.Editable
 import android.text.Html
 import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
@@ -277,10 +280,7 @@ class MainActivity : AppCompatActivity(), ServiceConnection, Callback {
         }
         //***********************************************************************************************
 
-        //启动&绑定服务
-        val intentService = Intent(this, ReviewService::class.java)
-        startService(intentService)
-        bindService(intentService, this, Context.BIND_AUTO_CREATE)
+        aboutPermissions()//重要权限检查
 
         //各种初始化
         initViews()
@@ -288,6 +288,46 @@ class MainActivity : AppCompatActivity(), ServiceConnection, Callback {
         initVariable()
 
         tvTitle.text = prefix
+    }
+
+    //启动&绑定服务
+    private fun bindService() {
+        val intentService = Intent(this, ReviewService::class.java)
+        startService(intentService)
+        bindService(intentService, this, Context.BIND_AUTO_CREATE)
+    }
+
+    private val requestCodeOfPermission = 1
+
+    private fun aboutPermissions() {
+        val permissions = arrayListOf(permission.READ_EXTERNAL_STORAGE,
+                                      permission.WRITE_EXTERNAL_STORAGE)
+
+        val iterator = permissions.iterator()
+        while (iterator.hasNext()) {
+            val permissionState = checkSelfPermission(iterator.next())
+            if (permissionState == PackageManager.PERMISSION_GRANTED) iterator.remove()
+        }
+
+        if (permissions.isNotEmpty())
+            requestPermissions(permissions.toTypedArray(), requestCodeOfPermission)
+        else bindService()//权限没有拒绝，启动服务
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == requestCodeOfPermission) {
+            val iterator = grantResults.iterator()
+            var isRun = true
+
+            //如果有权限拒绝了，就不启动服务
+            for (permission in permissions) {
+                val nextInt = iterator.nextInt()
+                if (nextInt == PackageManager.PERMISSION_DENIED) isRun = false
+            }
+            if (isRun) bindService()//权限没有拒绝，启动服务
+            else Toast.makeText(this, "该权限若不开启，系统将无法工作！", Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onServiceConnected(componentName: ComponentName, iBinder: IBinder) {
@@ -550,12 +590,11 @@ class MainActivity : AppCompatActivity(), ServiceConnection, Callback {
         } else refreshShowing(false)
 
         //延迟刷新界面，不延迟则界面刷新不了
-        if (keyboard != null) {
-            Handler(Callback { message: Message? ->
-                keyboard!!.refresh()
-                false
-            }).sendEmptyMessageDelayed(0, 20)
-        }
+        Handler(Callback {
+            keyboard?.refresh()
+            false
+        }).sendEmptyMessageDelayed(0, 20)
+
         val notifyManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notifyManager.cancel(1)
     }
