@@ -18,7 +18,6 @@ import android.text.Editable
 import android.text.Html
 import android.text.InputType
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
@@ -63,7 +62,7 @@ class MainActivity : AppCompatActivity(), ServiceConnection, Callback {
     private lateinit var tvAbout: TextView
     private lateinit var tvReviewedNum: TextView
     private lateinit var tvTime: TextView
-    private lateinit var tvlastText: TextView
+    private lateinit var tvLastText: TextView
     private lateinit var tvTitle: TextView
     private lateinit var tvLevel: TextView
     private lateinit var tvNext: TextView
@@ -290,9 +289,10 @@ class MainActivity : AppCompatActivity(), ServiceConnection, Callback {
         tvTitle.text = prefix
     }
 
+    private var intentService: Intent? = null
     //启动&绑定服务
     private fun bindService() {
-        val intentService = Intent(this, ReviewService::class.java)
+        intentService = Intent(this, ReviewService::class.java)
         startService(intentService)
         bindService(intentService, this, Context.BIND_AUTO_CREATE)
     }
@@ -396,7 +396,7 @@ class MainActivity : AppCompatActivity(), ServiceConnection, Callback {
         pbProgress = findViewById(R.id.main_progressBar_progress)
         etInput = findViewById(R.id.main_editText_input)
         tips = findViewById(R.id.main_textView_tips)
-        tvlastText = findViewById(R.id.main_textView_lastText)
+        tvLastText = findViewById(R.id.main_textView_lastText)
         ibSetting = findViewById(R.id.main_imageButton_setting)
         rvKeyboard = findViewById(R.id.main_recycllerView_keyboard)
         tvLevel = findViewById(R.id.main_textView_level)
@@ -537,7 +537,7 @@ class MainActivity : AppCompatActivity(), ServiceConnection, Callback {
             override fun afterTextChanged(s: Editable) {
                 etInput.setTextColor(Color.BLACK)
                 val text = etInput.text.toString()
-                val str = tvlastText.text.toString()
+                val str = tvLastText.text.toString()
 
                 if (text == "") {
                     if (state1 == 2) return
@@ -547,10 +547,10 @@ class MainActivity : AppCompatActivity(), ServiceConnection, Callback {
                             .addAbsSizeSection(section, 28)
                             .setForeColor(section, Color.GRAY)
                             .addForeColorSection(str, Color.BLACK)
-                            .showIn(tvlastText)
+                            .showIn(tvLastText)
                 } else {
-                    tvlastText.text = text
-                    tvlastText.setTextColor(Color.BLACK)
+                    tvLastText.text = text
+                    tvLastText.setTextColor(Color.BLACK)
                     state1 = 1
                 }
             }
@@ -700,27 +700,34 @@ class MainActivity : AppCompatActivity(), ServiceConnection, Callback {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
         if (requestCode == 1 && resultCode == 1) {
-            val paths = data!!.getStringArrayListExtra("paths")
+            val paths = data?.getStringArrayListExtra("paths")
             if (paths != null) {
                 var prefix = ""
                 var postfix: String
                 for (path in paths) {
                     var split = path.split("/").toTypedArray()
-                    split = split[split.size - 1].split("\\.").toTypedArray()
+                    split = split[split.size - 1].split(".").toTypedArray()
                     if (split.size == 2) {
                         prefix = split[0]
                         postfix = split[1]
-                        if (postfix == "nexus") pathNexus = File(pathApp, String.format("%s.%s", prefix, postfix)) else pathLibrary = File(pathApp, String.format("%s.%s", prefix, postfix))
+                        if (postfix == "nexus")
+                            pathNexus = File(pathApp, String.format("%s.%s", prefix, postfix))
+                        else pathLibrary = File(pathApp, String.format("%s.%s", prefix, postfix))
                     }
                 }
                 tvTitle.text = prefix
                 tvArrival.text = "00:00"
-                try {
-                    service.initData()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
+
+                if (intentService != null)
+                    try {
+                        service.initData()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                else bindService()
+
                 refreshShowing(true)
             }
         }
@@ -740,7 +747,8 @@ class MainActivity : AppCompatActivity(), ServiceConnection, Callback {
      *      hello world!
      *  todo above is detail ↑↑↑
      * */
-//输入匹配---------------------------------------------------------------------------------------
+
+    //输入匹配---------------------------------------------------------------------------------------
     private fun matchInput() {
         val inputText = etInput.text.toString()
         //避开下标越界
@@ -835,10 +843,10 @@ class MainActivity : AppCompatActivity(), ServiceConnection, Callback {
             val spanBuilder = SpanUtil.create()
             for (ec in ecs) {
                 when (ec.category) {
-                    Category.correct -> spanBuilder.addForeColorSection(ec.txt, Color.BLACK)
-                    Category.malposition -> spanBuilder.addUnderlineSection(ec.txt)
-                    Category.unnecesary -> spanBuilder.addStrickoutSection(ec.txt).setForeColor(ec.txt!!, -0x3c3c3d)
-                    Category.missing -> {
+                    Category.Correct -> spanBuilder.addForeColorSection(ec.txt, Color.BLACK)
+                    Category.Malposition -> spanBuilder.addUnderlineSection(ec.txt)
+                    Category.Unnecessary -> spanBuilder.addStrickoutSection(ec.txt).setForeColor(ec.txt!!, -0x3c3c3d)
+                    Category.Missing -> {
                     }
                 }
             }
@@ -924,14 +932,15 @@ class MainActivity : AppCompatActivity(), ServiceConnection, Callback {
     }
 
     companion object {
-        var sorts: SortLib? = null
-        private const val TAG = "msg_mine"
-        var data = ReviewData()
         var externalRoot: File = Environment.getExternalStorageDirectory() //外部存储夹根目录
         var pathApp = File(externalRoot, "Review") //软件根目录
         var pathNexus = File(pathApp, "nexus.lib") //数据所在目录
         var pathLibrary = File(pathApp, "library.lib") //数据所在目录
         var pathInit = File(pathApp, "Total Word.ini") //数据所在目录
+
+        private const val TAG = "msg_mine"
+        var data = ReviewData()
+        var sorts: SortLib? = null
         private var canJoinLog = 0
     }
 }

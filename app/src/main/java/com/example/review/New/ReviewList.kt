@@ -7,9 +7,9 @@ import java.io.IOException
 open class ReviewList : ArrayStoreList<ReviewStruct>() {
     //关联指定的库
     fun connectOf(libraries: LibraryList) {
-        for (i in this.indices) {
-            val rs = get(i)
-            val index = i * 2
+        for (index in this.indices) {
+            val rs = get(index)
+            val index = index * 2
             rs.show = libraries[index + 1]
             rs.match = libraries[index]
         }
@@ -19,8 +19,8 @@ open class ReviewList : ArrayStoreList<ReviewStruct>() {
     @Throws(IOException::class)
     override fun toBytes(dos: DataOutputStream) {
         dos.writeInt(size)
-        for (libraryStruct in this) {
-            val bytes = libraryStruct.toBytes()
+        for (rl in this) {
+            val bytes = rl.toBytes()
             dos.writeInt(bytes.size)
             dos.write(bytes)
         }
@@ -34,8 +34,8 @@ open class ReviewList : ArrayStoreList<ReviewStruct>() {
             val len = dis.readInt()
             val bytes = ByteArray(len)
             dis.read(bytes)
-            val libraryStruct = ReviewStruct(bytes)
-            add(libraryStruct)
+            val rs = ReviewStruct(bytes)
+            add(rs)
         }
     }
 }

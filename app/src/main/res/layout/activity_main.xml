@@ -81,17 +81,59 @@
             android:text="复习"
 
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/main_imageButton_editSorts"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_main_container"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/bg_text_show"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+    </android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/main_textView_level"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_shape_circle"
+        android:gravity="center"
+        android:text="0"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/cl_main_container"
+        app:layout_constraintTop_toTopOf="@+id/cl_main_container" />
+
+    <TextView
+        android:id="@+id/tvLastDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="last duration"
+        app:layout_constraintEnd_toEndOf="@+id/cl_main_container"
+        app:layout_constraintTop_toTopOf="@+id/cl_main_container" />
 
     <EditText
         android:id="@+id/main_editText_input"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:gravity="center"
         android:hint="请输入..."
@@ -101,8 +143,9 @@
         android:textColor="@android:color/background_dark"
         android:theme="@style/Base.Animation.AppCompat.Dialog"
         app:layout_constraintEnd_toStartOf="@+id/main_textView_next"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/main_imageView_play_sound"
-        app:layout_constraintTop_toBottomOf="@+id/main_progressBar_progress" />
+        app:layout_constraintTop_toBottomOf="@+id/main_textView_lastText" />
 
     <ImageView
         android:id="@+id/main_imageView_play_sound"
@@ -133,27 +176,12 @@
         android:id="@+id/main_textView_tips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/bg_ripple_effect_click1"
         android:hint="tips..."
         android:textColor="@android:color/black"
-        app:layout_constraintBottom_toTopOf="@+id/main_recycllerView_keyboard"
-        app:layout_constraintEnd_toEndOf="@+id/main_textView_next" />
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/cl_main_container"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/bg_text_show"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
-
-    </android.support.constraint.ConstraintLayout>
+        app:layout_constraintEnd_toEndOf="@+id/main_textView_next"
+        app:layout_constraintTop_toBottomOf="@+id/main_editText_input" />
 
     <TextView
         android:id="@+id/main_textView_lastText"
@@ -227,43 +255,16 @@
         app:layout_constraintEnd_toEndOf="@+id/cl_main_container"
         app:layout_constraintTop_toTopOf="@+id/main_editText_input" />
 
-    <TextView
-        android:id="@+id/tvLastDuration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="last duration"
-        app:layout_constraintEnd_toEndOf="@+id/cl_main_container"
-        app:layout_constraintTop_toTopOf="@+id/cl_main_container" />
-
-    <TextView
-        android:id="@+id/main_textView_level"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/bg_shape_circle"
-        android:gravity="center"
-        android:text="0"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@+id/cl_main_container"
-        app:layout_constraintTop_toTopOf="@+id/cl_main_container" />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/main_recycllerView_keyboard"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="32dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_editText_input"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintTop_toBottomOf="@+id/main_textView_tips">
 
     </android.support.v7.widget.RecyclerView>
 

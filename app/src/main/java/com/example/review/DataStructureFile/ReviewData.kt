@@ -146,6 +146,7 @@ class ReviewData : ReviewList {
             sb1.delete(0, sb1.indexOf("@") + 1)
             val split = Pattern.compile("@").split(sb1) //先以'@'作为分格符号，分组内容
             var posi = 0
+
             for (str in split) {
                 val part = Pattern.compile("#").split(str) //后以'#'作为分格符号，分组内容
                 val strWord = part[0].trim { it <= ' ' }
@@ -156,6 +157,7 @@ class ReviewData : ReviewList {
                 val level = Integer.valueOf(part[5].trim { it <= ' ' })
                 val reviewStruct = ReviewStruct(level)
                 val strLog = Pattern.compile("\\r\\n|\\n").split(part[2])
+
                 for (txt in strLog) {
                     var txt = txt
                     txt = txt.trim { it <= ' ' }
@@ -225,10 +227,12 @@ class ReviewData : ReviewList {
     }
 
     internal fun sortToAvailable(reviewStruct: ReviewStruct): Boolean {
-        if (!mActivate.isEmpty()) {
-            val matchType = reviewStruct.match!!.type
+        if (mActivate.isNotEmpty()) {
+            val matchType = reviewStruct.match.type
+
             for (i in mActivate.indices.reversed()) {
-                val type = mActivate[i].match!!.type
+                val type = mActivate[i].match.type
+
                 if (matchType == type) {
                     mActivate.add(i + 1, reviewStruct)
                     return true
@@ -255,7 +259,7 @@ class ReviewData : ReviewList {
         }
         if (count > 0) {
             availableUpdate?.onUpdateToAvailableComplete(count)
-            availableComplete?.onAvalablecomplete()
+            availableComplete?.onAvailableComplete()
         } else {
             availableUpdate?.onUpdatedNoChange()
         }
@@ -267,7 +271,7 @@ class ReviewData : ReviewList {
     }
 
     interface AvailableComplete {
-        fun onAvalablecomplete()
+        fun onAvailableComplete()
     }
 
     fun setOnAvailableUpdate(availableUpdate: AvailableUpdate?) {
@@ -295,9 +299,7 @@ class ReviewData : ReviewList {
         }, 0, period.toLong())
     }
 
-    fun stopTimer() {
-        if (timer != null) timer!!.cancel()
-    }
+    fun stopTimer() = timer?.cancel()
 
     private var dataChangeCount = 0
     /**

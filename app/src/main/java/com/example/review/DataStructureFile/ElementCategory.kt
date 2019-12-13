@@ -15,6 +15,6 @@ class ElementCategory {
     }
 
     enum class Category {
-        correct, malposition, unnecesary, missing
+        Correct, Malposition, Unnecessary, Missing
     }
 }

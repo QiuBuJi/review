@@ -77,11 +77,9 @@ abstract class ArrayStoreList<E> : ArrayList<E>(), SaveDataInterface {
     @Throws(IOException::class)
     override fun read(path: File) {
         clear()
-        val `in` = FileInputStream(path)
-        val length = path.length().toInt()
-        val bytes = ByteArray(length)
-        `in`.read(bytes)
+        val fileIn = FileInputStream(path)
+        val bytes = fileIn.readBytes()
         loadWith(bytes)
-        `in`.close()
+        fileIn.close()
     }
 }

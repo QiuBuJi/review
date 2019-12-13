@@ -8,7 +8,6 @@ import android.support.constraint.ConstraintLayout
 import android.support.constraint.Guideline
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.LayoutParams
 import android.support.v7.widget.RecyclerView.ViewHolder
 import android.view.LayoutInflater
 import android.view.View
@@ -20,40 +19,36 @@ import android.widget.Toast
 import com.example.review.DataStructureFile.WordExplain
 import com.example.review.R
 
-class HandleInterfaceType2(var context: Context, var containerView: ConstraintLayout, var frameInput: ArrayList<WordExplain>, var frameRight: ArrayList<WordExplain>) {
+class HandleInterfaceType2(var context: Context, containerView: ConstraintLayout, var frameInput: ArrayList<WordExplain>, var frameRight: ArrayList<WordExplain>) {
     var adapter: MyAdapter
     var windowExplainHolder: WindowExplainHolder
 
     var indexOfItem = 0
-        set
-        get
     internal var windowExplain: View
 
     //取颜色，不同前缀有不同的对应的颜色
     fun getColor(prefix: String): Int {
         var prefix = prefix
         prefix = prefix.replace("\\s".toRegex(), "") //去除空格
-        var prefixColor = Color.GRAY
-        when (prefix) {
-            "n." -> prefixColor = Color.RED
-            "v." -> prefixColor = Color.BLACK
-            "vt." -> prefixColor = Color.BLACK
-            "vi." -> prefixColor = Color.DKGRAY
-            "adj." -> prefixColor = -0xff7685
-            "pron." -> prefixColor = Color.BLUE
-            "prep." -> prefixColor = -0x5500
-            "conj." -> prefixColor = Color.MAGENTA
-            "adv." -> prefixColor = Color.CYAN
-            "intj." -> prefixColor = Color.GREEN
-            "art." -> prefixColor = -0xfea865
-            "*." -> prefixColor = -0x1fbf05
+        return when (prefix) {
+            "n." -> Color.RED
+            "v." -> Color.BLACK
+            "vt." -> Color.BLACK
+            "vi." -> Color.DKGRAY
+            "adj." -> -0xff7685
+            "pron." -> Color.BLUE
+            "prep." -> -0x5500
+            "conj." -> Color.MAGENTA
+            "adv." -> Color.CYAN
+            "intj." -> Color.GREEN
+            "art." -> -0xfea865
+            "*." -> -0x1fbf05
+            else -> Color.GRAY
         }
-        return prefixColor
     }
 
     fun setLightAnimation(lightUp: Boolean, duration: Int) {
-        val valueAnim: ValueAnimator
-        valueAnim = if (lightUp) ValueAnimator.ofFloat(0f, 1f) else ValueAnimator.ofFloat(1f, 0f)
+        val valueAnim: ValueAnimator = if (lightUp) ValueAnimator.ofFloat(0f, 1f) else ValueAnimator.ofFloat(1f, 0f)
         valueAnim.duration = duration.toLong()
         valueAnim.addUpdateListener { valueAnimator ->
             val value = valueAnimator.animatedValue as Float
@@ -98,12 +93,14 @@ class HandleInterfaceType2(var context: Context, var containerView: ConstraintLa
     //添加字符
     fun addSegment(segment: String): Boolean {
         var returnValue = false
+
         //解决退出后再进入时不显示内容的问题
-        val lp: LayoutParams = windowExplainHolder.explainBody.layoutParams as LayoutParams
+        val lp = windowExplainHolder.explainBody.layoutParams
         lp.width = ViewGroup.LayoutParams.WRAP_CONTENT
         windowExplainHolder.explainBody.layoutParams = lp
         val we = frameInput[indexOfItem]
         var weTemp = frameRight[indexOfItem]
+
         //主动跳转下一行
         var sizeA = we.explains.size
         var sizeB = weTemp.explains.size
@@ -119,6 +116,7 @@ class HandleInterfaceType2(var context: Context, var containerView: ConstraintLa
             return returnValue
         }
         sizeB = frameRight.size
+
         //目前项数据填满后，自动转移到下一项
         while (true) { //到底就不要再跳到初始位置了
             if (indexOfItem == sizeB - 1) break
@@ -139,32 +137,19 @@ class HandleInterfaceType2(var context: Context, var containerView: ConstraintLa
      * @link activity_window_explain.xml
      */
     inner class WindowExplainHolder internal constructor(view: View) {
-        var explainBody: RecyclerView
-        var explainTitle: TextView
-
-        init {
-            explainBody = view.findViewById(R.id.recycler_explain_body)
-            explainTitle = view.findViewById(R.id.tv_explain_title)
-        }
+        var explainBody: RecyclerView = view.findViewById(R.id.recycler_explain_body)
+        var explainTitle: TextView = view.findViewById(R.id.tv_explain_title)
     }
 
     /**
      * @link activity_item_show.xml
      */
     inner class ItemHolder(itemView: View) : ViewHolder(itemView) {
-        val prefix: TextView
-        val container: LinearLayout
-        val count: TextView
-        val indicator: TextView
-        val guideline: Guideline
-
-        init {
-            prefix = itemView.findViewById(R.id.tv_prefix)
-            container = itemView.findViewById(R.id.ll_container)
-            count = itemView.findViewById(R.id.tv_explain_count)
-            indicator = itemView.findViewById(R.id.tv_indicator)
-            guideline = itemView.findViewById(R.id.guideline)
-        }
+        val prefix: TextView = itemView.findViewById(R.id.tv_prefix)
+        val container: LinearLayout = itemView.findViewById(R.id.ll_container)
+        val count: TextView = itemView.findViewById(R.id.tv_explain_count)
+        val indicator: TextView = itemView.findViewById(R.id.tv_indicator)
+        val guideline: Guideline = itemView.findViewById(R.id.guideline)
     }
 
     internal var mDifferent = false
@@ -253,7 +238,7 @@ class HandleInterfaceType2(var context: Context, var containerView: ConstraintLa
         windowExplainHolder.explainTitle.text = "nothing!"
         val layout = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter = MyAdapter()
-        windowExplainHolder.explainBody.setAdapter(adapter)
+        windowExplainHolder.explainBody.adapter = adapter
         windowExplainHolder.explainBody.layoutManager = layout
     }
 }

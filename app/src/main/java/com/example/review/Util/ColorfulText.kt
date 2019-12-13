@@ -24,7 +24,7 @@ class ColorfulText {
                 if (matchedSeris.size == 0) { //添加inputText中剩余的字符串
                     if (endIndex < inputText.length) {
                         str = inputText.substring(endIndex)
-                        ecs.add(ElementCategory(str, Category.unnecesary))
+                        ecs.add(ElementCategory(str, Category.Unnecessary))
                     }
                     break
                 }
@@ -39,8 +39,8 @@ class ColorfulText {
                         endIndex = cds.indexMatch + Math.abs(cds.serial)
                         str = inputText.substring(cds.indexMatch, endIndex)
                         i += str.length - 1
-                        if (cds.serial > 0) ecs.add(ElementCategory(str, Category.correct)) else {
-                            if (Math.abs(cds.serial) > 1) ecs.add(ElementCategory(str, Category.correct)) else ecs.add(ElementCategory(str, Category.malposition))
+                        if (cds.serial > 0) ecs.add(ElementCategory(str, Category.Correct)) else {
+                            if (Math.abs(cds.serial) > 1) ecs.add(ElementCategory(str, Category.Correct)) else ecs.add(ElementCategory(str, Category.Malposition))
                         }
                         matchedSeris.removeAt(j)
                         unFound = false
@@ -49,7 +49,7 @@ class ColorfulText {
                 }
 
                 //添加多余字符串
-                if (unFound) ecs.add(ElementCategory(c.toString(), Category.unnecesary))
+                if (unFound) ecs.add(ElementCategory(c.toString(), Category.Unnecessary))
                 i++
             }
         }

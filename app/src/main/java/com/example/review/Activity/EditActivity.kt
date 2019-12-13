@@ -18,29 +18,30 @@ import com.example.review.New.LibraryStruct
 import com.example.review.New.ReviewStruct
 import com.example.review.R
 import com.example.review.Util.SpanUtil
+import java.util.*
 
 class EditActivity : Activity(), OnClickListener, OnCheckedChangeListener, OnValueChangeListener {
-    lateinit var editTextExplain: EditText
-    lateinit var editTextWord: EditText
-    lateinit var textViewNumber: TextView
-    lateinit var textViewSave: TextView
-    lateinit var textViewTypeWord: TextView
-    lateinit var textViewTypeExplain: TextView
-    lateinit var timeLogs: TextView
-    lateinit var imageViewBackButton: ImageView
+    private lateinit var etExplain: EditText
+    private lateinit var etWord: EditText
+    private lateinit var tvNumber: TextView
+    private lateinit var tvSave: TextView
+    private lateinit var tvTypeWord: TextView
+    private lateinit var tvTypeExplain: TextView
+    private lateinit var tvTimeLogs: TextView
+    private lateinit var tvPeriod: TextView
+    private lateinit var ivBackButton: ImageView
+    private lateinit var imgAlter: ImageView
+    private lateinit var switchJoin: Switch
+    private lateinit var swGenerate: Switch
+    private lateinit var npPicker: NumberPicker
+    private lateinit var btUp: Button
+    private lateinit var btDown: Button
     internal var rs: ReviewStruct? = null
-    lateinit var picker: NumberPicker
     lateinit var data: ReviewData
-    lateinit var switchJoin: Switch
-    lateinit var swGenerate: Switch
-    internal var level = 0
-    internal var checked = false
-    internal var libraries: LibraryList? = null
-    internal var scrollList: ScrollView? = null
-    lateinit var btUp: Button
-    lateinit var btDown: Button
-    lateinit var tvPeriod: TextView
-    lateinit var imgAlter: ImageView
+    private var level = 0
+    private var checked = false
+    private var libraries: LibraryList? = null
+    private var scrollList: ScrollView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,92 +50,100 @@ class EditActivity : Activity(), OnClickListener, OnCheckedChangeListener, OnVal
         //初始化视图&监听器
         initViewAndListener()
         data = MainActivity.data
-        picker.maxValue = ReviewData.reviewRegions.size - 1
-        picker.minValue = 0
+        npPicker.maxValue = ReviewData.reviewRegions.size - 1
+        npPicker.minValue = 0
         switchJoin.isChecked = false
         libraries = data.library
 
         //添加编辑内容&显示详细内容，的分支************************************************************
         if (ListActivity.currentClickedRs != null) { //显示************************************************************
             rs = ListActivity.currentClickedRs
+
             //如果是引用，则不能编辑
             if (rs!!.match.refer > 0) {
-                editTextWord.isEnabled = false
+                etWord.isEnabled = false
                 btUp.isEnabled = false
             }
             if (rs!!.show.refer > 0) {
-                editTextExplain.isEnabled = false
+                etExplain.isEnabled = false
                 btDown.isEnabled = false
             }
+
             //设置要显示的数据
-            editTextWord.setText(rs!!.match.text)
-            editTextExplain.setText(rs!!.show.text)
-            textViewNumber.text = rs!!.level.toString()
-            textViewTypeWord.text = rs!!.match.type.toString()
-            textViewTypeExplain.text = rs!!.show.type.toString()
+            etWord.setText(rs!!.match.text)
+            etExplain.setText(rs!!.show.text)
+            tvNumber.text = rs!!.level.toString()
+            tvTypeWord.text = rs!!.match.type.toString()
+            tvTypeExplain.text = rs!!.show.type.toString()
             swGenerate.isEnabled = false
             level = rs!!.level
-            picker.value = level
-            var count = 0
-            var oldLog: DateTime? = null
-            for (mlog in rs!!.logs) {
-                val log = DateTime(mlog)
-                val strIndex: String = DateTime.fillChar(++count, 3, ' ')
-                val sb = StringBuilder(log.toString())
-                if (oldLog == null) {
-                    oldLog = DateTime(log)
-                    timeLogs.append("$strIndex. $log\n")
-                } else {
-                    if (log.year == oldLog.year) {
-                        if (log.month == oldLog.month) {
-                            if (log.day == oldLog.day) {
-                                if (log.hour == oldLog.hour) {
-                                    if (log.minute == oldLog.minute) {
-                                        if (log.second == oldLog.second) {
-                                            sb.replace(0, 21, "    ┊  ┊  ┊   ┊  ┊  ┊")
-                                        } else {
-                                            oldLog.second = log.second
-                                            sb.replace(0, 18, "    ┊  ┊  ┊   ┊  ┊")
-                                        }
-                                    } else {
-                                        oldLog.minute = log.minute
-                                        sb.replace(0, 15, "    ┊  ┊  ┊   ┊")
-                                    }
-                                } else {
-                                    oldLog.hour = log.hour
-                                    sb.replace(0, 11, "    ┊  ┊  ┊")
-                                }
-                            } else {
-                                oldLog.day = log.day
-                                sb.replace(0, 8, "    ┊  ┊")
-                            }
-                        } else {
-                            oldLog.month = log.month
-                            sb.replace(0, 5, "    ┊")
-                        }
-                    } else {
-                        oldLog = DateTime(log)
-                    }
-                    val text = "$strIndex. $sb\n"
-                    timeLogs.append(text)
-                }
-            }
+            npPicker.value = level
+
+            tvTimeLogs.text = generateFormattedTimeLogs()
             switchJoin.isChecked = rs!!.joined
         }
     }
 
+    private fun generateFormattedTimeLogs(): String {
+        val value = StringBuffer()
+        var oldLog: DateTime? = null
+
+        for ((count, log) in rs!!.logs.withIndex()) {
+            val log = DateTime(log)
+            val strIndex: String = DateTime.fillChar(count + 1, 3, ' ')
+            val sb = StringBuilder(log.toString())
+
+            if (oldLog == null) {
+                oldLog = DateTime(log)
+                value.append("$strIndex. $log\n")
+            } else {
+                if (log.year == oldLog.year) {
+                    if (log.month == oldLog.month) {
+                        if (log.day == oldLog.day) {
+                            if (log.hour == oldLog.hour) {
+                                if (log.minute == oldLog.minute) {
+                                    if (log.second == oldLog.second) {
+                                        sb.replace(0, 21, "    ┊  ┊  ┊   ┊  ┊  ┊")
+                                    } else {
+                                        oldLog.second = log.second
+                                        sb.replace(0, 18, "    ┊  ┊  ┊   ┊  ┊")
+                                    }
+                                } else {
+                                    oldLog.minute = log.minute
+                                    sb.replace(0, 15, "    ┊  ┊  ┊   ┊")
+                                }
+                            } else {
+                                oldLog.hour = log.hour
+                                sb.replace(0, 11, "    ┊  ┊  ┊")
+                            }
+                        } else {
+                            oldLog.day = log.day
+                            sb.replace(0, 8, "    ┊  ┊")
+                        }
+                    } else {
+                        oldLog.month = log.month
+                        sb.replace(0, 5, "    ┊")
+                    }
+                } else oldLog = DateTime(log)
+
+                value.append("$strIndex. $sb\n")
+            }
+        }
+        return value.toString()
+    }
+
     private fun initViewAndListener() {
-        textViewNumber = findViewById(R.id.textView_number)
-        editTextExplain = findViewById(R.id.editText_explain)
-        editTextWord = findViewById(R.id.editText_word)
-        imageViewBackButton = findViewById(R.id.edit_imageView_back_button)
-        textViewSave = findViewById(R.id.edit_button_save)
-        picker = findViewById(R.id.edit_numberPiker_piker)
+        tvNumber = findViewById(R.id.textView_number)
+        etExplain = findViewById(R.id.editText_explain)
+        etWord = findViewById(R.id.editText_word)
+        ivBackButton = findViewById(R.id.edit_imageView_back_button)
+        tvSave = findViewById(R.id.edit_button_save)
+        npPicker = findViewById(R.id.edit_numberPiker_piker)
         switchJoin = findViewById(R.id.edit_switch_join)
-        textViewTypeWord = findViewById(R.id.edit_textView_type_word)
-        textViewTypeExplain = findViewById(R.id.edit_textView_type_explain)
+        tvTypeWord = findViewById(R.id.edit_textView_type_word)
+        tvTypeExplain = findViewById(R.id.edit_textView_type_explain)
         scrollList = findViewById(R.id.edit_scrollView_list)
-        timeLogs = findViewById(R.id.edit_scrollView_textView_detail)
+        tvTimeLogs = findViewById(R.id.edit_scrollView_textView_detail)
         btUp = findViewById(R.id.edit_button_up)
         btDown = findViewById(R.id.edit_button_down)
         swGenerate = findViewById(R.id.edit_switch_generate_reverse)
@@ -143,12 +152,12 @@ class EditActivity : Activity(), OnClickListener, OnCheckedChangeListener, OnVal
 
         //设置监听器
         switchJoin.setOnCheckedChangeListener(this)
-        picker.setOnValueChangedListener(this)
-        imageViewBackButton.setOnClickListener(this)
-        textViewSave.setOnClickListener(this)
-        textViewTypeWord.setOnClickListener(this)
-        textViewTypeExplain.setOnClickListener(this)
-        textViewNumber.setOnClickListener(this)
+        npPicker.setOnValueChangedListener(this)
+        ivBackButton.setOnClickListener(this)
+        tvSave.setOnClickListener(this)
+        tvTypeWord.setOnClickListener(this)
+        tvTypeExplain.setOnClickListener(this)
+        tvNumber.setOnClickListener(this)
         //        editTextWord.setOnClickListener(this);
 //        editTextExplain.setOnClickListener(this);
         btUp.setOnClickListener(this)
@@ -156,19 +165,20 @@ class EditActivity : Activity(), OnClickListener, OnCheckedChangeListener, OnVal
         imgAlter.setOnClickListener { view: View -> onClick(view) }
     }
 
-    internal var items = arrayOf("1 纯单词", "2 单词解释", "3 填空式", "4 图片", "5 声音")
+    private var items = arrayOf("1 纯单词", "2 单词解释", "3 填空式", "4 图片", "5 声音")
+
     override fun onClick(view: View) {
         when (view.id) {
             R.id.edit_imageView_back_button -> finish()
             R.id.edit_button_save -> if (ListActivity.currentClickedRs == null) addData() else editData()
             R.id.edit_textView_type_word ->
                 Builder(this)
-                        .setItems(items, getListener(textViewTypeWord))
+                        .setItems(items, getListener(tvTypeWord))
                         .setTitle("选择类型")
                         .show()
             R.id.edit_textView_type_explain ->
                 Builder(this)
-                        .setItems(items, getListener(textViewTypeExplain))
+                        .setItems(items, getListener(tvTypeExplain))
                         .setTitle("选择类型")
                         .show()
             R.id.editText_word -> {
@@ -184,49 +194,45 @@ class EditActivity : Activity(), OnClickListener, OnCheckedChangeListener, OnVal
                 dialogShow()
             }
             R.id.edit_img_alter -> {
-                val text = textViewTypeWord.text
-                textViewTypeWord.text = textViewTypeExplain.text
-                textViewTypeExplain.text = text
+                val text = tvTypeWord.text
+                tvTypeWord.text = tvTypeExplain.text
+                tvTypeExplain.text = text
             }
         }
     }
 
     private fun dialogShow() {
         Builder(this)
-                .setItems(itemsChoose, object : DialogInterface.OnClickListener {
-                    override fun onClick(dialogInterface: DialogInterface, i: Int) {
-                        when (i) {
-                            0 -> startActivityForResult(Intent(this@EditActivity, LibraryActivity::class.java), requestCode)
-                            1 -> startActivityForResult(Intent(this@EditActivity, FilePickerActivity::class.java), requestCode)
-                        }
+                .setItems(itemsChoose) { dialogInterface, i ->
+                    when (i) {
+                        0 -> startActivityForResult(Intent(this@EditActivity, LibraryActivity::class.java), requestCode)
+                        1 -> startActivityForResult(Intent(this@EditActivity, FilePickerActivity::class.java), requestCode)
                     }
-                }).show()
+                }.show()
     }
 
     private fun getListener(textViewType: TextView?): DialogInterface.OnClickListener {
-        return object : DialogInterface.OnClickListener {
-            override fun onClick(dialogInterface: DialogInterface, i: Int) {
-                if (i >= 0) {
-                    val item = items[i]
-                    val chtype = item[0]
-                    textViewType!!.text = chtype.toString()
-                }
+        return DialogInterface.OnClickListener { dialogInterface, i ->
+            if (i >= 0) {
+                val item = items[i]
+                val chtype = item[0]
+                textViewType!!.text = chtype.toString()
             }
         }
     }
 
     //返回界面数据
-    internal val savingData: ReviewStruct
+    private val savingData: ReviewStruct
         get() {
             val rsSave = ReviewStruct()
-            val word = editTextWord.text.toString()
-            val explain = editTextExplain.text.toString()
+            val word = etWord.text.toString()
+            val explain = etExplain.text.toString()
             val lsWord = LibraryStruct(word, 1)
             val lsExplain = LibraryStruct(explain, 2)
-            val textWord = textViewTypeWord.text
+            val textWord = tvTypeWord.text
             val typeWord = Integer.valueOf(textWord as String)
             lsWord.type = typeWord
-            val textExplain = textViewTypeExplain.text
+            val textExplain = tvTypeExplain.text
             val typeExplain = Integer.valueOf(textExplain as String)
             lsExplain.type = typeExplain
             rsSave.addData(lsExplain, lsWord)
@@ -298,7 +304,7 @@ class EditActivity : Activity(), OnClickListener, OnCheckedChangeListener, OnVal
     }
 
     private var itemsChoose = arrayOf("在库内选择", "选择图片")
-    internal var requestCode = 0
+    private var requestCode = 0
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         super.onActivityResult(requestCode, resultCode, data)
         //没有返回数据
@@ -312,18 +318,18 @@ class EditActivity : Activity(), OnClickListener, OnCheckedChangeListener, OnVal
         }
         when (requestCode) {
             REQUEST_CODE_WORD -> if (directory != null) {
-                editTextWord.setText(directory)
-                textViewTypeWord.text = 4.toString()
+                etWord.setText(directory)
+                tvTypeWord.text = 4.toString()
             } else {
-                editTextWord.setText(ls!!.text)
-                textViewTypeWord.text = ls.type.toString()
+                etWord.setText(ls!!.text)
+                tvTypeWord.text = ls.type.toString()
             }
             REQUEST_CODE_EXPLAIN -> if (directory != null) {
-                editTextExplain.setText(directory)
-                textViewTypeExplain.text = 4.toString()
+                etExplain.setText(directory)
+                tvTypeExplain.text = 4.toString()
             } else {
-                editTextExplain.setText(ls!!.text)
-                textViewTypeExplain.text = ls.type.toString()
+                etExplain.setText(ls!!.text)
+                tvTypeExplain.text = ls.type.toString()
             }
         }
     }
@@ -334,7 +340,7 @@ class EditActivity : Activity(), OnClickListener, OnCheckedChangeListener, OnVal
 
     override fun onValueChange(numberPicker: NumberPicker, i: Int, value: Int) {
         level = value
-        textViewNumber.text = level.toString()
+        tvNumber.text = level.toString()
         val reviewRegion: DateTime = ReviewData.reviewRegions[level]
         val text = reviewRegion.toAboutValueNoDot()
         val textB = "后复习"

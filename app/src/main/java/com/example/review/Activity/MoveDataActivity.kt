@@ -105,7 +105,7 @@ class MoveDataActivity : AppCompatActivity() {
 
                     val msg = Message()
                     msg.what = HANDLER_TOAST
-                    msg.obj = "success"
+                    msg.obj = "接收成功！"
                     handler.sendMessage(msg)
 
                     if (paths.isNotEmpty()) {
@@ -240,7 +240,11 @@ class MoveDataActivity : AppCompatActivity() {
                 val pathBackup = File(MainActivity.pathApp, "$name.backup")
                 if (pathBackup.exists()) pathBackup.delete()//备份文件存在，则删除它
                 path.renameTo(pathBackup)//把旧文件备份
+            } else {//文件不存在，则创建文件
+                path.mkdirs()
+                path.createNewFile()
             }
+
             val out = FileOutputStream(path)
             out.write(buffer)
             out.close()

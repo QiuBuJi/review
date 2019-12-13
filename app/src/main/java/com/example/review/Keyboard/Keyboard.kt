@@ -106,27 +106,29 @@ abstract class Keyboard(var context: Context, var keyboardView: RecyclerView, va
         fun <E> makeRandom(list: MutableList<E>) {
             val random = Random(System.currentTimeMillis())
             val size = list.size
-            for (i in list.indices) {
-                val str = list[i]
-                list.remove(str)
+            var index = -1
+
+            while (++index < list.size) {
+                val match = list[index]
+                list.remove(match)
                 val index = random.nextInt(size)
-                list.add(index, str)
+                list.add(index, match)
             }
         }
 
-        fun <E> removeRedundancy(link: List<E>) {
-            for (i in link.indices) {
-                val match = link[i]
-                var k = i + 1
+        fun <E> removeRedundancy(list: List<E>) {
+            val list = list.toMutableList()
+            var index = -1
+            while (++index < list.size) {
+                val match = list[index]
 
-                while (k < link.size) {
-                    val temp = link[k]
+                var k = index
+                while (++k < list.size) {
+                    val temp = list[k]
                     if (match == temp) {
-//                        link.removeAt(k)
-                        link.drop(k)//todo where 'k' has beeen deleted?
+                        list -= temp
                         k--
                     }
-                    k++
                 }
             }
         }
@@ -136,7 +138,8 @@ abstract class Keyboard(var context: Context, var keyboardView: RecyclerView, va
             val linkTemp = LinkedList<String>()
             val linkc = LinkedList<String>()
             var len = 0
-            while (!link.isEmpty()) {
+
+            while (link.isNotEmpty()) {
                 len++
                 var i = 0
                 while (i < link.size) {

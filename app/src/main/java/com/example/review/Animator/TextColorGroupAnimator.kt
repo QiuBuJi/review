@@ -20,11 +20,11 @@ object TextColorGroupAnimator {
                 end = begin + ec.txt!!.length
                 var abc = 0xff
                 when (ec.category) {
-                    Category.correct -> {
+                    Category.Correct -> {
                         abc = Color.BLACK
                         et.setSpan(ForegroundColorSpan(abc), begin, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
                     }
-                    Category.malposition -> {
+                    Category.Malposition -> {
                         abc = abc shl 8
                         abc = abc shl 8
                         abc = abc shl 8
@@ -33,7 +33,7 @@ object TextColorGroupAnimator {
                         abc = abc or value
                         et.setSpan(ForegroundColorSpan(abc), begin, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
                     }
-                    Category.unnecesary -> {
+                    Category.Unnecessary -> {
                         if (value > 0xc3) value = 0xc3
                         var i = 0
                         while (i < 3) {

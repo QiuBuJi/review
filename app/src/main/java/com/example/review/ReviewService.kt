@@ -54,7 +54,11 @@ class ReviewService : Service() {
         data.read()
 //      millis = System.currentTimeMillis() - millis;
 //      Toast.makeText(this, "read data cost millis:" + millis, Toast.LENGTH_SHORT).show();
-        sortLib.read(File(MainActivity.pathApp, "sorts.txt"))
+        try {
+            sortLib.read(File(MainActivity.pathApp, "sorts.txt"))
+        } catch (e: Exception) {
+//            Toast.makeText(this, "", Toast.LENGTH_LONG).show()
+        }
         data.retrieveInvaluable()
         data.mInactivate
         data.mActivate
@@ -66,7 +70,7 @@ class ReviewService : Service() {
 
     //取首条数据的时间
     private fun availableComplete() = object : AvailableComplete {
-        override fun onAvalablecomplete() {
+        override fun onAvailableComplete() {
             var isNotify = false
             if (notifyRegion) {
                 val currentTime: DateTime = DateTime.getCurrentTime()

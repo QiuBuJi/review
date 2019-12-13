@@ -62,6 +62,7 @@ class ReviewStruct : StoreData {
         for (i in wesRight.indices) {
             val weRight = wesRight[i]
             var weInput: WordExplain? = null
+
             //挑出和matchWE.category相同的条目到we中
             for (weTemp in wesInput) {
                 val trim = weTemp.category.trim { it <= ' ' }
@@ -70,6 +71,7 @@ class ReviewStruct : StoreData {
                     break
                 }
             }
+
             //统计总数
             total += weRight.explains.size
             assert(weInput != null)
@@ -78,6 +80,7 @@ class ReviewStruct : StoreData {
             while (k < wrongInput.size) {
                 val word = wrongInput[k]
                 val contains = weRight.explains.contains(word)
+
                 //移除正确词语，留下不正确的
                 if (contains) {
                     wrongInput.removeAt(k--)
@@ -164,28 +167,6 @@ class ReviewStruct : StoreData {
 
         dos.writeInt(logs.size)
         for (log in logs) dos.write(log)
-        //压缩存储
-//        byte[] oldBt = logs.get(0).getBytes();
-//        int    posi  = -1;
-//        dos.write(oldBt);
-//
-//        for (int i = 1; i < size; i++) {
-//            DateTime log   = logs.get(i);
-//            byte[]   bytes = log.getBytes();
-//
-//            for (int k = 0; k < bytes.length; k++) {
-//
-//                if (bytes[k] != oldBt[k]) {
-//                    posi = k;
-//                    break;
-//                }
-//            }
-//
-//            int len = bytes.length - posi;
-//            dos.writeByte(len);
-//            dos.write(bytes, posi, len);
-//            oldBt = bytes;
-//        }
     }
 
 
@@ -198,29 +179,17 @@ class ReviewStruct : StoreData {
         joined = dis.readBoolean()
         selected = dis.readBoolean()
         showed = dis.readBoolean()
-        var bytes = ByteArray(7)
+        val length = 7
+        var bytes = ByteArray(length)
         dis.read(bytes)
         time = DateTime(bytes)
 
         val size = dis.readInt()
         for (i in 0 until size) {
+            bytes = ByteArray(length)//do not simplify it
             dis.read(bytes)
             logs.add(bytes)
         }
-        //压缩存储
-//        byte[] oldBt = null;
-//        dis.read(bytes);
-//        oldBt = bytes;
-//        logs.add(new DateTime(bytes));
-//
-//        for (int i = 0; i < size; i++) {
-//            byte len = dis.readByte();
-//
-//            byte[] clone = oldBt.clone();
-//            dis.read(clone, 7 - len, len);
-//            logs.add(new DateTime(clone));
-//            oldBt = clone;
-//        }
     }
 
     override fun toString(): String = time.toString(true) + "  单词：${match.text} 解释：${show.text}"
