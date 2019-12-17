@@ -8,7 +8,6 @@ import android.support.v4.view.ViewPager.OnPageChangeListener
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.View.OnClickListener
-import android.view.View.OnScrollChangeListener
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ImageView
@@ -20,62 +19,57 @@ import com.example.review.R
 import com.example.review.Setting
 
 class SortActivity : AppCompatActivity(), OnClickListener {
-    lateinit var imageViewBackButton: ImageView
-    lateinit var spinnerSort: Spinner
-    lateinit var pager: ViewPager
-    lateinit var indicate: TextView
+    private lateinit var ivBackButton: ImageView
+    private lateinit var spinSort: Spinner
+    private lateinit var vpPager: ViewPager
+    lateinit var tvIndicate: TextView
     private val fragments = ArrayList<SortFragment>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sort)
 
-        spinnerSort = findViewById(R.id.sort_spinner_sort)
-        imageViewBackButton = findViewById(R.id.sort_edit_imageView_back_button)
-        pager = findViewById(R.id.sort_viewPager_pager)
-        indicate = findViewById(R.id.sort_textView_indicate)
+        //*******************************找到view*******************************
+        spinSort = findViewById(R.id.sort_spinner_sort)
+        ivBackButton = findViewById(R.id.sort_edit_imageView_back_button)
+        vpPager = findViewById(R.id.sort_viewPager_pager)
+        tvIndicate = findViewById(R.id.sort_textView_indicate)
 
-        imageViewBackButton.setOnClickListener(this)
-        val intent = intent
+
+        //*******************************监听器*******************************
+        ivBackButton.setOnClickListener(this::onClick)
+
+
         val posi = intent.getIntExtra("posi", 0)
 
         fragments.add(SortFragment(true))
         fragments.add(SortFragment())
         fragments.add(OutlineFragment())
 
-        pager.setAdapter(adapter)
-        pager.addOnPageChangeListener(listener)
-        if (posi > 0) {
-            pager.arrowScroll(posi)
-        }
-        pager.setOnScrollChangeListener(OnScrollChangeListener { view, i, i1, i2, i3 -> xPosi = i })
+        vpPager.adapter = adapter
+        vpPager.addOnPageChangeListener(listener)
+        if (posi > 0) vpPager.arrowScroll(posi)
+        vpPager.setOnScrollChangeListener { view, i, i1, i2, i3 -> xPosi = i }
     }
 
     private val adapter: FragmentStatePagerAdapter
-        private get() = object : FragmentStatePagerAdapter(supportFragmentManager) {
-            override fun getItem(i: Int): Fragment {
-                return fragments[i]
-            }
-
-            override fun getCount(): Int {
-                return fragments.size
-            }
+        get() = object : FragmentStatePagerAdapter(supportFragmentManager) {
+            override fun getItem(i: Int): Fragment = fragments[i]
+            override fun getCount(): Int = fragments.size
         }
 
-    //                fragment.displayField = Setting.getInt("displayField");
-//                fragment.selectPartToShow(fragment.displayField);
-//                fragment.adapter.notifyDataSetChanged();
     private val listener: OnPageChangeListener
-        private get() = object : OnPageChangeListener {
+        get() = object : OnPageChangeListener {
             override fun onPageScrolled(i: Int, v: Float, i1: Int) {}
             override fun onPageSelected(i: Int) {
                 fragment = fragments[i]
-                when (i) {
-                    0 -> indicate!!.text = "复习中"
-                    1 -> indicate!!.text = "待复习"
-                    2 -> indicate!!.text = "大纲"
+                tvIndicate.text = when (i) {
+                    0 -> "复习中"
+                    1 -> "待复习"
+                    2 -> "大纲"
+                    else -> "out of rang!"
                 }
-                //                fragment.displayField = Setting.getInt("displayField");
+//                fragment.displayField = Setting.getInt("displayField");
 //                fragment.selectPartToShow(fragment.displayField);
 //                fragment.adapter.notifyDataSetChanged();
             }
@@ -84,25 +78,23 @@ class SortActivity : AppCompatActivity(), OnClickListener {
         }
 
     override fun onClick(view: View) {
-        if (view.id == R.id.sort_edit_imageView_back_button) {
-            finish()
-        }
+        if (view.id == R.id.sort_edit_imageView_back_button) finish()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (fragment != null) {
-            Setting.set("displayField", fragment!!.displayField)
-            fragment = null
-        }
+        if (fragment == null) return
+        Setting["displayField"] = fragment!!.displayField
+        fragment = null
     }
 
     override fun onStart() {
         super.onStart()
         if (fragment == null) return
+
         fragment!!.displayField = Setting.getInt("displayField")
-        spinnerSort!!.setSelection(fragment!!.displayField, true)
-        spinnerSort!!.onItemSelectedListener = object : OnItemSelectedListener {
+        spinSort.setSelection(fragment!!.displayField, true)
+        spinSort.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, i: Int, l: Long) {
                 fragment!!.selectPartToShow(i)
                 fragment!!.adapter.notifyDataSetChanged()

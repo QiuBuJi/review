@@ -21,6 +21,10 @@ object Setting {
         return sp!!.getInt(extra, 0)
     }
 
+    operator fun get(extra: String?): Boolean {
+        return sp!!.getBoolean(extra, false)
+    }
+
     operator fun set(extra: String?, value: Boolean) {
         edit!!.putBoolean(extra, value).commit()
     }
